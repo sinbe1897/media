@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Portal Media MGBK Indonesia</title>
+  
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            mgbk: {
+              purple: '#6b21a8',
+              violet: '#3b0764',
+              dark: '#0f0716',
+              blue: '#1e1b4b',
+              yellow: '#eab308',
+              red: '#dc2626'
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Swiper.js CSS -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+  <!-- FontAwesome Icon -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+
+  <style>
+    .swiper-button-next, .swiper-button-prev {
+      color: #eab308 !important;
+      background: rgba(15, 7, 22, 0.8);
+      width: 40px !important;
+      height: 40px !important;
+      border-radius: 9999px;
+      border: 1px solid rgba(234, 179, 8, 0.3);
+      backdrop-filter: blur(4px);
+    }
+    .swiper-button-next:after, .swiper-button-prev:after {
+      font-size: 16px !important;
+      font-weight: bold;
+    }
+    .swiper-pagination-fraction {
+      color: #eab308;
+      font-weight: 700;
+      font-size: 0.85rem;
+      position: relative;
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body class="bg-mgbk-dark text-slate-100 font-sans antialiased min-h-screen pb-20 overflow-x-hidden">
+
+  <!-- HEADER DENGAN LOGO -->
+  <header class="py-5 px-4 bg-gradient-to-r from-mgbk-violet via-mgbk-blue to-mgbk-dark border-b border-purple-800/50 shadow-2xl sticky top-0 z-40 backdrop-blur-md bg-opacity-95">
+    <div class="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4 text-center sm:text-left">
+      <div class="flex items-center gap-3 md:gap-4">
+        <img src="https://lh3.googleusercontent.com/d/19kg7niFuLOmPk1HxzoDdW_NBc1KDSUXh" alt="Logo MGBK" class="w-12 h-12 md:w-14 md:h-14 object-contain rounded-full ring-2 ring-mgbk-yellow bg-mgbk-blue p-1 shadow-lg" />
+        <div>
+          <h1 class="text-xl md:text-2xl font-extrabold tracking-tight text-white flex items-center gap-2 justify-center sm:justify-start">
+            MGBK <span class="text-mgbk-yellow">PORTAL MEDIA</span>
+          </h1>
+          <p class="text-purple-300 text-xs font-medium">Majelis Guru Bimbingan dan Konseling Indonesia</p>
+        </div>
+      </div>
+      <a href="#kegiatan-section" class="bg-mgbk-yellow hover:bg-yellow-400 text-mgbk-dark font-bold text-xs px-4 py-2 rounded-full shadow-lg transition-all flex items-center gap-2">
+        <i class="fa-solid fa-images"></i> Lihat Galeri
+      </a>
+    </div>
+  </header>
+
+  <main class="max-w-6xl mx-auto px-4 py-8 space-y-12">
+
+    <!-- PROFIL & VIDEO YOUTUBE EMBED FIX -->
+    <section class="bg-gradient-to-br from-purple-950/60 to-mgbk-blue/60 border border-purple-800/40 rounded-3xl p-5 md:p-8 shadow-2xl backdrop-blur-sm">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-center">
+        <div class="lg:col-span-6 space-y-3">
+          <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-purple-900/80 border border-purple-500/30 text-mgbk-yellow text-xs font-semibold">
+            <i class="fa-solid fa-bullhorn"></i> Selamat Datang
+          </div>
+          <h2 class="text-2xl md:text-3xl font-bold text-white">Profil MGBK Indonesia</h2>
+          <p class="text-slate-300 text-xs md:text-sm leading-relaxed">
+            Media Majelis Guru Bimbingan dan Konseling (MGBK) merupakan wadah bagi para guru BK untuk saling berbagi bahagia, meningkatkan kompetensi, serta mendokumentasikan berbagai kegiatan bimbingan dan pengembangan siswa.
+          </p>
+          <div class="pt-2 flex flex-wrap gap-2 text-xs text-purple-200">
+            <span class="bg-purple-900/40 px-2.5 py-1 rounded-lg border border-purple-700/40"><i class="fa-solid fa-check text-mgbk-yellow mr-1"></i> Profesional</span>
+            <span class="bg-purple-900/40 px-2.5 py-1 rounded-lg border border-purple-700/40"><i class="fa-solid fa-check text-mgbk-yellow mr-1"></i> Kolaboratif</span>
+            <span class="bg-purple-900/40 px-2.5 py-1 rounded-lg border border-purple-700/40"><i class="fa-solid fa-check text-mgbk-yellow mr-1"></i> Inovatif</span>
+          </div>
+        </div>
+
+        <!-- YouTube Embed Parser Fix -->
+        <div class="lg:col-span-6">
+          <div class="relative aspect-video w-full rounded-2xl overflow-hidden border border-purple-500/30 shadow-2xl bg-black">
+            <iframe id="profile-youtube-iframe" class="w-full h-full" src="" title="Video Profil MGBK" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- MEDIA SOSIAL CARDS -->
+    <section>
+      <div class="text-center mb-5">
+        <h3 class="text-lg md:text-xl font-bold text-white">Ikuti Media Sosial Kami</h3>
+        <p class="text-slate-400 text-xs mt-1">Dapatkan informasi terbaru melalui platform resmi kami</p>
+      </div>
+
+      <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 md:gap-4">
+        <a href="https://instagram.com//mgbk_indonesia" target="_blank" class="group bg-gradient-to-br from-pink-600/20 to-purple-900/30 border border-pink-500/30 hover:border-pink-500 p-3.5 rounded-2xl flex flex-col items-center text-center transition-all shadow-lg">
+          <div class="w-10 h-10 rounded-full bg-gradient-to-tr from-yellow-500 via-red-500 to-purple-600 flex items-center justify-center text-white text-lg mb-2 shadow-md">
+            <i class="fa-brands fa-instagram"></i>
+          </div>
+          <span class="font-bold text-xs text-white">Instagram</span>
+          <span class="text-[10px] text-slate-400 mt-0.5">@mgbk_official</span>
+          <span class="mt-2.5 text-[10px] font-semibold bg-pink-600 text-white px-3 py-0.5 rounded-full">Follow</span>
+        </a>
+
+        <a href="https://youtube.com/@mgbkindonesia720" target="_blank" class="group bg-gradient-to-br from-red-600/20 to-purple-900/30 border border-red-500/30 hover:border-red-500 p-3.5 rounded-2xl flex flex-col items-center text-center transition-all shadow-lg">
+          <div class="w-10 h-10 rounded-full bg-red-600 flex items-center justify-center text-white text-lg mb-2 shadow-md">
+            <i class="fa-brands fa-youtube"></i>
+          </div>
+          <span class="font-bold text-xs text-white">YouTube</span>
+          <span class="text-[10px] text-slate-400 mt-0.5">MGBK Official</span>
+          <span class="mt-2.5 text-[10px] font-semibold bg-red-600 text-white px-3 py-0.5 rounded-full">Subscribe</span>
+        </a>
+
+        <a href="https://tiktok.com" target="_blank" class="group bg-gradient-to-br from-slate-700/20 to-purple-900/30 border border-slate-500/30 hover:border-cyan-400 p-3.5 rounded-2xl flex flex-col items-center text-center transition-all shadow-lg">
+          <div class="w-10 h-10 rounded-full bg-slate-900 border border-slate-700 flex items-center justify-center text-cyan-400 text-lg mb-2 shadow-md">
+            <i class="fa-brands fa-tiktok"></i>
+          </div>
+          <span class="font-bold text-xs text-white">TikTok</span>
+          <span class="text-[10px] text-slate-400 mt-0.5">@mgbk_kreatif</span>
+          <span class="mt-2.5 text-[10px] font-semibold bg-cyan-500 text-slate-950 px-3 py-0.5 rounded-full">Follow</span>
+        </a>
+
+        <a href="https://facebook.com/groups/349889551750036/" target="_blank" class="group bg-gradient-to-br from-blue-600/20 to-purple-900/30 border border-blue-500/30 hover:border-blue-400 p-3.5 rounded-2xl flex flex-col items-center text-center transition-all shadow-lg">
+          <div class="w-10 h-10 rounded-full bg-blue-600 flex items-center justify-center text-white text-lg mb-2 shadow-md">
+            <i class="fa-brands fa-facebook-f"></i>
+          </div>
+          <span class="font-bold text-xs text-white">Facebook</span>
+          <span class="text-[10px] text-slate-400 mt-0.5">MGBK Indonesia</span>
+          <span class="mt-2.5 text-[10px] font-semibold bg-blue-600 text-white px-3 py-0.5 rounded-full">Ikuti</span>
+        </a>
+      </div>
+    </section>
+
+    <!-- DOKUMENTASI -->
+    <section id="kegiatan-section">
+      <div class="mb-8 text-center">
+        <span class="text-xs font-bold text-mgbk-yellow uppercase tracking-widest bg-purple-950/80 border border-purple-700/60 px-4 py-1.5 rounded-full inline-block mb-3">
+          <i class="fa-solid fa-filter mr-1"></i> Pilih Kegiatan
+        </span>
+        <div id="category-filters" class="flex flex-wrap justify-center gap-2 max-w-4xl mx-auto"></div>
+      </div>
+
+      <!-- GALERI FOTO -->
+      <div class="mb-12">
+        <div class="mb-4 border-b border-purple-900/60 pb-3 flex items-center justify-between">
+          <h2 class="text-lg font-bold text-mgbk-yellow flex items-center gap-2">
+            <i class="fa-regular fa-images"></i> Galeri Foto
+          </h2>
+          <span id="current-activity-title" class="text-slate-400 text-xs"></span>
+        </div>
+
+        <div class="relative px-1">
+          <div class="swiper mySwiperFoto overflow-hidden rounded-2xl">
+            <div class="swiper-wrapper" id="photo-container">
+              <div class="text-center w-full py-12 text-slate-400">
+                <i class="fa-solid fa-spinner fa-spin text-2xl mb-2 text-mgbk-yellow"></i>
+                <p class="text-xs">Memuat data...</p>
+              </div>
+            </div>
+            <!-- Fraction Pagination Modern (Anti-Crash) -->
+            <div class="swiper-pagination-foto"></div>
+            <div class="swiper-button-next swiper-btn-foto-next"></div>
+            <div class="swiper-button-prev swiper-btn-foto-prev"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- GALERI VIDEO -->
+      <div id="video-section" class="hidden">
+        <div class="mb-4 border-b border-purple-900/60 pb-3">
+          <h2 class="text-lg font-bold text-red-400 flex items-center gap-2">
+            <i class="fa-solid fa-circle-play"></i> Dokumentasi Video
+          </h2>
+        </div>
+
+        <div class="relative px-1">
+          <div class="swiper mySwiperVideo overflow-hidden rounded-2xl">
+            <div class="swiper-wrapper" id="video-container"></div>
+            <div class="swiper-pagination-video"></div>
+            <div class="swiper-button-next swiper-btn-video-next"></div>
+            <div class="swiper-button-prev swiper-btn-video-prev"></div>
+          </div>
+        </div>
+      </div>
+
+    </section>
+
+  </main>
+
+  <!-- MODAL FOTO -->
+  <div id="image-modal" class="fixed inset-0 z-50 bg-black/90 hidden backdrop-blur-md flex items-center justify-center p-4">
+    <div class="relative max-w-4xl w-full flex flex-col items-center">
+      <button onclick="closeModal('image-modal')" class="absolute -top-10 right-0 text-white hover:text-red-400 text-base font-bold">
+        <i class="fa-solid fa-xmark"></i> Tutup
+      </button>
+      <img id="modal-img" src="" class="max-h-[80vh] w-auto rounded-xl border border-purple-700 shadow-2xl object-contain" />
+      <div class="mt-4">
+        <button id="modal-download-btn" onclick="directDownload()" class="bg-mgbk-yellow hover:bg-yellow-400 text-mgbk-dark font-bold px-6 py-2 rounded-full text-xs shadow-xl flex items-center gap-2">
+          <i class="fa-solid fa-download"></i> Download Foto
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL VIDEO PLAYER -->
+  <div id="video-modal" class="fixed inset-0 z-50 bg-black/95 hidden backdrop-blur-md flex items-center justify-center p-4">
+    <div class="relative max-w-3xl w-full flex flex-col items-center">
+      <button onclick="closeVideoModal()" class="absolute -top-10 right-0 text-white hover:text-red-400 text-base font-bold">
+        <i class="fa-solid fa-xmark"></i> Tutup
+      </button>
+      <div class="aspect-video w-full rounded-2xl overflow-hidden bg-black border border-purple-700 shadow-2xl">
+        <iframe id="modal-video-iframe" src="" class="w-full h-full" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+      </div>
+    </div>
+  </div>
+
+  <!-- Swiper JS -->
+  <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+
+  <script>
+    const GAS_API_URL = "https://script.google.com/macros/s/AKfycbw5FO88o7tlkHfUQdLRLyWwTDUlYRnmNBpA-EC1TvIMvzY4Xg2G24xRufnm6p3Lk26A/exec";
+    // Tulis link YouTube biasa di sini, sistem otomatis ubah ke embed format
+    const YOUTUBE_PROFIL_URL = "https://youtu.be/5K3Xt6ODsDY?si=WrzZYc4ipEL2dcpb"; 
+    
+    let rawData = [];
+    let groupedData = {};
+    let swiperFotoInstance = null;
+    let swiperVideoInstance = null;
+    let currentDownloadUrl = "";
+
+    function parseYouTubeEmbed(url) {
+      if (!url) return "";
+      const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
+      const match = url.match(regExp);
+      return (match && match[2].length === 11) ? `https://www.youtube.com/embed/${match[2]}` : url;
+    }
+
+    function formatDate(rawDate) {
+      if (!rawDate) return '';
+      const date = new Date(rawDate);
+      if (isNaN(date.getTime())) return rawDate;
+      return date.toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' });
+    }
+
+    function getEmbedUrl(url) {
+      if (!url) return null;
+      let cleanUrl = url.trim();
+
+      if (cleanUrl.includes('youtube.com') || cleanUrl.includes('youtu.be')) {
+        return parseYouTubeEmbed(cleanUrl) + "?autoplay=1";
+      }
+      
+      if (cleanUrl.includes('drive.google.com') || cleanUrl.includes('lh3.googleusercontent.com')) {
+        const match = cleanUrl.match(/\/d\/([^\/]+)/);
+        if (match && match[1]) {
+          return `https://drive.google.com/file/d/${match[1]}/preview`;
+        }
+      }
+
+      return cleanUrl;
+    }
+
+    document.getElementById('profile-youtube-iframe').src = parseYouTubeEmbed(YOUTUBE_PROFIL_URL);
+
+    async function loadData() {
+      try {
+        const response = await fetch(GAS_API_URL);
+        rawData = await response.json();
+        
+        groupedData = {};
+        rawData.forEach(item => {
+          if (!groupedData[item.judul]) {
+            groupedData[item.judul] = [];
+          }
+          groupedData[item.judul].push(item);
+        });
+
+        renderFilterButtons();
+        
+        const firstCategory = Object.keys(groupedData)[0];
+        if (firstCategory) {
+          selectCategory(firstCategory);
+        }
+
+      } catch (err) {
+        console.error("Error loading data:", err);
+      }
+    }
+
+    function renderFilterButtons() {
+      const filterContainer = document.getElementById('category-filters');
+      filterContainer.innerHTML = '';
+
+      Object.keys(groupedData).forEach((catName, index) => {
+        const btn = document.createElement('button');
+        const activeStyle = "bg-mgbk-yellow text-mgbk-dark font-extrabold shadow-lg shadow-yellow-500/20 scale-105";
+        const inactiveStyle = "bg-purple-950/80 text-purple-200 border border-purple-800/60 hover:bg-purple-900 font-semibold";
+
+        btn.className = `cat-btn px-4 py-2 rounded-xl text-xs border transition-all duration-300 flex items-center gap-2 cursor-pointer ${index === 0 ? activeStyle : inactiveStyle}`;
+        btn.innerHTML = `
+          <i class="fa-solid fa-folder-open"></i>
+          <span>${catName}</span>
+          <span class="bg-black/20 px-2 py-0.5 rounded-full text-[10px]">${groupedData[catName].length}</span>
+        `;
+
+        btn.onclick = () => {
+          document.querySelectorAll('.cat-btn').forEach(b => b.className = `cat-btn px-4 py-2 rounded-xl text-xs border transition-all duration-300 flex items-center gap-2 cursor-pointer ${inactiveStyle}`);
+          btn.className = `cat-btn px-4 py-2 rounded-xl text-xs border transition-all duration-300 flex items-center gap-2 cursor-pointer ${activeStyle}`;
+          selectCategory(catName);
+        };
+
+        filterContainer.appendChild(btn);
+      });
+    }
+
+    function selectCategory(categoryName) {
+      const items = groupedData[categoryName];
+      document.getElementById('current-activity-title').innerText = `${items.length} Foto`;
+
+      // 1. Hancurkan instance Swiper lama secara total
+      if (swiperFotoInstance) {
+        swiperFotoInstance.destroy(true, true);
+        swiperFotoInstance = null;
+      }
+
+      // 2. Bersihkan isi elemen wrapper HTML
+      const fotoWrapper = document.querySelector('.mySwiperFoto .swiper-wrapper');
+      if (fotoWrapper) {
+        fotoWrapper.innerHTML = '';
+      }
+
+      // Filter item yang punya gambar
+      const photoItems = items.filter(i => i.gambarUrl);
+
+      // 3. Siapkan Array Slide HTML khusus untuk Virtual Swiper
+      const photoSlidesHtml = photoItems.map(item => `
+        <div class="bg-purple-950/40 border border-purple-800/40 rounded-2xl overflow-hidden shadow-xl flex flex-col h-full hover:border-mgbk-yellow/50 transition-colors">
+          <div class="relative group bg-black cursor-pointer aspect-[4/3] overflow-hidden" onclick="openModal('${item.gambarUrl}')">
+            <img src="${item.gambarUrl}" alt="${item.judul}" loading="lazy" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
+            <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center text-white text-xs font-semibold">
+              <i class="fa-solid fa-expand text-base mr-1"></i> Lihat Foto
+            </div>
+          </div>
+          <div class="p-3.5 flex flex-col justify-between flex-grow">
+            <p class="text-slate-200 text-xs line-clamp-2 mb-2 leading-relaxed">${item.deskripsi || item.judul}</p>
+            <span class="text-[10px] text-mgbk-yellow font-semibold flex items-center gap-1">
+              <i class="fa-regular fa-calendar-check"></i> ${formatDate(item.tanggal)}
+            </span>
+          </div>
+        </div>
+      `);
+
+      // 4. Inisialisasi ulang Swiper dengan Render Virtual yang Benar
+      swiperFotoInstance = new Swiper(".mySwiperFoto", {
+        slidesPerView: 1,
+        spaceBetween: 14,
+        virtual: {
+          slides: photoSlidesHtml,
+          renderSlide: function (slide, index) {
+            return `<div class="swiper-slide h-auto">${slide}</div>`;
+          },
+          addSlidesAfter: 2,
+          addSlidesBefore: 2
+        },
+        breakpoints: {
+          640: { slidesPerView: 2, spaceBetween: 18 },
+          1024: { slidesPerView: 3, spaceBetween: 20 }
+        },
+        pagination: { 
+          el: ".swiper-pagination-foto", 
+          type: "fraction" 
+        },
+        navigation: {
+          nextEl: ".swiper-btn-foto-next",
+          prevEl: ".swiper-btn-foto-prev"
+        }
+      });
+
+      // --- RENDER VIDEO SECTION ---
+      const videoSection = document.getElementById('video-section');
+      const videoContainer = document.getElementById('video-container');
+      videoContainer.innerHTML = '';
+
+      if (swiperVideoInstance) {
+        swiperVideoInstance.destroy(true, true);
+        swiperVideoInstance = null;
+      }
+
+      const videoItems = items.filter(i => i.videoUrl && i.videoUrl.trim() !== '');
+
+      if (videoItems.length > 0) {
+        videoSection.classList.remove('hidden');
+        
+        videoItems.forEach(item => {
+          const embedVideo = getEmbedUrl(item.videoUrl);
+          const videoSlideHtml = `
+            <div class="swiper-slide h-auto">
+              <div class="bg-purple-950/40 border border-purple-800/40 rounded-2xl overflow-hidden shadow-xl p-3 flex flex-col h-full hover:border-red-500/50 transition-colors">
+                <div class="relative aspect-video w-full rounded-xl overflow-hidden bg-black cursor-pointer group mb-3" onclick="openVideoModal('${embedVideo}')">
+                  <img src="${item.gambarUrl}" loading="lazy" class="w-full h-full object-cover opacity-60 group-hover:scale-105 transition-transform duration-300" />
+                  <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent flex items-center justify-center">
+                    <div class="w-12 h-12 rounded-full bg-red-600 text-white flex items-center justify-center group-hover:scale-110 transition-all shadow-xl">
+                      <i class="fa-solid fa-play ml-1"></i>
+                    </div>
+                  </div>
+                </div>
+                <p class="text-slate-200 text-xs line-clamp-2 font-medium">${item.deskripsi || item.judul}</p>
+              </div>
+            </div>
+          `;
+          videoContainer.insertAdjacentHTML('beforeend', videoSlideHtml);
+        });
+
+        swiperVideoInstance = new Swiper(".mySwiperVideo", {
+          slidesPerView: 1,
+          spaceBetween: 14,
+          breakpoints: {
+            640: { slidesPerView: 2, spaceBetween: 18 },
+            1024: { slidesPerView: 3, spaceBetween: 20 }
+          },
+          pagination: { 
+            el: ".swiper-pagination-video", 
+            type: "fraction" 
+          },
+          navigation: {
+            nextEl: ".swiper-btn-video-next",
+            prevEl: ".swiper-btn-video-prev"
+          }
+        });
+
+      } else {
+        videoSection.classList.add('hidden');
+      }
+    }
+
+    function openVideoModal(videoEmbedUrl) {
+      document.getElementById('modal-video-iframe').src = videoEmbedUrl;
+      document.getElementById('video-modal').classList.remove('hidden');
+    }
+
+    function closeVideoModal() {
+      document.getElementById('modal-video-iframe').src = '';
+      document.getElementById('video-modal').classList.add('hidden');
+    }
+
+    function openModal(imgUrl) {
+      currentDownloadUrl = imgUrl;
+      document.getElementById('modal-img').src = imgUrl;
+      document.getElementById('image-modal').classList.remove('hidden');
+    }
+
+    function closeModal(modalId) {
+      document.getElementById(modalId).classList.add('hidden');
+    }
+
+    async function directDownload() {
+      if (!currentDownloadUrl) return;
+      try {
+        const btn = document.getElementById('modal-download-btn');
+        btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Unduh...`;
+        
+        const response = await fetch(currentDownloadUrl);
+        const blob = await response.blob();
+        const blobUrl = URL.createObjectURL(blob);
+        
+        const a = document.createElement('a');
+        a.href = blobUrl;
+        a.download = `mgbk-dokumentasi-${Date.now()}.jpg`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(blobUrl);
+
+        btn.innerHTML = `<i class="fa-solid fa-download"></i> Download Foto`;
+      } catch (err) {
+        window.open(currentDownloadUrl, '_blank');
+      }
+    }
+
+    loadData();
+  </script>
+  <!-- FOOTER COPYRIGHT WITH LOGO -->
+  <footer class="w-full bg-mgbk-violet/90 border-t border-purple-800/40 backdrop-blur-md py-4 px-6 mt-auto">
+    <div class="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-3">
+      
+      <!-- Brand Logo & Name -->
+      <div class="flex items-center gap-3">
+        <img src="https://lh3.googleusercontent.com/d/19kg7niFuLOmPk1HxzoDdW_NBc1KDSUXh" alt="Logo MGBK" class="w-7 h-7 rounded-full ring-2 ring-mgbk-yellow/50 bg-mgbk-blue p-0.5 object-cover" />
+        <span class="text-xs font-bold text-white tracking-wide">
+          MGBK <span class="text-mgbk-yellow">PORTAL MEDIA</span>
+        </span>
+      </div>
+
+      <!-- Copyright Text -->
+      <p class="text-[11px] text-slate-400 text-center sm:text-right">
+        &copy; 2026 MGBK Media Developed by Protect ICT 4 CMI. All Rights Reserved.
+      </p>
+
+    </div>
+  </footer>
+</body>
+</html>
