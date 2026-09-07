@@ -20,26 +20,24 @@
 </head>
 <body class="bg-mgbk-dark text-slate-100 min-h-screen font-sans flex flex-col justify-between">
 
-    <!-- TOP BAR -->
-    <header class="py-4 px-6 bg-mgbk-violet/80 border-b border-purple-800/50 flex justify-between items-center backdrop-blur-md">
-      <div class="flex items-center gap-3">
-        <img src="https://lh3.googleusercontent.com/d/19kg7niFuLOmPk1HxzoDdW_NBc1KDSUXh" alt="Logo" class="w-10 h-10 rounded-full ring-2 ring-mgbk-yellow bg-mgbk-blue p-0.5" />
-        <h1 class="text-lg font-bold text-white">Panel Admin <span class="text-mgbk-yellow">MGBK</span></h1>
-      </div>
-      <button id="logout-btn" onclick="logout()" class="hidden bg-red-600/80 hover:bg-red-600 text-white text-xs px-4 py-2 rounded-lg font-semibold transition-all">
-        <i class="fa-solid fa-right-from-bracket mr-1"></i> Keluar
-      </button>
-    </header>
-  
-    <!-- FORM LOGIN -->
-    <div id="login-section" class="max-w-md w-full mx-auto p-6">
-      <div class="bg-gradient-to-br from-purple-950/80 to-mgbk-blue/80 border border-purple-700/50 rounded-3xl p-8 shadow-2xl backdrop-blur-md">
-        <div class="text-center mb-6">
-          <div class="w-16 h-16 bg-mgbk-yellow/10 border border-mgbk-yellow text-mgbk-yellow rounded-2xl flex items-center justify-center mx-auto mb-3 text-2xl shadow-lg">
-            <i class="fa-solid fa-user-shield"></i>
-          </div>
-          <h2 class="text-xl font-bold text-white">Login Pengelola</h2>
-          <p class="text-xs text-slate-400 mt-1">Masukkan akses admin MGBK Media</p>
+  <header class="py-4 px-6 bg-mgbk-violet/80 border-b border-purple-800/50 flex justify-between items-center backdrop-blur-md sticky top-0 z-50">
+    <div class="flex items-center gap-3">
+      <div class="w-10 h-10 rounded-full ring-2 ring-mgbk-yellow bg-mgbk-blue p-0.5 flex items-center justify-center font-bold text-mgbk-yellow text-xs">MGBK</div>
+      <h1 class="text-lg font-bold text-white">Panel Admin <span class="text-mgbk-yellow">MGBK</span></h1>
+    </div>
+    <button id="logout-btn" onclick="logout()" class="hidden bg-red-600/80 hover:bg-red-600 text-white text-xs px-4 py-2 rounded-lg font-semibold transition-all">
+      <i class="fa-solid fa-right-from-bracket mr-1"></i> Keluar
+    </button>
+  </header>
+
+  <div id="login-section" class="max-w-md w-full mx-auto p-6 my-auto">
+    <div class="bg-gradient-to-br from-purple-950/80 to-mgbk-blue/80 border border-purple-700/50 rounded-3xl p-8 shadow-2xl backdrop-blur-md">
+      <div class="text-center mb-6">
+        <div class="w-16 h-16 bg-mgbk-yellow/10 border border-mgbk-yellow text-mgbk-yellow rounded-2xl flex items-center justify-center mx-auto mb-3 text-2xl shadow-lg">
+          <i class="fa-solid fa-user-shield"></i>
+        </div>
+        <h2 class="text-xl font-bold text-white">Login Pengelola</h2>
+        <p class="text-xs text-slate-400 mt-1">Masukkan akses admin MGBK Media</p>
       </div>
 
       <form onsubmit="handleLogin(event)" class="space-y-4">
@@ -58,78 +56,169 @@
     </div>
   </div>
 
-  <!-- DASHBOARD UPLOAD (TERSEMBUNYI SBLM LOGIN) -->
-  <div id="dashboard-section" class="hidden max-w-3xl w-full mx-auto p-4 md:p-6 my-6">
-    <div class="bg-gradient-to-br from-purple-950/60 to-mgbk-blue/60 border border-purple-700/40 rounded-3xl p-6 md:p-8 shadow-2xl backdrop-blur-md">
+  <div id="dashboard-section" class="hidden max-w-5xl w-full mx-auto p-4 md:p-6 my-4 flex-grow">
+    
+    <div class="flex flex-wrap gap-2 border-b border-purple-800/60 pb-3 mb-6">
+      <button onclick="switchTab('dokumen')" id="tab-dokumen" class="tab-btn px-4 py-2 rounded-xl text-xs font-bold transition-all bg-mgbk-yellow text-mgbk-dark shadow-lg">
+        <i class="fa-solid fa-cloud-arrow-up mr-1.5"></i> Upload Dokumentasi
+      </button>
+      <button onclick="switchTab('artikel')" id="tab-artikel" class="tab-btn px-4 py-2 rounded-xl text-xs font-bold transition-all bg-purple-900/40 text-purple-200 hover:bg-purple-800/60">
+        <i class="fa-solid fa-newspaper mr-1.5"></i> Kelola Artikel & Berita
+      </button>
+      <button onclick="switchTab('pesan')" id="tab-pesan" class="tab-btn px-4 py-2 rounded-xl text-xs font-bold transition-all bg-purple-900/40 text-purple-200 hover:bg-purple-800/60">
+        <i class="fa-solid fa-envelope mr-1.5"></i> Pesan Masuk
+      </button>
+    </div>
+
+    <div id="content-dokumen" class="tab-content">
+      <div class="bg-gradient-to-br from-purple-950/60 to-mgbk-blue/60 border border-purple-700/40 rounded-3xl p-6 md:p-8 shadow-2xl backdrop-blur-md">
+        <div class="border-b border-purple-800/60 pb-4 mb-6">
+          <h2 class="text-xl font-bold text-white flex items-center gap-2">
+            <i class="fa-solid fa-cloud-arrow-up text-mgbk-yellow"></i> Form Upload Dokumentasi Bulk
+          </h2>
+          <p class="text-xs text-slate-400 mt-1">Satu kali upload foto sekaligus banyak dengan deskripsi yang sama.</p>
+        </div>
+
+        <form onsubmit="handleUpload(event)" class="space-y-5">
+          <div>
+            <label class="block text-xs font-semibold text-purple-200 mb-1">Nama Kegiatan / Album <span class="text-red-400">*</span></label>
+            <input type="text" id="upload-judul" required placeholder="Contoh: RAFTING CIKOLE, WORKSHOP BK 2026" class="w-full bg-mgbk-dark/90 border border-purple-700/60 rounded-xl px-4 py-2.5 text-xs text-white focus:outline-none focus:border-mgbk-yellow" />
+          </div>
+
+          <div>
+            <label class="block text-xs font-semibold text-purple-200 mb-1">Tanggal Kegiatan <span class="text-red-400">*</span></label>
+            <input type="date" id="upload-tanggal" required class="w-full bg-mgbk-dark/90 border border-purple-700/60 rounded-xl px-4 py-2.5 text-xs text-white focus:outline-none focus:border-mgbk-yellow" />
+          </div>
+
+          <div>
+            <label class="block text-xs font-semibold text-purple-200 mb-1">Keterangan / Deskripsi (Otomatis untuk semua foto) <span class="text-red-400">*</span></label>
+            <textarea id="upload-deskripsi" rows="3" required placeholder="Keterangan singkat kegiatan..." class="w-full bg-mgbk-dark/90 border border-purple-700/60 rounded-xl px-4 py-2.5 text-xs text-white focus:outline-none focus:border-mgbk-yellow"></textarea>
+          </div>
+
+          <div>
+            <label class="block text-xs font-semibold text-purple-200 mb-1">Link Video YouTube / Drive (Opsional)</label>
+            <input type="url" id="upload-video" placeholder="https://www.youtube.com/watch?v=..." class="w-full bg-mgbk-dark/90 border border-purple-700/60 rounded-xl px-4 py-2.5 text-xs text-white focus:outline-none focus:border-mgbk-yellow" />
+          </div>
+
+          <div>
+            <label class="block text-xs font-semibold text-purple-200 mb-1">Pilih File Foto Sekaligus (Bisa banyak sekaligus) <span class="text-red-400">*</span></label>
+            <input type="file" id="upload-files" multiple accept="image/*" required class="w-full text-xs text-slate-300 file:mr-4 file:py-2.5 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-purple-900 file:text-mgbk-yellow hover:file:bg-purple-800 cursor-pointer bg-mgbk-dark/90 border border-purple-700/60 rounded-xl p-2" />
+            <p id="file-count-info" class="text-[11px] text-mgbk-yellow mt-1 font-medium"></p>
+          </div>
+
+          <button type="submit" id="submit-upload-btn" class="w-full bg-mgbk-yellow hover:bg-yellow-400 text-mgbk-dark font-extrabold py-3 rounded-xl text-xs shadow-xl transition-all flex items-center justify-center gap-2">
+            <i class="fa-solid fa-upload"></i> Unggah Dokumentasi
+          </button>
+        </form>
+
+        <div id="status-message" class="mt-4 text-center text-xs font-semibold hidden p-3 rounded-xl"></div>
+      </div>
+    </div>
+
+    <div id="content-artikel" class="tab-content hidden space-y-6">
       
-      <div class="border-b border-purple-800/60 pb-4 mb-6">
-        <h2 class="text-xl font-bold text-white flex items-center gap-2">
-          <i class="fa-solid fa-cloud-arrow-up text-mgbk-yellow"></i> Form Upload Dokumentasi Bulk
-        </h2>
-        <p class="text-xs text-slate-400 mt-1">Satu kali upload foto sekaligus banyak dengan deskripsi yang sama.</p>
+      <div class="bg-gradient-to-br from-purple-950/60 to-mgbk-blue/60 border border-purple-700/40 rounded-3xl p-6 md:p-8 shadow-2xl backdrop-blur-md">
+        <div class="border-b border-purple-800/60 pb-4 mb-6 flex justify-between items-center">
+          <div>
+            <h2 id="form-artikel-title" class="text-xl font-bold text-white flex items-center gap-2">
+              <i class="fa-solid fa-pen-to-square text-mgbk-yellow"></i> Tambah Artikel / Berita
+            </h2>
+            <p class="text-xs text-slate-400 mt-1">Publikasikan informasi atau kabar terbaru MGBK.</p>
+          </div>
+          <button id="cancel-edit-btn" onclick="resetFormArtikel()" class="hidden text-xs bg-gray-700 hover:bg-gray-600 px-3 py-1.5 rounded-lg">Batal Edit</button>
+        </div>
+
+        <form onsubmit="handleSaveArtikel(event)" class="space-y-4">
+          <input type="hidden" id="artikel-id" value="" />
+          
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label class="block text-xs font-semibold text-purple-200 mb-1">Judul Artikel / Berita <span class="text-red-400">*</span></label>
+              <input type="text" id="artikel-judul" required placeholder="Judul berita..." class="w-full bg-mgbk-dark/90 border border-purple-700/60 rounded-xl px-4 py-2.5 text-xs text-white focus:outline-none focus:border-mgbk-yellow" />
+            </div>
+            <div>
+              <label class="block text-xs font-semibold text-purple-200 mb-1">Kategori <span class="text-red-400">*</span></label>
+              <input type="text" id="artikel-kategori" required placeholder="Misal: WORKSHOP, AGENDA, INFO" class="w-full bg-mgbk-dark/90 border border-purple-700/60 rounded-xl px-4 py-2.5 text-xs text-white focus:outline-none focus:border-mgbk-yellow" />
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label class="block text-xs font-semibold text-purple-200 mb-1">Tanggal <span class="text-red-400">*</span></label>
+              <input type="date" id="artikel-tanggal" required class="w-full bg-mgbk-dark/90 border border-purple-700/60 rounded-xl px-4 py-2.5 text-xs text-white focus:outline-none focus:border-mgbk-yellow" />
+            </div>
+            <div>
+              <label class="block text-xs font-semibold text-purple-200 mb-1">URL Banner / Gambar</label>
+              <input type="url" id="artikel-gambar" placeholder="https://..." class="w-full bg-mgbk-dark/90 border border-purple-700/60 rounded-xl px-4 py-2.5 text-xs text-white focus:outline-none focus:border-mgbk-yellow" />
+            </div>
+          </div>
+
+          <div>
+            <label class="block text-xs font-semibold text-purple-200 mb-1">Ringkasan / Isi Singkat <span class="text-red-400">*</span></label>
+            <textarea id="artikel-ringkasan" rows="3" required placeholder="Tuliskan isi ringkas artikel..." class="w-full bg-mgbk-dark/90 border border-purple-700/60 rounded-xl px-4 py-2.5 text-xs text-white focus:outline-none focus:border-mgbk-yellow"></textarea>
+          </div>
+
+          <div>
+            <label class="block text-xs font-semibold text-purple-200 mb-1">Link Baca Selengkapnya (Opsional)</label>
+            <input type="url" id="artikel-link" placeholder="https://..." class="w-full bg-mgbk-dark/90 border border-purple-700/60 rounded-xl px-4 py-2.5 text-xs text-white focus:outline-none focus:border-mgbk-yellow" />
+          </div>
+
+          <button type="submit" id="btn-save-artikel" class="w-full bg-mgbk-yellow hover:bg-yellow-400 text-mgbk-dark font-extrabold py-3 rounded-xl text-xs shadow-xl transition-all">
+            <i class="fa-solid fa-paper-plane mr-1"></i> Simpan Artikel
+          </button>
+        </form>
       </div>
 
-      <form onsubmit="handleUpload(event)" class="space-y-5">
-        
-        <!-- Nama Kegiatan / Folder -->
-        <div>
-          <label class="block text-xs font-semibold text-purple-200 mb-1">Nama Kegiatan / Album <span class="text-red-400">*</span></label>
-          <input type="text" id="upload-judul" required placeholder="Contoh: RAFTING CIKOLE, WORKSHOP BK 2026" class="w-full bg-mgbk-dark/90 border border-purple-700/60 rounded-xl px-4 py-2.5 text-xs text-white focus:outline-none focus:border-mgbk-yellow" />
+      <div class="bg-gradient-to-br from-purple-950/60 to-mgbk-blue/60 border border-purple-700/40 rounded-3xl p-6 shadow-2xl backdrop-blur-md overflow-hidden">
+        <h3 class="text-sm font-bold text-white mb-4"><i class="fa-solid fa-list text-mgbk-yellow mr-2"></i>Daftar Artikel Dikirim</h3>
+        <div class="overflow-x-auto">
+          <table class="w-full text-left text-xs text-slate-300">
+            <thead class="bg-purple-900/50 text-purple-200 uppercase text-[10px]">
+              <tr>
+                <th class="p-3">Judul</th>
+                <th class="p-3">Kategori</th>
+                <th class="p-3">Tanggal</th>
+                <th class="p-3 text-center">Aksi</th>
+              </tr>
+            </thead>
+            <tbody id="table-artikel-body" class="divide-y divide-purple-800/40">
+              <tr><td colspan="4" class="p-4 text-center text-slate-400">Memuat data artikel...</td></tr>
+            </tbody>
+          </table>
         </div>
-
-        <!-- Tanggal Kegiatan -->
-        <div>
-          <label class="block text-xs font-semibold text-purple-200 mb-1">Tanggal Kegiatan <span class="text-red-400">*</span></label>
-          <input type="date" id="upload-tanggal" required class="w-full bg-mgbk-dark/90 border border-purple-700/60 rounded-xl px-4 py-2.5 text-xs text-white focus:outline-none focus:border-mgbk-yellow" />
-        </div>
-
-        <!-- Deskripsi Otomatis -->
-        <div>
-          <label class="block text-xs font-semibold text-purple-200 mb-1">Keterangan / Deskripsi (Otomatis untuk semua foto) <span class="text-red-400">*</span></label>
-          <textarea id="upload-deskripsi" rows="3" required placeholder="Keterangan singkat kegiatan..." class="w-full bg-mgbk-dark/90 border border-purple-700/60 rounded-xl px-4 py-2.5 text-xs text-white focus:outline-none focus:border-mgbk-yellow"></textarea>
-        </div>
-
-        <!-- Link Video Optional -->
-        <div>
-          <label class="block text-xs font-semibold text-purple-200 mb-1">Link Video YouTube / Drive (Opsional)</label>
-          <input type="url" id="upload-video" placeholder="https://www.youtube.com/watch?v=..." class="w-full bg-mgbk-dark/90 border border-purple-700/60 rounded-xl px-4 py-2.5 text-xs text-white focus:outline-none focus:border-mgbk-yellow" />
-        </div>
-
-        <!-- Multiple File Upload -->
-        <div>
-          <label class="block text-xs font-semibold text-purple-200 mb-1">Pilih File Foto Sekaligus (Bisa banyak sekaligus) <span class="text-red-400">*</span></label>
-          <input type="file" id="upload-files" multiple accept="image/*,video/*" required class="w-full text-xs text-slate-300 file:mr-4 file:py-2.5 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-purple-900 file:text-mgbk-yellow hover:file:bg-purple-800 cursor-pointer bg-mgbk-dark/90 border border-purple-700/60 rounded-xl p-2" />
-          <p id="file-count-info" class="text-[11px] text-mgbk-yellow mt-1 font-medium"></p>
-        </div>
-
-        <!-- Submit Button -->
-        <button type="submit" id="submit-upload-btn" class="w-full bg-mgbk-yellow hover:bg-yellow-400 text-mgbk-dark font-extrabold py-3 rounded-xl text-xs shadow-xl transition-all flex items-center justify-center gap-2">
-          <i class="fa-solid fa-upload"></i> Unggah Dokumentasi
-        </button>
-
-      </form>
-
-      <div id="status-message" class="mt-4 text-center text-xs font-semibold hidden p-3 rounded-xl"></div>
+      </div>
 
     </div>
+
+    <div id="content-pesan" class="tab-content hidden">
+      <div class="bg-gradient-to-br from-purple-950/60 to-mgbk-blue/60 border border-purple-700/40 rounded-3xl p-6 md:p-8 shadow-2xl backdrop-blur-md">
+        <div class="border-b border-purple-800/60 pb-4 mb-6 flex justify-between items-center">
+          <div>
+            <h2 class="text-xl font-bold text-white flex items-center gap-2">
+              <i class="fa-solid fa-inbox text-mgbk-yellow"></i> Pesan Masuk / Kontak
+            </h2>
+            <p class="text-xs text-slate-400 mt-1">Daftar pertanyaan dan masukan dari pengunjung web.</p>
+          </div>
+          <button onclick="loadPesan()" class="text-xs bg-purple-800 hover:bg-purple-700 px-3 py-1.5 rounded-xl font-medium">
+            <i class="fa-solid fa-rotate mr-1"></i> Refresh
+          </button>
+        </div>
+
+        <div id="list-pesan" class="space-y-3">
+          <p class="text-xs text-center text-slate-400 py-4">Memuat pesan...</p>
+        </div>
+      </div>
+    </div>
+
   </div>
 
-  <form id="formTambahArtikel" onsubmit="submitArtikel(event)">
-    <input type="text" id="artJudul" placeholder="Judul Artikel / Berita" required />
-    <input type="date" id="artTanggal" required />
-    <input type="text" id="artKategori" placeholder="Kategori (Misal: WORKSHOP / KEGIATAN)" />
-    <textarea id="artRingkasan" placeholder="Ringkasan atau Isi Artikel" required></textarea>
-    <input type="text" id="artGambarUrl" placeholder="URL Gambar / Banner (Opsional)" />
-    <input type="text" id="artLinkBaca" placeholder="Link Baca Selengkapnya (Opsional)" />
-    <button type="submit">Upload Artikel</button>
-  </form>
-
   <footer class="py-4 text-center text-slate-500 text-[11px]">
-    MGBK Media & IT Hub Admin Panel &copy; 2026
+    MGBK Media & IT Hub Admin Panel © 2026
   </footer>
 
   <script>
     const GAS_API_URL = "https://script.google.com/macros/s/AKfycbw5FO88o7tlkHfUQdLRLyWwTDUlYRnmNBpA-EC1TvIMvzY4Xg2G24xRufnm6p3Lk26A/exec";
+    let listDataArtikel = [];
 
     // Cek Sesi Login
     if (sessionStorage.getItem('mgbk_admin_logged') === 'true') {
@@ -168,6 +257,8 @@
       document.getElementById('login-section').classList.add('hidden');
       document.getElementById('dashboard-section').classList.remove('hidden');
       document.getElementById('logout-btn').classList.remove('hidden');
+      loadArtikel();
+      loadPesan();
     }
 
     function logout() {
@@ -175,13 +266,24 @@
       location.reload();
     }
 
-    // Menampilkan jumlah file yang dipilih
+    // Switch Tab Menu
+    function switchTab(tab) {
+      document.querySelectorAll('.tab-content').forEach(c => c.classList.add('hidden'));
+      document.querySelectorAll('.tab-btn').forEach(b => {
+        b.className = "tab-btn px-4 py-2 rounded-xl text-xs font-bold transition-all bg-purple-900/40 text-purple-200 hover:bg-purple-800/60";
+      });
+
+      document.getElementById(`content-${tab}`).classList.remove('hidden');
+      const activeBtn = document.getElementById(`tab-${tab}`);
+      activeBtn.className = "tab-btn px-4 py-2 rounded-xl text-xs font-bold transition-all bg-mgbk-yellow text-mgbk-dark shadow-lg";
+    }
+
+    // --- UPLOAD DOKUMENTASI ---
     document.getElementById('upload-files').addEventListener('change', (e) => {
       const count = e.target.files.length;
-      document.getElementById('file-count-info').innerText = count > 0 ? ` Terpilih ${count} file (Foto/Video)` : '';
+      document.getElementById('file-count-info').innerText = count > 0 ? ` Terpilih ${count} file foto` : '';
     });
 
-    // Helper Convert File ke Base64
     const fileToBase64 = file => new Promise((resolve, reject) => {
       const reader = new FileReader();
       reader.readAsDataURL(file);
@@ -198,9 +300,9 @@
       if (filesInput.length === 0) return;
 
       btn.disabled = true;
-      btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Mengunggah ${filesInput.length} foto ke Drive...`;
+      btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Mengunggah ${filesInput.length} foto...`;
       status.className = "mt-4 text-center text-xs font-semibold p-3 rounded-xl bg-purple-900/60 text-purple-200 block";
-      status.innerText = "Memproses dan mengonversi file, mohon tunggu sebentar...";
+      status.innerText = "Memproses dan mengunggah, mohon tunggu...";
 
       try {
         const filePromises = Array.from(filesInput).map(file => fileToBase64(file));
@@ -215,10 +317,7 @@
           files: encodedFiles
         };
 
-        const res = await fetch(GAS_API_URL, {
-          method: 'POST',
-          body: JSON.stringify(payload)
-        });
+        const res = await fetch(GAS_API_URL, { method: 'POST', body: JSON.stringify(payload) });
         const result = await res.json();
 
         if (result.status === 'success') {
@@ -229,7 +328,6 @@
         } else {
           throw new Error(result.message);
         }
-
       } catch (err) {
         status.className = "mt-4 text-center text-xs font-semibold p-3 rounded-xl bg-red-950 border border-red-700 text-red-300 block";
         status.innerText = " Gagal mengunggah: " + err.message;
@@ -239,26 +337,143 @@
       }
     }
 
-    async function submitArtikel(e) {
+    // --- KELOLA ARTIKEL (TAMBAH, EDIT, HAPUS) ---
+    async function loadArtikel() {
+      try {
+        const res = await fetch(`${GAS_API_URL}?action=getArtikel`);
+        const data = await res.json();
+        listDataArtikel = data || [];
+        renderTableArtikel();
+      } catch (err) {
+        document.getElementById('table-artikel-body').innerHTML = `<tr><td colspan="4" class="p-4 text-center text-red-400">Gagal memuat artikel</td></tr>`;
+      }
+    }
+
+    function renderTableArtikel() {
+      const tbody = document.getElementById('table-artikel-body');
+      if (listDataArtikel.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="4" class="p-4 text-center text-slate-400">Belum ada artikel</td></tr>`;
+        return;
+      }
+      tbody.innerHTML = listDataArtikel.map((item, idx) => `
+        <tr class="hover:bg-purple-900/30">
+          <td class="p-3 font-semibold text-white">${item.judul}</td>
+          <td class="p-3"><span class="bg-purple-900/80 text-mgbk-yellow text-[10px] px-2 py-0.5 rounded-full">${item.kategori}</span></td>
+          <td class="p-3">${item.tanggal}</td>
+          <td class="p-3 text-center flex justify-center gap-2">
+            <button onclick="editArtikel(${idx})" class="bg-blue-600/80 hover:bg-blue-600 text-white p-1.5 rounded-lg text-[10px]"><i class="fa-solid fa-pen"></i> Edit</button>
+            <button onclick="deleteArtikel('${item.id}')" class="bg-red-600/80 hover:bg-red-600 text-white p-1.5 rounded-lg text-[10px]"><i class="fa-solid fa-trash"></i> Hapus</button>
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    async function handleSaveArtikel(e) {
       e.preventDefault();
-      
+      const id = document.getElementById('artikel-id').value;
+      const btn = document.getElementById('btn-save-artikel');
+      btn.disabled = true;
+      btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Menyimpan...`;
+
       const payload = {
-        action: "tambahArtikel",
-        judul: document.getElementById("artJudul").value,
-        tanggal: document.getElementById("artTanggal").value,
-        kategori: document.getElementById("artKategori").value,
-        ringkasan: document.getElementById("artRingkasan").value,
-        gambarUrl: document.getElementById("artGambarUrl").value,
-        linkBaca: document.getElementById("artLinkBaca").value
+        action: id ? 'updateArtikel' : 'addArtikel',
+        id: id,
+        judul: document.getElementById('artikel-judul').value,
+        kategori: document.getElementById('artikel-kategori').value,
+        tanggal: document.getElementById('artikel-tanggal').value,
+        gambar: document.getElementById('artikel-gambar').value,
+        ringkasan: document.getElementById('artikel-ringkasan').value,
+        link: document.getElementById('artikel-link').value
       };
-    
-      const res = await fetch(GAS_API_URL, {
-        method: "POST",
-        body: JSON.stringify(payload)
-      });
-      const result = await res.json();
-      alert(result.message);
-      if (result.status === "success") e.target.reset();
+
+      try {
+        const res = await fetch(GAS_API_URL, { method: 'POST', body: JSON.stringify(payload) });
+        const resJson = await res.json();
+        if (resJson.status === 'success') {
+          alert('Berhasil menyimpan artikel!');
+          resetFormArtikel();
+          loadArtikel();
+        } else {
+          alert(resJson.message);
+        }
+      } catch (err) {
+        alert('Gagal menyimpan artikel!');
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = `<i class="fa-solid fa-paper-plane mr-1"></i> Simpan Artikel`;
+      }
+    }
+
+    function editArtikel(idx) {
+      const item = listDataArtikel[idx];
+      document.getElementById('artikel-id').value = item.id || '';
+      document.getElementById('artikel-judul').value = item.judul || '';
+      document.getElementById('artikel-kategori').value = item.kategori || '';
+      document.getElementById('artikel-tanggal').value = item.tanggal || '';
+      document.getElementById('artikel-gambar').value = item.gambar || '';
+      document.getElementById('artikel-ringkasan').value = item.ringkasan || '';
+      document.getElementById('artikel-link').value = item.link || '';
+
+      document.getElementById('form-artikel-title').innerHTML = `<i class="fa-solid fa-pen-to-square text-mgbk-yellow"></i> Edit Artikel / Berita`;
+      document.getElementById('cancel-edit-btn').classList.remove('hidden');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function resetFormArtikel() {
+      document.getElementById('artikel-id').value = '';
+      document.getElementById('artikel-judul').value = '';
+      document.getElementById('artikel-kategori').value = '';
+      document.getElementById('artikel-tanggal').value = '';
+      document.getElementById('artikel-gambar').value = '';
+      document.getElementById('artikel-ringkasan').value = '';
+      document.getElementById('artikel-link').value = '';
+
+      document.getElementById('form-artikel-title').innerHTML = `<i class="fa-solid fa-pen-to-square text-mgbk-yellow"></i> Tambah Artikel / Berita`;
+      document.getElementById('cancel-edit-btn').classList.add('hidden');
+    }
+
+    async function deleteArtikel(id) {
+      if (!confirm("Apakah Anda yakin ingin menghapus artikel ini?")) return;
+      try {
+        const res = await fetch(GAS_API_URL, {
+          method: 'POST',
+          body: JSON.stringify({ action: 'deleteArtikel', id: id })
+        });
+        const resJson = await res.json();
+        if (resJson.status === 'success') {
+          alert('Artikel berhasil dihapus!');
+          loadArtikel();
+        }
+      } catch (err) {
+        alert('Gagal menghapus artikel');
+      }
+    }
+
+    // --- PESAN MASUK ---
+    async function loadPesan() {
+      const container = document.getElementById('list-pesan');
+      try {
+        const res = await fetch(`${GAS_API_URL}?action=getPesan`);
+        const data = await res.json();
+
+        if (!data || data.length === 0) {
+          container.innerHTML = `<p class="text-xs text-center text-slate-400 py-4">Belum ada pesan masuk.</p>`;
+          return;
+        }
+
+        container.innerHTML = data.map(p => `
+          <div class="bg-mgbk-dark/80 border border-purple-800/50 p-4 rounded-2xl space-y-1">
+            <div class="flex justify-between items-center text-xs">
+              <span class="font-bold text-mgbk-yellow">${p.nama}</span>
+              <span class="text-[10px] text-slate-400">${p.tanggal || ''}</span>
+            </div>
+            <div class="text-[11px] text-purple-300">${p.emailHp}</div>
+            <p class="text-xs text-slate-200 mt-2 bg-purple-950/40 p-2.5 rounded-xl border border-purple-900/40">${p.pesan}</p>
+          </div>
+        `).join('');
+      } catch (err) {
+        container.innerHTML = `<p class="text-xs text-center text-red-400 py-4">Gagal memuat pesan.</p>`;
+      }
     }
   </script>
 </body>
