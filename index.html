@@ -463,25 +463,59 @@
     }
 
     // FETCH GALLERY DATA
-    let rawDataDokumentasi = [];
-    let activeCategory = "SEMUA";
+    document.getElementById('profile-youtube-iframe').src = parseYouTubeEmbed(YOUTUBE_PROFIL_URL);
+
+    let rawData = [];
+    let groupedData = {};
     
     async function loadData() {
       try {
-        const res = await fetch(GAS_API_URL);
-        const result = await res.json();
+        const response = await fetch(GAS_API_URL);
+        const result = await response.json();
         
-        // Simpan data dokumentasi & artikel
-        rawDataDokumentasi = result.dokumentasi || [];
-        const artikelList = result.artikel || [];
-    
-        // Render Berita & Galeri
-        renderArtikel(artikelList);
-        renderCategoryFilters(rawDataDokumentasi);
-        filterAndRenderGallery();
+        // PERBAIKAN DI SINI:
+        // Jika backend mengirim { dokumentasi: [...], artikel: [...] }, ambil result.dokumentasi.
+        // Jika backend lama mengirim Array langsung [...], gunakan result.
+        if (Array.isArray(result)) {
+          rawData = result;
+        } else if (result.dokumentasi && Array.isArray(result.dokumentasi)) {
+          rawData = result.dokumentasi;
+          
+          // Jika ada artikel, Kakak bisa kirim ke fungsi renderArtikel (jika ada)
+          if (typeof renderArtikel === 'function' && result.artikel) {
+            renderArtikel(result.artikel);
+          }
+        } else {
+          rawData = [];
+        }
+        
+        // Kelompokkan data berdasarkan Judul Kegiatan
+        processGroupedData(rawData);
     
       } catch (err) {
-        console.error("Gagal memuat data:", err);
+        console.error("Error loading data:", err);
+      }
+    }
+    
+    // Fungsi bantu pengelompokan data
+    function processGroupedData(dataArray) {
+      groupedData = {};
+      dataArray.forEach(item => {
+        if (!groupedData[item.judul]) {
+          groupedData[item.judul] = [];
+        }
+        groupedData[item.judul].push(item);
+      });
+    
+      renderFilterButtons();
+      
+      const firstCategory = Object.keys(groupedData)[0];
+      if (firstCategory) {
+        selectCategory(firstCategory);
+      } else {
+        // Jika data kosong, hilangkan spinner loading
+        const fotoWrapper = document.querySelector('.mySwiperFoto .swiper-wrapper');
+        if (fotoWrapper) fotoWrapper.innerHTML = '<p class="text-slate-400 text-center w-full py-8">Tidak ada data ditemukan.</p>';
       }
     }
 
@@ -637,21 +671,26 @@
     }
 
     // Fungsi Pencarian (Dipanggil saat mengetik di Search Bar)
-    function filterBySearch() {
-      const keyword = document.getElementById('search-input').value.toLowerCase().trim();
-      
-      const filtered = rawDataDokumentasi.filter(item => {
-        const matchJudul = item.judul && item.judul.toLowerCase().includes(keyword);
-        const matchDeskripsi = item.deskripsi && item.deskripsi.toLowerCase().includes(keyword);
-        const matchKategori = (activeCategory === "SEMUA") || (item.judul === activeCategory);
+    // Tambahkan event listener untuk input pencarian jika ada di HTML
+    const searchInput = document.getElementById('search-input');
+    if (searchInput) {
+      searchInput.addEventListener('input', function(e) {
+        const keyword = e.target.value.toLowerCase().trim();
         
         if (keyword === "") {
-          return matchKategori;
+          processGroupedData(rawData); // Reset jika input kosong
+          return;
         }
-        return matchKategori && (matchJudul || matchDeskripsi);
-      });
     
-      renderGalleryItems(filtered);
+        // Filter array berdasarkan judul atau deskripsi
+        const filteredData = rawData.filter(item => {
+          const matchJudul = item.judul && item.judul.toLowerCase().includes(keyword);
+          const matchDeskripsi = item.deskripsi && item.deskripsi.toLowerCase().includes(keyword);
+          return matchJudul || matchDeskripsi;
+        });
+    
+        processGroupedData(filteredData);
+      });
     }
 
     // LIKE FEATURE
@@ -753,6 +792,22 @@
       } catch (err) {
         window.open(currentDownloadUrl, '_blank');
       }
+    }
+    function formatDate(dateStr) {
+      if (!dateStr) return "";
+      // Jika tanggal sudah berformat teks seperti "12 Agustus 2026", langsung tampilkan
+      if (typeof dateStr === "string" && !dateStr.includes("T") && !dateStr.includes("-")) {
+        return dateStr;
+      }
+      
+      const d = new Date(dateStr);
+      if (isNaN(d.getTime())) return dateStr;
+      
+      return d.toLocaleDateString("id-ID", {
+        day: "numeric",
+        month: "long",
+        year: "numeric"
+      });
     }
 
     // INITIALIZATION
