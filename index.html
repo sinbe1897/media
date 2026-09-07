@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="id" class="h-full">
-<body class="bg-mgbk-dark text-slate-100 min-h-screen flex flex-col justify-between font-sans">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -55,7 +54,7 @@
     }
   </style>
 </head>
-<body class="bg-mgbk-dark text-slate-100 font-sans antialiased min-h-screen pb-20 overflow-x-hidden">
+<body class="bg-mgbk-dark text-slate-100 font-sans antialiased min-h-screen flex flex-col justify-between overflow-x-hidden">
 
   <!-- HEADER DENGAN LOGO -->
   <header class="py-5 px-4 bg-gradient-to-r from-mgbk-violet via-mgbk-blue to-mgbk-dark border-b border-purple-800/50 shadow-2xl sticky top-0 z-40 backdrop-blur-md bg-opacity-95">
@@ -75,7 +74,7 @@
     </div>
   </header>
 
-  <main class="max-w-6xl mx-auto px-4 py-8 space-y-12">
+  <main class="max-w-6xl w-full mx-auto px-4 py-8 space-y-12 flex-grow">
 
     <!-- PROFIL & VIDEO YOUTUBE EMBED FIX -->
     <section class="bg-gradient-to-br from-purple-950/60 to-mgbk-blue/60 border border-purple-800/40 rounded-3xl p-5 md:p-8 shadow-2xl backdrop-blur-sm">
@@ -233,12 +232,31 @@
     </div>
   </div>
 
+  <!-- FOOTER COPYRIGHT WITH LOGO -->
+  <footer class="w-full bg-mgbk-violet/90 border-t border-purple-800/40 backdrop-blur-md py-4 px-6 mt-auto">
+    <div class="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-3">
+      
+      <!-- Brand Logo & Name -->
+      <div class="flex items-center gap-3">
+        <img src="https://lh3.googleusercontent.com/d/19kg7niFuLOmPk1HxzoDdW_NBc1KDSUXh" alt="Logo MGBK" class="w-7 h-7 rounded-full ring-2 ring-mgbk-yellow/50 bg-mgbk-blue p-0.5 object-cover" />
+        <span class="text-xs font-bold text-white tracking-wide">
+          MGBK <span class="text-mgbk-yellow">PORTAL MEDIA</span>
+        </span>
+      </div>
+
+      <!-- Copyright Text -->
+      <p class="text-[11px] text-slate-400 text-center sm:text-right">
+        &copy; 2026 MGBK Media Developed by Protect ICT 4 CMI. All Rights Reserved.
+      </p>
+
+    </div>
+  </footer>
+
   <!-- Swiper JS -->
   <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
 
   <script>
     const GAS_API_URL = "https://script.google.com/macros/s/AKfycbw5FO88o7tlkHfUQdLRLyWwTDUlYRnmNBpA-EC1TvIMvzY4Xg2G24xRufnm6p3Lk26A/exec";
-    // Tulis link YouTube biasa di sini, sistem otomatis ubah ke embed format
     const YOUTUBE_PROFIL_URL = "https://youtu.be/5K3Xt6ODsDY?si=WrzZYc4ipEL2dcpb"; 
     
     let rawData = [];
@@ -336,22 +354,18 @@
       const items = groupedData[categoryName];
       document.getElementById('current-activity-title').innerText = `${items.length} Foto`;
 
-      // 1. Hancurkan instance Swiper lama secara total
       if (swiperFotoInstance) {
         swiperFotoInstance.destroy(true, true);
         swiperFotoInstance = null;
       }
 
-      // 2. Bersihkan isi elemen wrapper HTML
       const fotoWrapper = document.querySelector('.mySwiperFoto .swiper-wrapper');
       if (fotoWrapper) {
         fotoWrapper.innerHTML = '';
       }
 
-      // Filter item yang punya gambar
       const photoItems = items.filter(i => i.gambarUrl);
 
-      // 3. Siapkan Array Slide HTML khusus untuk Virtual Swiper
       const photoSlidesHtml = photoItems.map(item => `
         <div class="bg-purple-950/40 border border-purple-800/40 rounded-2xl overflow-hidden shadow-xl flex flex-col h-full hover:border-mgbk-yellow/50 transition-colors">
           <div class="relative group bg-black cursor-pointer aspect-[4/3] overflow-hidden" onclick="openModal('${item.gambarUrl}')">
@@ -369,7 +383,6 @@
         </div>
       `);
 
-      // 4. Inisialisasi ulang Swiper dengan Render Virtual yang Benar
       swiperFotoInstance = new Swiper(".mySwiperFoto", {
         slidesPerView: 1,
         spaceBetween: 14,
@@ -395,7 +408,6 @@
         }
       });
 
-      // --- RENDER VIDEO SECTION ---
       const videoSection = document.getElementById('video-section');
       const videoContainer = document.getElementById('video-container');
       videoContainer.innerHTML = '';
@@ -498,24 +510,5 @@
 
     loadData();
   </script>
-  <!-- FOOTER COPYRIGHT WITH LOGO -->
-  <footer class="w-full bg-mgbk-violet/90 border-t border-purple-800/40 backdrop-blur-md py-4 px-6 mt-auto">
-    <div class="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-3">
-      
-      <!-- Brand Logo & Name -->
-      <div class="flex items-center gap-3">
-        <img src="https://lh3.googleusercontent.com/d/19kg7niFuLOmPk1HxzoDdW_NBc1KDSUXh" alt="Logo MGBK" class="w-7 h-7 rounded-full ring-2 ring-mgbk-yellow/50 bg-mgbk-blue p-0.5 object-cover" />
-        <span class="text-xs font-bold text-white tracking-wide">
-          MGBK <span class="text-mgbk-yellow">PORTAL MEDIA</span>
-        </span>
-      </div>
-
-      <!-- Copyright Text -->
-      <p class="text-[11px] text-slate-400 text-center sm:text-right">
-        &copy; 2026 MGBK Media Developed by Protect ICT 4 CMI. All Rights Reserved.
-      </p>
-
-    </div>
-  </footer>
 </body>
 </html>
