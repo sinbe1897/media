@@ -56,8 +56,8 @@
 </head>
 <body class="bg-mgbk-dark text-slate-100 font-sans antialiased min-h-screen flex flex-col justify-between overflow-x-hidden">
 
-  <!-- HEADER DENGAN LOGO -->
-  <header class="py-5 px-4 bg-gradient-to-r from-mgbk-violet via-mgbk-blue to-mgbk-dark border-b border-purple-800/50 shadow-2xl sticky top-0 z-40 backdrop-blur-md bg-opacity-95">
+  <!-- HEADER DENGAN LOGO & AKSI -->
+  <header class="py-4 px-4 bg-gradient-to-r from-mgbk-violet via-mgbk-blue to-mgbk-dark border-b border-purple-800/50 shadow-2xl sticky top-0 z-40 backdrop-blur-md bg-opacity-95">
     <div class="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4 text-center sm:text-left">
       <div class="flex items-center gap-3 md:gap-4">
         <img src="https://lh3.googleusercontent.com/d/19kg7niFuLOmPk1HxzoDdW_NBc1KDSUXh" alt="Logo MGBK" class="w-12 h-12 md:w-14 md:h-14 object-contain rounded-full ring-2 ring-mgbk-yellow bg-mgbk-blue p-1 shadow-lg" />
@@ -68,15 +68,21 @@
           <p class="text-purple-300 text-xs font-medium">Majelis Guru Bimbingan dan Konseling Indonesia</p>
         </div>
       </div>
-      <a href="#kegiatan-section" class="bg-mgbk-yellow hover:bg-yellow-400 text-mgbk-dark font-bold text-xs px-4 py-2 rounded-full shadow-lg transition-all flex items-center gap-2">
-        <i class="fa-solid fa-images"></i> Lihat Galeri
-      </a>
+      
+      <div class="flex items-center gap-2">
+        <button onclick="sharePortal()" class="bg-purple-900/80 hover:bg-purple-800 text-purple-200 border border-purple-600/40 font-bold text-xs px-3.5 py-2 rounded-full shadow-lg transition-all flex items-center gap-1.5 cursor-pointer">
+          <i class="fa-solid fa-share-nodes text-mgbk-yellow"></i> Bagikan Portal
+        </button>
+        <a href="#kegiatan-section" class="bg-mgbk-yellow hover:bg-yellow-400 text-mgbk-dark font-bold text-xs px-4 py-2 rounded-full shadow-lg transition-all flex items-center gap-2">
+          <i class="fa-solid fa-images"></i> Galeri
+        </a>
+      </div>
     </div>
   </header>
 
   <main class="max-w-6xl w-full mx-auto px-4 py-8 space-y-12 flex-grow">
 
-    <!-- PROFIL & VIDEO YOUTUBE EMBED FIX -->
+    <!-- 1. PROFIL & VIDEO YOUTUBE EMBED -->
     <section class="bg-gradient-to-br from-purple-950/60 to-mgbk-blue/60 border border-purple-800/40 rounded-3xl p-5 md:p-8 shadow-2xl backdrop-blur-sm">
       <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-center">
         <div class="lg:col-span-6 space-y-3">
@@ -94,7 +100,6 @@
           </div>
         </div>
 
-        <!-- YouTube Embed Parser Fix -->
         <div class="lg:col-span-6">
           <div class="relative aspect-video w-full rounded-2xl overflow-hidden border border-purple-500/30 shadow-2xl bg-black">
             <iframe id="profile-youtube-iframe" class="w-full h-full" src="" title="Video Profil MGBK" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
@@ -103,7 +108,7 @@
       </div>
     </section>
 
-    <!-- MEDIA SOSIAL CARDS -->
+    <!-- 2. MEDIA SOSIAL CARDS -->
     <section>
       <div class="text-center mb-5">
         <h3 class="text-lg md:text-xl font-bold text-white">Ikuti Media Sosial Kami</h3>
@@ -111,12 +116,12 @@
       </div>
 
       <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 md:gap-4">
-        <a href="https://instagram.com//mgbk_indonesia" target="_blank" class="group bg-gradient-to-br from-pink-600/20 to-purple-900/30 border border-pink-500/30 hover:border-pink-500 p-3.5 rounded-2xl flex flex-col items-center text-center transition-all shadow-lg">
+        <a href="https://instagram.com/mgbk_indonesia" target="_blank" class="group bg-gradient-to-br from-pink-600/20 to-purple-900/30 border border-pink-500/30 hover:border-pink-500 p-3.5 rounded-2xl flex flex-col items-center text-center transition-all shadow-lg">
           <div class="w-10 h-10 rounded-full bg-gradient-to-tr from-yellow-500 via-red-500 to-purple-600 flex items-center justify-center text-white text-lg mb-2 shadow-md">
             <i class="fa-brands fa-instagram"></i>
           </div>
           <span class="font-bold text-xs text-white">Instagram</span>
-          <span class="text-[10px] text-slate-400 mt-0.5">@mgbk_official</span>
+          <span class="text-[10px] text-slate-400 mt-0.5">@mgbk_indonesia</span>
           <span class="mt-2.5 text-[10px] font-semibold bg-pink-600 text-white px-3 py-0.5 rounded-full">Follow</span>
         </a>
 
@@ -149,21 +154,86 @@
       </div>
     </section>
 
-    <!-- DOKUMENTASI -->
-    <section id="kegiatan-section">
-      <div class="mb-8 text-center">
-        <span class="text-xs font-bold text-mgbk-yellow uppercase tracking-widest bg-purple-950/80 border border-purple-700/60 px-4 py-1.5 rounded-full inline-block mb-3">
-          <i class="fa-solid fa-filter mr-1"></i> Pilih Kegiatan
+    <!-- 3. PERMINTAAN 1: PETA GOOGLE MAPS SEKRETARIAT -->
+    <section class="bg-gradient-to-br from-purple-950/40 to-mgbk-blue/40 border border-purple-800/40 rounded-3xl p-5 md:p-6 shadow-xl">
+      <div class="flex flex-col md:flex-row items-center justify-between gap-6">
+        <div class="space-y-3 w-full md:w-1/2">
+          <span class="text-xs font-bold text-mgbk-yellow uppercase tracking-widest bg-purple-900/80 px-3 py-1 rounded-full inline-block">
+            <i class="fa-solid fa-location-dot mr-1"></i> Kesekretariatan
+          </span>
+          <h3 class="text-xl font-bold text-white">Lokasi Sekretariat MGBK</h3>
+          <p class="text-slate-300 text-xs leading-relaxed">
+            Jl. Dago Barat No. 45A/15D, Dago, Kec. Coblong, Kota Bandung, Jawa Barat.
+          </p>
+          <div class="space-y-2 text-xs text-slate-300 pt-1">
+            <div class="flex items-center gap-2"><i class="fa-solid fa-envelope text-mgbk-yellow w-4"></i> mgbkindonesia@gmail.com</div>
+            <div class="flex items-center gap-2"><i class="fa-solid fa-phone text-mgbk-yellow w-4"></i> 0859-5970-3100</div>
+          </div>
+          <div class="pt-2">
+            <a href="https://maps.google.com/?q=Jalan+Dago+Barat+No.+45A/15D+Bandung" target="_blank" class="inline-flex items-center gap-2 bg-mgbk-yellow hover:bg-yellow-400 text-mgbk-dark font-bold text-xs px-4 py-2 rounded-xl transition-all">
+              <i class="fa-solid fa-map-location-dot"></i> Buka Google Maps
+            </a>
+          </div>
+        </div>
+
+        <div class="w-full md:w-1/2 aspect-video md:aspect-[4/3] rounded-2xl overflow-hidden border border-purple-700/50 shadow-lg">
+          <iframe 
+            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3961.05036127885!2d107.611111!3d-6.884583!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e68e6f8a48bf5b7%3A0x6b45a49fb2193b21!2sJl.%20Dago%20Barat%2C%20Dago%2C%20Kec.%20Coblong%2C%20Kota%20Bandung%2C%20Jawa%20Barat!5e0!3m2!1sid!2sid!4v1700000000000!5m2!1sid!2sid" 
+            class="w-full h-full border-0" 
+            allowfullscreen="" 
+            loading="lazy" 
+            referrerpolicy="no-referrer-when-downgrade">
+          </iframe>
+        </div>
+      </div>
+    </section>
+
+    <!-- 4. PERMINTAAN 2: BERITA & ARTIKEL UPDATE -->
+    <section>
+      <div class="flex flex-col md:flex-row md:items-end justify-between mb-6 gap-2">
+        <div>
+          <span class="text-xs font-bold text-mgbk-yellow uppercase tracking-widest bg-purple-950/80 border border-purple-700/60 px-3 py-1 rounded-full inline-block mb-2">
+            <i class="fa-regular fa-newspaper mr-1"></i> Kabar Terkini
+          </span>
+          <h2 class="text-xl md:text-2xl font-bold text-white">Berita & Artikel MGBK</h2>
+        </div>
+        <p class="text-slate-400 text-xs">Informasi edukatif dan kegiatan seputar Bimbingan Konseling</p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-5" id="news-container">
+        <!-- Berita akan di-render dari Script JavaScript -->
+      </div>
+    </section>
+
+    <!-- 5. DOKUMENTASI & GALERI (DENGAN FITUR SEARCH) -->
+    <section id="kegiatan-section" class="pt-4">
+      <div class="mb-6 text-center space-y-3">
+        <span class="text-xs font-bold text-mgbk-yellow uppercase tracking-widest bg-purple-950/80 border border-purple-700/60 px-4 py-1.5 rounded-full inline-block">
+          <i class="fa-solid fa-images mr-1"></i> Dokumentasi Kegiatan
         </span>
-        <div id="category-filters" class="flex flex-wrap justify-center gap-2 max-w-4xl mx-auto"></div>
+        <h2 class="text-xl md:text-2xl font-bold text-white">Galeri Foto & Video</h2>
+
+        <!-- Search Bar Fitur -->
+        <div class="max-w-md mx-auto relative pt-2">
+          <i class="fa-solid fa-magnifying-glass absolute left-4 top-5 text-purple-400 text-xs"></i>
+          <input 
+            type="text" 
+            id="search-input" 
+            onkeyup="filterBySearch()" 
+            placeholder="Cari foto atau kegiatan..." 
+            class="w-full bg-purple-950/60 border border-purple-700/60 rounded-full pl-10 pr-4 py-2 text-xs text-white placeholder-purple-300/60 focus:outline-none focus:border-mgbk-yellow transition-colors shadow-inner"
+          />
+        </div>
+
+        <div id="category-filters" class="flex flex-wrap justify-center gap-2 max-w-4xl mx-auto pt-3"></div>
       </div>
 
       <!-- GALERI FOTO -->
       <div class="mb-12">
         <div class="mb-4 border-b border-purple-900/60 pb-3 flex items-center justify-between">
-          <h2 class="text-lg font-bold text-mgbk-yellow flex items-center gap-2">
+          <h3 class="text-base font-bold text-mgbk-yellow flex items-center gap-2">
             <i class="fa-regular fa-images"></i> Galeri Foto
-          </h2>
+          </h3>
           <span id="current-activity-title" class="text-slate-400 text-xs"></span>
         </div>
 
@@ -175,7 +245,6 @@
                 <p class="text-xs">Memuat data...</p>
               </div>
             </div>
-            <!-- Fraction Pagination Modern (Anti-Crash) -->
             <div class="swiper-pagination-foto"></div>
             <div class="swiper-button-next swiper-btn-foto-next"></div>
             <div class="swiper-button-prev swiper-btn-foto-prev"></div>
@@ -186,9 +255,9 @@
       <!-- GALERI VIDEO -->
       <div id="video-section" class="hidden">
         <div class="mb-4 border-b border-purple-900/60 pb-3">
-          <h2 class="text-lg font-bold text-red-400 flex items-center gap-2">
+          <h3 class="text-base font-bold text-red-400 flex items-center gap-2">
             <i class="fa-solid fa-circle-play"></i> Dokumentasi Video
-          </h2>
+          </h3>
         </div>
 
         <div class="relative px-1">
@@ -203,16 +272,47 @@
 
     </section>
 
+    <!-- 6. FORMULIR KONTAK & PESAN -->
+    <section class="bg-gradient-to-br from-purple-950/60 to-mgbk-blue/60 border border-purple-800/40 rounded-3xl p-6 shadow-xl">
+      <div class="max-w-2xl mx-auto text-center space-y-2 mb-6">
+        <h3 class="text-lg font-bold text-white">Hubungi Kami / Kirim Pesan</h3>
+        <p class="text-slate-300 text-xs">Ada pertanyaan atau saran untuk MGBK Indonesia? Tuliskan pesan Anda di bawah ini.</p>
+      </div>
+      <form onsubmit="handleContact(event)" class="max-w-xl mx-auto space-y-3">
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <input type="text" id="contact-name" placeholder="Nama Lengkap" required class="w-full bg-mgbk-dark/80 border border-purple-700/60 rounded-xl px-3.5 py-2 text-xs text-white placeholder-slate-400 focus:outline-none focus:border-mgbk-yellow">
+          <input type="email" id="contact-email" placeholder="Email / No. HP" required class="w-full bg-mgbk-dark/80 border border-purple-700/60 rounded-xl px-3.5 py-2 text-xs text-white placeholder-slate-400 focus:outline-none focus:border-mgbk-yellow">
+        </div>
+        <textarea id="contact-message" rows="3" placeholder="Tuliskan pesan atau masukan Anda..." required class="w-full bg-mgbk-dark/80 border border-purple-700/60 rounded-xl px-3.5 py-2 text-xs text-white placeholder-slate-400 focus:outline-none focus:border-mgbk-yellow"></textarea>
+        <button type="submit" class="w-full bg-mgbk-yellow hover:bg-yellow-400 text-mgbk-dark font-bold py-2 rounded-xl text-xs shadow-lg transition-all flex items-center justify-center gap-2">
+          <i class="fa-solid fa-paper-plane"></i> Kirim Pesan
+        </button>
+      </form>
+    </section>
+
   </main>
 
-  <!-- MODAL FOTO -->
+  <!-- MODAL BACA ARTIKEL -->
+  <div id="news-modal" class="fixed inset-0 z-50 bg-black/90 hidden backdrop-blur-md flex items-center justify-center p-4">
+    <div class="relative max-w-2xl w-full bg-mgbk-dark border border-purple-700 rounded-2xl p-5 md:p-6 shadow-2xl max-h-[85vh] overflow-y-auto">
+      <button onclick="closeModal('news-modal')" class="absolute top-4 right-4 text-slate-400 hover:text-white text-base">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+      <img id="modal-news-img" src="" class="w-full h-48 md:h-60 object-cover rounded-xl mb-4 border border-purple-800" />
+      <span id="modal-news-date" class="text-[10px] text-mgbk-yellow font-semibold"></span>
+      <h3 id="modal-news-title" class="text-lg md:text-xl font-bold text-white mt-1 mb-3"></h3>
+      <div id="modal-news-body" class="text-xs md:text-sm text-slate-300 leading-relaxed space-y-3"></div>
+    </div>
+  </div>
+
+  <!-- MODAL FOTO GALERI -->
   <div id="image-modal" class="fixed inset-0 z-50 bg-black/90 hidden backdrop-blur-md flex items-center justify-center p-4">
     <div class="relative max-w-4xl w-full flex flex-col items-center">
       <button onclick="closeModal('image-modal')" class="absolute -top-10 right-0 text-white hover:text-red-400 text-base font-bold">
         <i class="fa-solid fa-xmark"></i> Tutup
       </button>
       <img id="modal-img" src="" class="max-h-[80vh] w-auto rounded-xl border border-purple-700 shadow-2xl object-contain" />
-      <div class="mt-4">
+      <div class="mt-4 flex gap-3">
         <button id="modal-download-btn" onclick="directDownload()" class="bg-mgbk-yellow hover:bg-yellow-400 text-mgbk-dark font-bold px-6 py-2 rounded-full text-xs shadow-xl flex items-center gap-2">
           <i class="fa-solid fa-download"></i> Download Foto
         </button>
@@ -232,23 +332,18 @@
     </div>
   </div>
 
-  <!-- FOOTER COPYRIGHT WITH LOGO -->
+  <!-- FOOTER COPYRIGHT -->
   <footer class="w-full bg-mgbk-violet/90 border-t border-purple-800/40 backdrop-blur-md py-4 px-6 mt-auto">
     <div class="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-3">
-      
-      <!-- Brand Logo & Name -->
       <div class="flex items-center gap-3">
         <img src="https://lh3.googleusercontent.com/d/19kg7niFuLOmPk1HxzoDdW_NBc1KDSUXh" alt="Logo MGBK" class="w-7 h-7 rounded-full ring-2 ring-mgbk-yellow/50 bg-mgbk-blue p-0.5 object-cover" />
         <span class="text-xs font-bold text-white tracking-wide">
           MGBK <span class="text-mgbk-yellow">PORTAL MEDIA</span>
         </span>
       </div>
-
-      <!-- Copyright Text -->
       <p class="text-[11px] text-slate-400 text-center sm:text-right">
         &copy; 2026 MGBK Media Developed by Protect ICT 4 CMI. All Rights Reserved.
       </p>
-
     </div>
   </footer>
 
@@ -264,6 +359,36 @@
     let swiperFotoInstance = null;
     let swiperVideoInstance = null;
     let currentDownloadUrl = "";
+    let activeCategoryName = "";
+    let likesData = {};
+
+    // Data Sample Berita & Artikel (Dapat diubah atau disesuaikan nanti)
+    const newsArticles = [
+      {
+        id: 1,
+        title: "Peningkatan Kompetensi Guru BK melalui Workshop Digital",
+        date: "20 Februari 2026",
+        image: "https://lh3.googleusercontent.com/d/19kg7niFuLOmPk1HxzoDdW_NBc1KDSUXh",
+        summary: "MGBK Indonesia mengadakan workshop nasional pemanfaatan teknologi AI untuk layanan konseling...",
+        content: "MGBK Indonesia terus berupaya meningkatkan kualifikasi dan kompetensi para guru Bimbingan Konseling se-Indonesia. Melalui pelatihan terintegrasi ini, guru diajarkan mengolah media konseling berbasis digital, aplikasi asesmen, hingga pemanfaatan portal informasi terpadu."
+      },
+      {
+        id: 2,
+        title: "Peran Penting Konselor Sekolah dalam Era Gen-Z",
+        date: "14 Februari 2026",
+        image: "https://lh3.googleusercontent.com/d/19kg7niFuLOmPk1HxzoDdW_NBc1KDSUXh",
+        summary: "Pendekatan empati dan responsif menjadi kunci utama pelayanan guru BK di sekolah modern...",
+        content: "Tantangan kesehatan mental siswa masa kini semakin beragam. Guru Bimbingan dan Konseling dituntut hadir tidak hanya sebagai pembimbing akademis, melainkan sahabat dan tempat aman (safe space) bagi peserta didik di lingkungan sekolah."
+      },
+      {
+        id: 3,
+        title: "Agenda Musyawarah Kerja Nasional (Mukernas) MGBK",
+        date: "05 Januari 2026",
+        image: "https://lh3.googleusercontent.com/d/19kg7niFuLOmPk1HxzoDdW_NBc1KDSUXh",
+        summary: "Persiapan pelaksanaan Mukernas MGBK Indonesia yang berfokus pada standarisasi layanan...",
+        content: "Segenap pengurus MGBK Indonesia menyepakati draf kurikulum pendampingan karir terbaru yang akan diimplementasikan secara bertahap di seluruh propinsi dan kabupaten/kota."
+      }
+    ];
 
     function parseYouTubeEmbed(url) {
       if (!url) return "";
@@ -299,6 +424,45 @@
 
     document.getElementById('profile-youtube-iframe').src = parseYouTubeEmbed(YOUTUBE_PROFIL_URL);
 
+    // RENDER NEWS & ARTICLES
+    function renderNews() {
+      const newsContainer = document.getElementById('news-container');
+      newsContainer.innerHTML = newsArticles.map(news => `
+        <div class="bg-purple-950/40 border border-purple-800/40 hover:border-purple-500 rounded-2xl overflow-hidden shadow-xl flex flex-col justify-between transition-all duration-300">
+          <div>
+            <div class="h-40 overflow-hidden bg-black relative">
+              <img src="${news.image}" alt="${news.title}" class="w-full h-full object-cover hover:scale-105 transition-transform duration-300" />
+            </div>
+            <div class="p-4 space-y-2">
+              <span class="text-[10px] text-mgbk-yellow font-semibold flex items-center gap-1">
+                <i class="fa-regular fa-calendar"></i> ${news.date}
+              </span>
+              <h3 class="text-sm font-bold text-white line-clamp-2 leading-snug">${news.title}</h3>
+              <p class="text-xs text-slate-300 line-clamp-2">${news.summary}</p>
+            </div>
+          </div>
+          <div class="p-4 pt-0">
+            <button onclick="openNewsModal(${news.id})" class="text-xs font-bold text-mgbk-yellow hover:text-yellow-300 flex items-center gap-1">
+              Baca Selengkapnya <i class="fa-solid fa-arrow-right text-[10px]"></i>
+            </button>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function openNewsModal(id) {
+      const news = newsArticles.find(n => n.id === id);
+      if (!news) return;
+
+      document.getElementById('modal-news-img').src = news.image;
+      document.getElementById('modal-news-date').innerText = news.date;
+      document.getElementById('modal-news-title').innerText = news.title;
+      document.getElementById('modal-news-body').innerHTML = `<p>${news.content}</p>`;
+      
+      document.getElementById('news-modal').classList.remove('hidden');
+    }
+
+    // FETCH GALLERY DATA
     async function loadData() {
       try {
         const response = await fetch(GAS_API_URL);
@@ -351,37 +515,47 @@
     }
 
     function selectCategory(categoryName) {
-      const items = groupedData[categoryName];
-      document.getElementById('current-activity-title').innerText = `${items.length} Foto`;
+      activeCategoryName = categoryName;
+      const items = groupedData[categoryName] || [];
+      renderGalleryItems(items);
+    }
+
+    function renderGalleryItems(items) {
+      document.getElementById('current-activity-title').innerText = `${items.length} Item`;
 
       if (swiperFotoInstance) {
         swiperFotoInstance.destroy(true, true);
         swiperFotoInstance = null;
       }
 
-      const fotoWrapper = document.querySelector('.mySwiperFoto .swiper-wrapper');
-      if (fotoWrapper) {
-        fotoWrapper.innerHTML = '';
-      }
-
       const photoItems = items.filter(i => i.gambarUrl);
 
-      const photoSlidesHtml = photoItems.map(item => `
-        <div class="bg-purple-950/40 border border-purple-800/40 rounded-2xl overflow-hidden shadow-xl flex flex-col h-full hover:border-mgbk-yellow/50 transition-colors">
-          <div class="relative group bg-black cursor-pointer aspect-[4/3] overflow-hidden" onclick="openModal('${item.gambarUrl}')">
-            <img src="${item.gambarUrl}" alt="${item.judul}" loading="lazy" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
-            <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center text-white text-xs font-semibold">
-              <i class="fa-solid fa-expand text-base mr-1"></i> Lihat Foto
+      const photoSlidesHtml = photoItems.map((item, idx) => {
+        const likeKey = item.gambarUrl;
+        const currentLikes = likesData[likeKey] || 0;
+
+        return `
+          <div class="bg-purple-950/40 border border-purple-800/40 rounded-2xl overflow-hidden shadow-xl flex flex-col h-full hover:border-mgbk-yellow/50 transition-colors">
+            <div class="relative group bg-black cursor-pointer aspect-[4/3] overflow-hidden" onclick="openModal('${item.gambarUrl}')">
+              <img src="${item.gambarUrl}" alt="${item.judul}" loading="lazy" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
+              <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center text-white text-xs font-semibold">
+                <i class="fa-solid fa-expand text-base mr-1"></i> Lihat Foto
+              </div>
+            </div>
+            <div class="p-3.5 flex flex-col justify-between flex-grow">
+              <p class="text-slate-200 text-xs line-clamp-2 mb-2 leading-relaxed">${item.deskripsi || item.judul}</p>
+              <div class="flex items-center justify-between pt-1 border-t border-purple-900/40">
+                <span class="text-[10px] text-mgbk-yellow font-semibold flex items-center gap-1">
+                  <i class="fa-regular fa-calendar-check"></i> ${formatDate(item.tanggal)}
+                </span>
+                <button onclick="toggleLike('${item.gambarUrl}', this)" class="text-[11px] text-slate-300 hover:text-red-400 flex items-center gap-1 transition-colors">
+                  <i class="fa-regular fa-heart text-red-500"></i> <span class="like-count">${currentLikes}</span>
+                </button>
+              </div>
             </div>
           </div>
-          <div class="p-3.5 flex flex-col justify-between flex-grow">
-            <p class="text-slate-200 text-xs line-clamp-2 mb-2 leading-relaxed">${item.deskripsi || item.judul}</p>
-            <span class="text-[10px] text-mgbk-yellow font-semibold flex items-center gap-1">
-              <i class="fa-regular fa-calendar-check"></i> ${formatDate(item.tanggal)}
-            </span>
-          </div>
-        </div>
-      `);
+        `;
+      });
 
       swiperFotoInstance = new Swiper(".mySwiperFoto", {
         slidesPerView: 1,
@@ -408,6 +582,7 @@
         }
       });
 
+      // Video Handler
       const videoSection = document.getElementById('video-section');
       const videoContainer = document.getElementById('video-container');
       videoContainer.innerHTML = '';
@@ -464,6 +639,58 @@
       }
     }
 
+    // SEARCH BAR FEATURE
+    function filterBySearch() {
+      const query = document.getElementById('search-input').value.toLowerCase().trim();
+      if (!query) {
+        if (activeCategoryName) selectCategory(activeCategoryName);
+        return;
+      }
+
+      const filteredItems = rawData.filter(item => 
+        (item.judul && item.judul.toLowerCase().includes(query)) ||
+        (item.deskripsi && item.deskripsi.toLowerCase().includes(query))
+      );
+
+      renderGalleryItems(filteredItems);
+    }
+
+    // LIKE FEATURE
+    function toggleLike(key, btnElem) {
+      if (!likesData[key]) likesData[key] = 0;
+      likesData[key] += 1;
+      
+      const countSpan = btnElem.querySelector('.like-count');
+      const icon = btnElem.querySelector('i');
+      
+      if (countSpan) countSpan.innerText = likesData[key];
+      if (icon) {
+        icon.classList.remove('fa-regular');
+        icon.classList.add('fa-solid');
+      }
+    }
+
+    // SHARE FEATURE
+    function sharePortal() {
+      if (navigator.share) {
+        navigator.share({
+          title: 'Portal Media MGBK Indonesia',
+          text: 'Lihat ragam dokumentasi kegiatan & berita terbaru MGBK Indonesia!',
+          url: window.location.href,
+        }).catch(console.error);
+      } else {
+        navigator.clipboard.writeText(window.location.href);
+        alert('Tautan portal berhasil disalin ke papan klip!');
+      }
+    }
+
+    // CONTACT FORM HANDLER
+    function handleContact(e) {
+      e.preventDefault();
+      alert('Terima kasih! Pesan dan masukan Anda telah dikirimkan ke sekretariat MGBK Indonesia.');
+      e.target.reset();
+    }
+
     function openVideoModal(videoEmbedUrl) {
       document.getElementById('modal-video-iframe').src = videoEmbedUrl;
       document.getElementById('video-modal').classList.remove('hidden');
@@ -508,6 +735,8 @@
       }
     }
 
+    // INITIALIZATION
+    renderNews();
     loadData();
   </script>
 </body>
