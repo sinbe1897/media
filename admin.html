@@ -98,7 +98,7 @@
         <!-- Multiple File Upload -->
         <div>
           <label class="block text-xs font-semibold text-purple-200 mb-1">Pilih File Foto Sekaligus (Bisa banyak sekaligus) <span class="text-red-400">*</span></label>
-          <input type="file" id="upload-files" multiple accept="image/*" required class="w-full text-xs text-slate-300 file:mr-4 file:py-2.5 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-purple-900 file:text-mgbk-yellow hover:file:bg-purple-800 cursor-pointer bg-mgbk-dark/90 border border-purple-700/60 rounded-xl p-2" />
+          <input type="file" id="upload-files" multiple accept="image/*,video/*" required class="w-full text-xs text-slate-300 file:mr-4 file:py-2.5 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-purple-900 file:text-mgbk-yellow hover:file:bg-purple-800 cursor-pointer bg-mgbk-dark/90 border border-purple-700/60 rounded-xl p-2" />
           <p id="file-count-info" class="text-[11px] text-mgbk-yellow mt-1 font-medium"></p>
         </div>
 
@@ -168,7 +168,7 @@
     // Menampilkan jumlah file yang dipilih
     document.getElementById('upload-files').addEventListener('change', (e) => {
       const count = e.target.files.length;
-      document.getElementById('file-count-info').innerText = count > 0 ? ` Terpilih ${count} file foto` : '';
+      document.getElementById('file-count-info').innerText = count > 0 ? ` Terpilih ${count} file (Foto/Video)` : '';
     });
 
     // Helper Convert File ke Base64
