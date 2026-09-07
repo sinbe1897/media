@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Portal Media MGBK Indonesia</title>
   
-  <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
     tailwind.config = {
@@ -26,9 +25,7 @@
     }
   </script>
 
-  <!-- Swiper.js CSS -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
-  <!-- FontAwesome Icon -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
 
   <style>
@@ -56,7 +53,6 @@
 </head>
 <body class="bg-mgbk-dark text-slate-100 font-sans antialiased min-h-screen flex flex-col justify-between overflow-x-hidden">
 
-  <!-- HEADER DENGAN LOGO & AKSI -->
   <header class="py-4 px-4 bg-gradient-to-r from-mgbk-violet via-mgbk-blue to-mgbk-dark border-b border-purple-800/50 shadow-2xl sticky top-0 z-40 backdrop-blur-md bg-opacity-95">
     <div class="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4 text-center sm:text-left">
       <div class="flex items-center gap-3 md:gap-4">
@@ -82,7 +78,6 @@
 
   <main class="max-w-6xl w-full mx-auto px-4 py-8 space-y-12 flex-grow">
 
-    <!-- 1. PROFIL & VIDEO YOUTUBE EMBED -->
     <section class="bg-gradient-to-br from-purple-950/60 to-mgbk-blue/60 border border-purple-800/40 rounded-3xl p-5 md:p-8 shadow-2xl backdrop-blur-sm">
       <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-center">
         <div class="lg:col-span-6 space-y-3">
@@ -108,7 +103,6 @@
       </div>
     </section>
 
-    <!-- 2. MEDIA SOSIAL CARDS -->
     <section>
       <div class="text-center mb-5">
         <h3 class="text-lg md:text-xl font-bold text-white">Ikuti Media Sosial Kami</h3>
@@ -154,7 +148,6 @@
       </div>
     </section>
 
-    <!-- 3. PERMINTAAN 1: PETA GOOGLE MAPS SEKRETARIAT -->
     <section class="bg-gradient-to-br from-purple-950/40 to-mgbk-blue/40 border border-purple-800/40 rounded-3xl p-5 md:p-6 shadow-xl">
       <div class="flex flex-col md:flex-row items-center justify-between gap-6">
         <div class="space-y-3 w-full md:w-1/2">
@@ -170,7 +163,7 @@
             <div class="flex items-center gap-2"><i class="fa-solid fa-phone text-mgbk-yellow w-4"></i> 0859-5970-3100</div>
           </div>
           <div class="pt-2">
-            <a href="https://maps.google.com/?q=Jalan+Dago+Barat+No.+45A/15D+Bandung" target="_blank" class="inline-flex items-center gap-2 bg-mgbk-yellow hover:bg-yellow-400 text-mgbk-dark font-bold text-xs px-4 py-2 rounded-xl transition-all">
+            <a href="https://maps.google.com" target="_blank" class="inline-flex items-center gap-2 bg-mgbk-yellow hover:bg-yellow-400 text-mgbk-dark font-bold text-xs px-4 py-2 rounded-xl transition-all">
               <i class="fa-solid fa-map-location-dot"></i> Buka Google Maps
             </a>
           </div>
@@ -178,17 +171,15 @@
 
         <div class="w-full md:w-1/2 aspect-video md:aspect-[4/3] rounded-2xl overflow-hidden border border-purple-700/50 shadow-lg">
           <iframe 
-            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3961.05036127885!2d107.611111!3d-6.884583!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e68e6f8a48bf5b7%3A0x6b45a49fb2193b21!2sJl.%20Dago%20Barat%2C%20Dago%2C%20Kec.%20Coblong%2C%20Kota%20Bandung%2C%20Jawa%20Barat!5e0!3m2!1sid!2sid!4v1700000000000!5m2!1sid!2sid" 
+            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3961.026725841443!2d107.6131!3d-6.887!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zNsKwNTMnMTMuMiJTIDEwN8KwMzYnNDcuMiJF!5e0!3m2!1sid!2sid!4v1620000000000" 
             class="w-full h-full border-0" 
             allowfullscreen="" 
-            loading="lazy" 
-            referrerpolicy="no-referrer-when-downgrade">
+            loading="lazy">
           </iframe>
         </div>
       </div>
     </section>
 
-    <!-- 4. PERMINTAAN 2: BERITA & ARTIKEL UPDATE -->
     <section>
       <div class="flex flex-col md:flex-row md:items-end justify-between mb-6 gap-2">
         <div>
@@ -201,11 +192,9 @@
       </div>
 
       <div class="grid grid-cols-1 md:grid-cols-3 gap-5" id="news-container">
-        <!-- Berita akan di-render dari Script JavaScript -->
-      </div>
+        </div>
     </section>
 
-    <!-- 5. DOKUMENTASI & GALERI (DENGAN FITUR SEARCH) -->
     <section id="kegiatan-section" class="pt-4">
       <div class="mb-6 text-center space-y-3">
         <span class="text-xs font-bold text-mgbk-yellow uppercase tracking-widest bg-purple-950/80 border border-purple-700/60 px-4 py-1.5 rounded-full inline-block">
@@ -213,13 +202,12 @@
         </span>
         <h2 class="text-xl md:text-2xl font-bold text-white">Galeri Foto & Video</h2>
 
-        <!-- Search Bar Fitur -->
         <div class="max-w-md mx-auto relative pt-2">
           <i class="fa-solid fa-magnifying-glass absolute left-4 top-5 text-purple-400 text-xs"></i>
           <input 
             type="text" 
             id="search-input" 
-            onkeyup="filterBySearch()" 
+            oninput="filterBySearch()" 
             placeholder="Cari foto atau kegiatan..." 
             class="w-full bg-purple-950/60 border border-purple-700/60 rounded-full pl-10 pr-4 py-2 text-xs text-white placeholder-purple-300/60 focus:outline-none focus:border-mgbk-yellow transition-colors shadow-inner"
           />
@@ -228,7 +216,6 @@
         <div id="category-filters" class="flex flex-wrap justify-center gap-2 max-w-4xl mx-auto pt-3"></div>
       </div>
 
-      <!-- GALERI FOTO -->
       <div class="mb-12">
         <div class="mb-4 border-b border-purple-900/60 pb-3 flex items-center justify-between">
           <h3 class="text-base font-bold text-mgbk-yellow flex items-center gap-2">
@@ -252,7 +239,6 @@
         </div>
       </div>
 
-      <!-- GALERI VIDEO -->
       <div id="video-section" class="hidden">
         <div class="mb-4 border-b border-purple-900/60 pb-3">
           <h3 class="text-base font-bold text-red-400 flex items-center gap-2">
@@ -272,7 +258,6 @@
 
     </section>
 
-    <!-- 6. FORMULIR KONTAK & PESAN -->
     <section class="bg-gradient-to-br from-purple-950/60 to-mgbk-blue/60 border border-purple-800/40 rounded-3xl p-6 shadow-xl">
       <div class="max-w-2xl mx-auto text-center space-y-2 mb-6">
         <h3 class="text-lg font-bold text-white">Hubungi Kami / Kirim Pesan</h3>
@@ -284,7 +269,7 @@
           <input type="email" id="contact-email" placeholder="Email / No. HP" required class="w-full bg-mgbk-dark/80 border border-purple-700/60 rounded-xl px-3.5 py-2 text-xs text-white placeholder-slate-400 focus:outline-none focus:border-mgbk-yellow">
         </div>
         <textarea id="contact-message" rows="3" placeholder="Tuliskan pesan atau masukan Anda..." required class="w-full bg-mgbk-dark/80 border border-purple-700/60 rounded-xl px-3.5 py-2 text-xs text-white placeholder-slate-400 focus:outline-none focus:border-mgbk-yellow"></textarea>
-        <button type="submit" class="w-full bg-mgbk-yellow hover:bg-yellow-400 text-mgbk-dark font-bold py-2 rounded-xl text-xs shadow-lg transition-all flex items-center justify-center gap-2">
+        <button type="submit" id="btn-submit-contact" class="w-full bg-mgbk-yellow hover:bg-yellow-400 text-mgbk-dark font-bold py-2 rounded-xl text-xs shadow-lg transition-all flex items-center justify-center gap-2">
           <i class="fa-solid fa-paper-plane"></i> Kirim Pesan
         </button>
       </form>
@@ -292,7 +277,6 @@
 
   </main>
 
-  <!-- MODAL BACA ARTIKEL -->
   <div id="news-modal" class="fixed inset-0 z-50 bg-black/90 hidden backdrop-blur-md flex items-center justify-center p-4">
     <div class="relative max-w-2xl w-full bg-mgbk-dark border border-purple-700 rounded-2xl p-5 md:p-6 shadow-2xl max-h-[85vh] overflow-y-auto">
       <button onclick="closeModal('news-modal')" class="absolute top-4 right-4 text-slate-400 hover:text-white text-base">
@@ -305,7 +289,6 @@
     </div>
   </div>
 
-  <!-- MODAL FOTO GALERI -->
   <div id="image-modal" class="fixed inset-0 z-50 bg-black/90 hidden backdrop-blur-md flex items-center justify-center p-4">
     <div class="relative max-w-4xl w-full flex flex-col items-center">
       <button onclick="closeModal('image-modal')" class="absolute -top-10 right-0 text-white hover:text-red-400 text-base font-bold">
@@ -320,7 +303,6 @@
     </div>
   </div>
 
-  <!-- MODAL VIDEO PLAYER -->
   <div id="video-modal" class="fixed inset-0 z-50 bg-black/95 hidden backdrop-blur-md flex items-center justify-center p-4">
     <div class="relative max-w-3xl w-full flex flex-col items-center">
       <button onclick="closeVideoModal()" class="absolute -top-10 right-0 text-white hover:text-red-400 text-base font-bold">
@@ -332,7 +314,6 @@
     </div>
   </div>
 
-  <!-- FOOTER COPYRIGHT -->
   <footer class="w-full bg-mgbk-violet/90 border-t border-purple-800/40 backdrop-blur-md py-4 px-6 mt-auto">
     <div class="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-3">
       <div class="flex items-center gap-3">
@@ -342,12 +323,11 @@
         </span>
       </div>
       <p class="text-[11px] text-slate-400 text-center sm:text-right">
-        &copy; 2026 MGBK Media Developed by Protect ICT 4 CMI. All Rights Reserved.
+        © 2026 MGBK Media Developed by Protect ICT 4 CMI. All Rights Reserved.
       </p>
     </div>
   </footer>
 
-  <!-- Swiper JS -->
   <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
 
   <script>
@@ -359,10 +339,8 @@
     let swiperFotoInstance = null;
     let swiperVideoInstance = null;
     let currentDownloadUrl = "";
-    let activeCategoryName = "";
     let likesData = {};
 
-    // Data Sample Berita & Artikel (Dapat diubah atau disesuaikan nanti)
     const newsArticles = [
       {
         id: 1,
@@ -378,7 +356,7 @@
         date: "14 Februari 2026",
         image: "https://lh3.googleusercontent.com/d/19kg7niFuLOmPk1HxzoDdW_NBc1KDSUXh",
         summary: "Pendekatan empati dan responsif menjadi kunci utama pelayanan guru BK di sekolah modern...",
-        content: "Tantangan kesehatan mental siswa masa kini semakin beragam. Guru Bimbingan dan Konseling dituntut hadir tidak hanya sebagai pembimbing akademis, melainkan sahabat dan tempat aman (safe space) bagi peserta didik di lingkungan sekolah."
+        content: "Tantangan kesehatan mental siswa masa kini semakin beragam. Guru Bimbingan dan Konseling dituntut hadir tidak hanya sebagai pembimbing akademis, melainkan sahabat dan tempat aman bagi peserta didik di lingkungan sekolah."
       },
       {
         id: 3,
@@ -418,13 +396,16 @@
           return `https://drive.google.com/file/d/${match[1]}/preview`;
         }
       }
-
       return cleanUrl;
     }
 
-    document.getElementById('profile-youtube-iframe').src = parseYouTubeEmbed(YOUTUBE_PROFIL_URL);
+    // LOAD INITIAL DATA
+    window.addEventListener('DOMContentLoaded', () => {
+      document.getElementById('profile-youtube-iframe').src = parseYouTubeEmbed(YOUTUBE_PROFIL_URL);
+      renderNews();
+      loadData();
+    });
 
-    // RENDER NEWS & ARTICLES
     function renderNews() {
       const newsContainer = document.getElementById('news-container');
       newsContainer.innerHTML = newsArticles.map(news => `
@@ -458,46 +439,29 @@
       document.getElementById('modal-news-date').innerText = news.date;
       document.getElementById('modal-news-title').innerText = news.title;
       document.getElementById('modal-news-body').innerHTML = `<p>${news.content}</p>`;
-      
       document.getElementById('news-modal').classList.remove('hidden');
     }
 
-    // FETCH GALLERY DATA
-    document.getElementById('profile-youtube-iframe').src = parseYouTubeEmbed(YOUTUBE_PROFIL_URL);
-
-    let rawData = [];
-    let groupedData = {};
-    
     async function loadData() {
       try {
         const response = await fetch(GAS_API_URL);
         const result = await response.json();
         
-        // PERBAIKAN DI SINI:
-        // Jika backend mengirim { dokumentasi: [...], artikel: [...] }, ambil result.dokumentasi.
-        // Jika backend lama mengirim Array langsung [...], gunakan result.
         if (Array.isArray(result)) {
           rawData = result;
         } else if (result.dokumentasi && Array.isArray(result.dokumentasi)) {
           rawData = result.dokumentasi;
-          
-          // Jika ada artikel, Kakak bisa kirim ke fungsi renderArtikel (jika ada)
-          if (typeof renderArtikel === 'function' && result.artikel) {
-            renderArtikel(result.artikel);
-          }
         } else {
           rawData = [];
         }
         
-        // Kelompokkan data berdasarkan Judul Kegiatan
         processGroupedData(rawData);
-    
+
       } catch (err) {
         console.error("Error loading data:", err);
       }
     }
-    
-    // Fungsi bantu pengelompokan data
+
     function processGroupedData(dataArray) {
       groupedData = {};
       dataArray.forEach(item => {
@@ -506,16 +470,15 @@
         }
         groupedData[item.judul].push(item);
       });
-    
+
       renderFilterButtons();
       
       const firstCategory = Object.keys(groupedData)[0];
       if (firstCategory) {
         selectCategory(firstCategory);
       } else {
-        // Jika data kosong, hilangkan spinner loading
-        const fotoWrapper = document.querySelector('.mySwiperFoto .swiper-wrapper');
-        if (fotoWrapper) fotoWrapper.innerHTML = '<p class="text-slate-400 text-center w-full py-8">Tidak ada data ditemukan.</p>';
+        const photoContainer = document.getElementById('photo-container');
+        if (photoContainer) photoContainer.innerHTML = '<p class="text-slate-400 text-center w-full py-8 text-xs">Belum ada foto kegiatan.</p>';
       }
     }
 
@@ -546,7 +509,6 @@
     }
 
     function selectCategory(categoryName) {
-      activeCategoryName = categoryName;
       const items = groupedData[categoryName] || [];
       renderGalleryItems(items);
     }
@@ -559,61 +521,58 @@
         swiperFotoInstance = null;
       }
 
+      const photoContainer = document.getElementById('photo-container');
       const photoItems = items.filter(i => i.gambarUrl);
 
-      const photoSlidesHtml = photoItems.map((item, idx) => {
-        const likeKey = item.gambarUrl;
-        const currentLikes = likesData[likeKey] || 0;
-
-        return `
-          <div class="bg-purple-950/40 border border-purple-800/40 rounded-2xl overflow-hidden shadow-xl flex flex-col h-full hover:border-mgbk-yellow/50 transition-colors">
-            <div class="relative group bg-black cursor-pointer aspect-[4/3] overflow-hidden" onclick="openModal('${item.gambarUrl}')">
-              <img src="${item.gambarUrl}" alt="${item.judul}" loading="lazy" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
-              <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center text-white text-xs font-semibold">
-                <i class="fa-solid fa-expand text-base mr-1"></i> Lihat Foto
+      if (photoItems.length === 0) {
+        photoContainer.innerHTML = '<p class="text-slate-400 text-center w-full py-8 text-xs">Tidak ada foto di kategori ini.</p>';
+      } else {
+        photoContainer.innerHTML = photoItems.map(item => {
+          const currentLikes = likesData[item.gambarUrl] || 0;
+          return `
+            <div class="swiper-slide h-auto">
+              <div class="bg-purple-950/40 border border-purple-800/40 rounded-2xl overflow-hidden shadow-xl flex flex-col h-full hover:border-mgbk-yellow/50 transition-colors">
+                <div class="relative group bg-black cursor-pointer aspect-[4/3] overflow-hidden" onclick="openModal('${item.gambarUrl}')">
+                  <img src="${item.gambarUrl}" alt="${item.judul}" loading="lazy" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
+                  <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center text-white text-xs font-semibold">
+                    <i class="fa-solid fa-expand text-base mr-1"></i> Lihat Foto
+                  </div>
+                </div>
+                <div class="p-3.5 flex flex-col justify-between flex-grow">
+                  <p class="text-slate-200 text-xs line-clamp-2 mb-2 leading-relaxed">${item.deskripsi || item.judul}</p>
+                  <div class="flex items-center justify-between pt-1 border-t border-purple-900/40">
+                    <span class="text-[10px] text-mgbk-yellow font-semibold flex items-center gap-1">
+                      <i class="fa-regular fa-calendar-check"></i> ${formatDate(item.tanggal)}
+                    </span>
+                    <button onclick="toggleLike('${item.gambarUrl}', this)" class="text-[11px] text-slate-300 hover:text-red-400 flex items-center gap-1 transition-colors">
+                      <i class="fa-regular fa-heart text-red-500"></i> <span class="like-count">${currentLikes}</span>
+                    </button>
+                  </div>
+                </div>
               </div>
             </div>
-            <div class="p-3.5 flex flex-col justify-between flex-grow">
-              <p class="text-slate-200 text-xs line-clamp-2 mb-2 leading-relaxed">${item.deskripsi || item.judul}</p>
-              <div class="flex items-center justify-between pt-1 border-t border-purple-900/40">
-                <span class="text-[10px] text-mgbk-yellow font-semibold flex items-center gap-1">
-                  <i class="fa-regular fa-calendar-check"></i> ${formatDate(item.tanggal)}
-                </span>
-                <button onclick="toggleLike('${item.gambarUrl}', this)" class="text-[11px] text-slate-300 hover:text-red-400 flex items-center gap-1 transition-colors">
-                  <i class="fa-regular fa-heart text-red-500"></i> <span class="like-count">${currentLikes}</span>
-                </button>
-              </div>
-            </div>
-          </div>
-        `;
-      });
+          `;
+        }).join('');
 
-      swiperFotoInstance = new Swiper(".mySwiperFoto", {
-        slidesPerView: 1,
-        spaceBetween: 14,
-        virtual: {
-          slides: photoSlidesHtml,
-          renderSlide: function (slide, index) {
-            return `<div class="swiper-slide h-auto">${slide}</div>`;
+        swiperFotoInstance = new Swiper(".mySwiperFoto", {
+          slidesPerView: 1,
+          spaceBetween: 14,
+          breakpoints: {
+            640: { slidesPerView: 2, spaceBetween: 18 },
+            1024: { slidesPerView: 3, spaceBetween: 20 }
           },
-          addSlidesAfter: 2,
-          addSlidesBefore: 2
-        },
-        breakpoints: {
-          640: { slidesPerView: 2, spaceBetween: 18 },
-          1024: { slidesPerView: 3, spaceBetween: 20 }
-        },
-        pagination: { 
-          el: ".swiper-pagination-foto", 
-          type: "fraction" 
-        },
-        navigation: {
-          nextEl: ".swiper-btn-foto-next",
-          prevEl: ".swiper-btn-foto-prev"
-        }
-      });
+          pagination: { 
+            el: ".swiper-pagination-foto", 
+            type: "fraction" 
+          },
+          navigation: {
+            nextEl: ".swiper-btn-foto-next",
+            prevEl: ".swiper-btn-foto-prev"
+          }
+        });
+      }
 
-      // Video Handler
+      // VIDEO SECTION
       const videoSection = document.getElementById('video-section');
       const videoContainer = document.getElementById('video-container');
       videoContainer.innerHTML = '';
@@ -628,13 +587,13 @@
       if (videoItems.length > 0) {
         videoSection.classList.remove('hidden');
         
-        videoItems.forEach(item => {
+        videoContainer.innerHTML = videoItems.map(item => {
           const embedVideo = getEmbedUrl(item.videoUrl);
-          const videoSlideHtml = `
+          return `
             <div class="swiper-slide h-auto">
               <div class="bg-purple-950/40 border border-purple-800/40 rounded-2xl overflow-hidden shadow-xl p-3 flex flex-col h-full hover:border-red-500/50 transition-colors">
                 <div class="relative aspect-video w-full rounded-xl overflow-hidden bg-black cursor-pointer group mb-3" onclick="openVideoModal('${embedVideo}')">
-                  <img src="${item.gambarUrl}" loading="lazy" class="w-full h-full object-cover opacity-60 group-hover:scale-105 transition-transform duration-300" />
+                  <img src="${item.gambarUrl || 'https://via.placeholder.com/600x400'}" loading="lazy" class="w-full h-full object-cover opacity-60 group-hover:scale-105 transition-transform duration-300" />
                   <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent flex items-center justify-center">
                     <div class="w-12 h-12 rounded-full bg-red-600 text-white flex items-center justify-center group-hover:scale-110 transition-all shadow-xl">
                       <i class="fa-solid fa-play ml-1"></i>
@@ -645,8 +604,7 @@
               </div>
             </div>
           `;
-          videoContainer.insertAdjacentHTML('beforeend', videoSlideHtml);
-        });
+        }).join('');
 
         swiperVideoInstance = new Swiper(".mySwiperVideo", {
           slidesPerView: 1,
@@ -670,84 +628,33 @@
       }
     }
 
-    // Fungsi Pencarian (Dipanggil saat mengetik di Search Bar)
-    // Tambahkan event listener untuk input pencarian jika ada di HTML
-    const searchInput = document.getElementById('search-input');
-    if (searchInput) {
-      searchInput.addEventListener('input', function(e) {
-        const keyword = e.target.value.toLowerCase().trim();
-        
-        if (keyword === "") {
-          processGroupedData(rawData); // Reset jika input kosong
-          return;
-        }
-    
-        // Filter array berdasarkan judul atau deskripsi
-        const filteredData = rawData.filter(item => {
-          const matchJudul = item.judul && item.judul.toLowerCase().includes(keyword);
-          const matchDeskripsi = item.deskripsi && item.deskripsi.toLowerCase().includes(keyword);
-          return matchJudul || matchDeskripsi;
-        });
-    
-        processGroupedData(filteredData);
-      });
-    }
-
-    // LIKE FEATURE
-    function toggleLike(key, btnElem) {
-      if (!likesData[key]) likesData[key] = 0;
-      likesData[key] += 1;
-      
-      const countSpan = btnElem.querySelector('.like-count');
-      const icon = btnElem.querySelector('i');
-      
-      if (countSpan) countSpan.innerText = likesData[key];
+    function toggleLike(url, btn) {
+      if (!likesData[url]) likesData[url] = 0;
+      likesData[url]++;
+      const countSpan = btn.querySelector('.like-count');
+      if (countSpan) countSpan.innerText = likesData[url];
+      const icon = btn.querySelector('i');
       if (icon) {
         icon.classList.remove('fa-regular');
         icon.classList.add('fa-solid');
       }
     }
 
-    // SHARE FEATURE
-    function sharePortal() {
-      if (navigator.share) {
-        navigator.share({
-          title: 'Portal Media MGBK Indonesia',
-          text: 'Lihat ragam dokumentasi kegiatan & berita terbaru MGBK Indonesia!',
-          url: window.location.href,
-        }).catch(console.error);
-      } else {
-        navigator.clipboard.writeText(window.location.href);
-        alert('Tautan portal berhasil disalin ke papan klip!');
-      }
-    }
-
-    // CONTACT FORM HANDLER
-    async function handleContact(e) {
-      e.preventDefault();
+    function filterBySearch() {
+      const keyword = document.getElementById('search-input').value.toLowerCase().trim();
       
-      const nama = document.getElementById("contact-name").value;
-      const kontak = document.getElementById("contact-email").value;
-      const pesan = document.getElementById("contact-message").value;
-    
-      const payload = {
-        action: "kirimPesan",
-        nama: nama,
-        kontak: kontak,
-        pesan: pesan
-      };
-    
-      try {
-        const res = await fetch(GAS_API_URL, {
-          method: "POST",
-          body: JSON.stringify(payload)
-        });
-        const result = await res.json();
-        alert(result.message);
-        e.target.reset();
-      } catch (err) {
-        alert("Gagal mengirim pesan, coba lagi nanti.");
+      if (keyword === "") {
+        processGroupedData(rawData);
+        return;
       }
+
+      const filtered = rawData.filter(item => {
+        const matchJudul = item.judul && item.judul.toLowerCase().includes(keyword);
+        const matchDeskripsi = item.deskripsi && item.deskripsi.toLowerCase().includes(keyword);
+        return matchJudul || matchDeskripsi;
+      });
+
+      processGroupedData(filtered);
     }
 
     function openVideoModal(videoEmbedUrl) {
@@ -774,7 +681,7 @@
       if (!currentDownloadUrl) return;
       try {
         const btn = document.getElementById('modal-download-btn');
-        btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Unduh...`;
+        btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Mengunduh...`;
         
         const response = await fetch(currentDownloadUrl);
         const blob = await response.blob();
@@ -793,26 +700,45 @@
         window.open(currentDownloadUrl, '_blank');
       }
     }
-    function formatDate(dateStr) {
-      if (!dateStr) return "";
-      // Jika tanggal sudah berformat teks seperti "12 Agustus 2026", langsung tampilkan
-      if (typeof dateStr === "string" && !dateStr.includes("T") && !dateStr.includes("-")) {
-        return dateStr;
+
+    async function handleContact(e) {
+      e.preventDefault();
+      const btn = document.getElementById('btn-submit-contact');
+      btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Mengirim...`;
+      
+      const payload = {
+        action: "kirimPesan",
+        nama: document.getElementById('contact-name').value,
+        kontak: document.getElementById('contact-email').value,
+        pesan: document.getElementById('contact-message').value
+      };
+
+      try {
+        const res = await fetch(GAS_API_URL, {
+          method: "POST",
+          body: JSON.stringify(payload)
+        });
+        const result = await res.json();
+        alert(result.message || "Pesan berhasil dikirim!");
+        e.target.reset();
+      } catch (err) {
+        alert("Terjadi kesalahan saat mengirim pesan.");
+      } finally {
+        btn.innerHTML = `<i class="fa-solid fa-paper-plane"></i> Kirim Pesan`;
       }
-      
-      const d = new Date(dateStr);
-      if (isNaN(d.getTime())) return dateStr;
-      
-      return d.toLocaleDateString("id-ID", {
-        day: "numeric",
-        month: "long",
-        year: "numeric"
-      });
     }
 
-    // INITIALIZATION
-    renderNews();
-    loadData();
+    function sharePortal() {
+      if (navigator.share) {
+        navigator.share({
+          title: 'Portal Media MGBK Indonesia',
+          url: window.location.href
+        });
+      } else {
+        navigator.clipboard.writeText(window.location.href);
+        alert('Link portal berhasil disalin ke clipboard!');
+      }
+    }
   </script>
 </body>
 </html>
