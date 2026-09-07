@@ -1,480 +1,332 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Admin Dashboard - MGBK Media</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Dashboard - MGBK</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
-  <script>
-    tailwind.config = {
-      theme: {
-        extend: {
-          colors: {
-            mgbk: { purple: '#6b21a8', violet: '#3b0764', dark: '#0f0716', blue: '#1e1b4b', yellow: '#eab308' }
-          }
-        }
-      }
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+  <style>
+    body {
+      background-color: #0d0614;
+      color: #e2e8f0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     }
-  </script>
+    .card-glass {
+      background: rgba(25, 12, 38, 0.75);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(139, 92, 246, 0.15);
+      box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+    }
+    .custom-input {
+      background: rgba(15, 7, 24, 0.8);
+      border: 1px solid rgba(139, 92, 246, 0.3);
+      color: #f8fafc;
+      transition: all 0.3s ease;
+    }
+    .custom-input:focus {
+      border-color: #f59e0b;
+      outline: none;
+      box-shadow: 0 0 10px rgba(245, 158, 11, 0.3);
+    }
+    /* Toast Notification Animation */
+    #toast {
+      transition: transform 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55), opacity 0.4s ease;
+    }
+  </style>
 </head>
-<body class="bg-mgbk-dark text-slate-100 min-h-screen font-sans flex flex-col justify-between">
+<body class="min-h-screen pb-12">
 
-  <header class="py-4 px-6 bg-mgbk-violet/80 border-b border-purple-800/50 flex justify-between items-center backdrop-blur-md sticky top-0 z-50">
-    <div class="flex items-center gap-3">
-      <div class="w-10 h-10 rounded-full ring-2 ring-mgbk-yellow bg-mgbk-blue p-0.5 flex items-center justify-center font-bold text-mgbk-yellow text-xs">MGBK</div>
-      <h1 class="text-lg font-bold text-white">Panel Admin <span class="text-mgbk-yellow">MGBK</span></h1>
+  <div id="toast" class="fixed top-5 right-5 z-50 transform translate-x-full opacity-0 flex items-center gap-3 px-5 py-4 rounded-xl shadow-2xl card-glass border-l-4">
+    <i id="toast-icon" class="fas text-xl"></i>
+    <div>
+      <h4 id="toast-title" class="font-bold text-sm">Notifikasi</h4>
+      <p id="toast-msg" class="text-xs text-gray-300"></p>
     </div>
-    <button id="logout-btn" onclick="logout()" class="hidden bg-red-600/80 hover:bg-red-600 text-white text-xs px-4 py-2 rounded-lg font-semibold transition-all">
-      <i class="fa-solid fa-right-from-bracket mr-1"></i> Keluar
-    </button>
+  </div>
+
+  <header class="card-glass border-b border-purple-900/30 sticky top-0 z-40 px-6 py-4 flex justify-between items-center">
+    <div class="flex items-center gap-3">
+      <div class="bg-amber-500 p-2 rounded-lg text-black font-bold">
+        <i class="fas fa-user-shield"></i>
+      </div>
+      <h1 class="text-xl font-bold tracking-wide text-white">Panel Admin <span class="text-amber-500">MGBK</span></h1>
+    </div>
   </header>
 
-  <div id="login-section" class="max-w-md w-full mx-auto p-6 my-auto">
-    <div class="bg-gradient-to-br from-purple-950/80 to-mgbk-blue/80 border border-purple-700/50 rounded-3xl p-8 shadow-2xl backdrop-blur-md">
-      <div class="text-center mb-6">
-        <div class="w-16 h-16 bg-mgbk-yellow/10 border border-mgbk-yellow text-mgbk-yellow rounded-2xl flex items-center justify-center mx-auto mb-3 text-2xl shadow-lg">
-          <i class="fa-solid fa-user-shield"></i>
+  <main class="max-w-5xl mx-auto px-4 mt-8 space-y-8">
+
+    <section class="card-glass rounded-2xl p-6 relative overflow-hidden">
+      <div class="flex items-center justify-between mb-6 pb-3 border-b border-purple-900/40">
+        <div class="flex items-center gap-3">
+          <i class="fas fa-newspaper text-amber-500 text-2xl"></i>
+          <div>
+            <h2 id="form-title" class="text-lg font-bold text-white">Kelola Artikel / Berita</h2>
+            <p class="text-xs text-gray-400">Publikasikan informasi atau kabar terbaru MGBK.</p>
+          </div>
         </div>
-        <h2 class="text-xl font-bold text-white">Login Pengelola</h2>
-        <p class="text-xs text-slate-400 mt-1">Masukkan akses admin MGBK Media</p>
+        <button id="btn-cancel-edit" onclick="resetFormArtikel()" class="hidden text-xs bg-gray-700 hover:bg-gray-600 text-white px-3 py-1.5 rounded-lg transition">
+          <i class="fas fa-times mr-1"></i> Batal Edit
+        </button>
       </div>
 
-      <form onsubmit="handleLogin(event)" class="space-y-4">
-        <div>
-          <label class="block text-xs text-slate-300 font-semibold mb-1">Username</label>
-          <input type="text" id="login-user" required class="w-full bg-mgbk-dark/80 border border-purple-800 rounded-xl px-4 py-2.5 text-xs text-white focus:outline-none focus:border-mgbk-yellow transition-colors" placeholder="Masukkan username..." />
+      <form id="form-artikel" onsubmit="submitArtikel(event)" class="space-y-4">
+        <input type="hidden" id="artikel-id" value="">
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <label class="block text-xs text-gray-300 font-semibold mb-1">Judul Artikel / Berita *</label>
+            <input type="text" id="art-judul" required placeholder="Judul berita..." class="w-full custom-input px-4 py-2.5 rounded-xl text-sm">
+          </div>
+          <div>
+            <label class="block text-xs text-gray-300 font-semibold mb-1">Kategori *</label>
+            <input type="text" id="art-kategori" required placeholder="Misal: WORKSHOP, AGENDA, INFO" class="w-full custom-input px-4 py-2.5 rounded-xl text-sm">
+          </div>
         </div>
-        <div>
-          <label class="block text-xs text-slate-300 font-semibold mb-1">Password</label>
-          <input type="password" id="login-pass" required class="w-full bg-mgbk-dark/80 border border-purple-800 rounded-xl px-4 py-2.5 text-xs text-white focus:outline-none focus:border-mgbk-yellow transition-colors" placeholder="Masukkan password..." />
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <label class="block text-xs text-gray-300 font-semibold mb-1">Tanggal *</label>
+            <input type="date" id="art-tanggal" required class="w-full custom-input px-4 py-2.5 rounded-xl text-sm">
+          </div>
+          <div>
+            <label class="block text-xs text-gray-300 font-semibold mb-1">Upload Banner / Gambar Artikel *</label>
+            <input type="file" id="art-gambar-file" accept="image/*" class="w-full custom-input px-3 py-1.5 rounded-xl text-xs file:mr-3 file:py-1 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-amber-500 file:text-black hover:file:bg-amber-400">
+            <p class="text-[10px] text-gray-400 mt-1">*Pilih berkas foto langsung dari perangkat Anda.</p>
+          </div>
         </div>
-        <button type="submit" id="login-btn" class="w-full bg-mgbk-yellow hover:bg-yellow-400 text-mgbk-dark font-extrabold py-3 rounded-xl text-xs shadow-lg transition-all flex items-center justify-center gap-2">
-          <span>Masuk Admin</span>
+
+        <div>
+          <label class="block text-xs text-gray-300 font-semibold mb-1">Ringkasan / Isi Singkat *</label>
+          <textarea id="art-ringkasan" rows="3" required placeholder="Tuliskan isi ringkas artikel..." class="w-full custom-input px-4 py-2.5 rounded-xl text-sm"></textarea>
+        </div>
+
+        <div>
+          <label class="block text-xs text-gray-300 font-semibold mb-1">Link Baca Selengkapnya (Opsional)</label>
+          <input type="url" id="art-link" placeholder="https://..." class="w-full custom-input px-4 py-2.5 rounded-xl text-sm">
+        </div>
+
+        <button type="submit" id="btn-submit-artikel" class="w-full bg-amber-500 hover:bg-amber-400 text-black font-bold py-3 rounded-xl transition duration-300 flex justify-center items-center gap-2 shadow-lg shadow-amber-500/20">
+          <i class="fas fa-paper-plane"></i>
+          <span id="btn-text">Simpan Artikel</span>
         </button>
       </form>
-    </div>
-  </div>
+    </section>
 
-  <div id="dashboard-section" class="hidden max-w-5xl w-full mx-auto p-4 md:p-6 my-4 flex-grow">
-    
-    <div class="flex flex-wrap gap-2 border-b border-purple-800/60 pb-3 mb-6">
-      <button onclick="switchTab('dokumen')" id="tab-dokumen" class="tab-btn px-4 py-2 rounded-xl text-xs font-bold transition-all bg-mgbk-yellow text-mgbk-dark shadow-lg">
-        <i class="fa-solid fa-cloud-arrow-up mr-1.5"></i> Upload Dokumentasi
-      </button>
-      <button onclick="switchTab('artikel')" id="tab-artikel" class="tab-btn px-4 py-2 rounded-xl text-xs font-bold transition-all bg-purple-900/40 text-purple-200 hover:bg-purple-800/60">
-        <i class="fa-solid fa-newspaper mr-1.5"></i> Kelola Artikel & Berita
-      </button>
-      <button onclick="switchTab('pesan')" id="tab-pesan" class="tab-btn px-4 py-2 rounded-xl text-xs font-bold transition-all bg-purple-900/40 text-purple-200 hover:bg-purple-800/60">
-        <i class="fa-solid fa-envelope mr-1.5"></i> Pesan Masuk
-      </button>
-    </div>
-
-    <div id="content-dokumen" class="tab-content">
-      <div class="bg-gradient-to-br from-purple-950/60 to-mgbk-blue/60 border border-purple-700/40 rounded-3xl p-6 md:p-8 shadow-2xl backdrop-blur-md">
-        <div class="border-b border-purple-800/60 pb-4 mb-6">
-          <h2 class="text-xl font-bold text-white flex items-center gap-2">
-            <i class="fa-solid fa-cloud-arrow-up text-mgbk-yellow"></i> Form Upload Dokumentasi Bulk
-          </h2>
-          <p class="text-xs text-slate-400 mt-1">Satu kali upload foto sekaligus banyak dengan deskripsi yang sama.</p>
-        </div>
-
-        <form onsubmit="handleUpload(event)" class="space-y-5">
-          <div>
-            <label class="block text-xs font-semibold text-purple-200 mb-1">Nama Kegiatan / Album <span class="text-red-400">*</span></label>
-            <input type="text" id="upload-judul" required placeholder="Contoh: RAFTING CIKOLE, WORKSHOP BK 2026" class="w-full bg-mgbk-dark/90 border border-purple-700/60 rounded-xl px-4 py-2.5 text-xs text-white focus:outline-none focus:border-mgbk-yellow" />
-          </div>
-
-          <div>
-            <label class="block text-xs font-semibold text-purple-200 mb-1">Tanggal Kegiatan <span class="text-red-400">*</span></label>
-            <input type="date" id="upload-tanggal" required class="w-full bg-mgbk-dark/90 border border-purple-700/60 rounded-xl px-4 py-2.5 text-xs text-white focus:outline-none focus:border-mgbk-yellow" />
-          </div>
-
-          <div>
-            <label class="block text-xs font-semibold text-purple-200 mb-1">Keterangan / Deskripsi (Otomatis untuk semua foto) <span class="text-red-400">*</span></label>
-            <textarea id="upload-deskripsi" rows="3" required placeholder="Keterangan singkat kegiatan..." class="w-full bg-mgbk-dark/90 border border-purple-700/60 rounded-xl px-4 py-2.5 text-xs text-white focus:outline-none focus:border-mgbk-yellow"></textarea>
-          </div>
-
-          <div>
-            <label class="block text-xs font-semibold text-purple-200 mb-1">Link Video YouTube / Drive (Opsional)</label>
-            <input type="url" id="upload-video" placeholder="https://www.youtube.com/watch?v=..." class="w-full bg-mgbk-dark/90 border border-purple-700/60 rounded-xl px-4 py-2.5 text-xs text-white focus:outline-none focus:border-mgbk-yellow" />
-          </div>
-
-          <div>
-            <label class="block text-xs font-semibold text-purple-200 mb-1">Pilih File Foto Sekaligus (Bisa banyak sekaligus) <span class="text-red-400">*</span></label>
-            <input type="file" id="upload-files" multiple accept="image/*" required class="w-full text-xs text-slate-300 file:mr-4 file:py-2.5 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-purple-900 file:text-mgbk-yellow hover:file:bg-purple-800 cursor-pointer bg-mgbk-dark/90 border border-purple-700/60 rounded-xl p-2" />
-            <p id="file-count-info" class="text-[11px] text-mgbk-yellow mt-1 font-medium"></p>
-          </div>
-
-          <button type="submit" id="submit-upload-btn" class="w-full bg-mgbk-yellow hover:bg-yellow-400 text-mgbk-dark font-extrabold py-3 rounded-xl text-xs shadow-xl transition-all flex items-center justify-center gap-2">
-            <i class="fa-solid fa-upload"></i> Unggah Dokumentasi
-          </button>
-        </form>
-
-        <div id="status-message" class="mt-4 text-center text-xs font-semibold hidden p-3 rounded-xl"></div>
-      </div>
-    </div>
-
-    <div id="content-artikel" class="tab-content hidden space-y-6">
-      
-      <div class="bg-gradient-to-br from-purple-950/60 to-mgbk-blue/60 border border-purple-700/40 rounded-3xl p-6 md:p-8 shadow-2xl backdrop-blur-md">
-        <div class="border-b border-purple-800/60 pb-4 mb-6 flex justify-between items-center">
-          <div>
-            <h2 id="form-artikel-title" class="text-xl font-bold text-white flex items-center gap-2">
-              <i class="fa-solid fa-pen-to-square text-mgbk-yellow"></i> Tambah Artikel / Berita
-            </h2>
-            <p class="text-xs text-slate-400 mt-1">Publikasikan informasi atau kabar terbaru MGBK.</p>
-          </div>
-          <button id="cancel-edit-btn" onclick="resetFormArtikel()" class="hidden text-xs bg-gray-700 hover:bg-gray-600 px-3 py-1.5 rounded-lg">Batal Edit</button>
-        </div>
-
-        <form onsubmit="handleSaveArtikel(event)" class="space-y-4">
-          <input type="hidden" id="artikel-id" value="" />
-          
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-              <label class="block text-xs font-semibold text-purple-200 mb-1">Judul Artikel / Berita <span class="text-red-400">*</span></label>
-              <input type="text" id="artikel-judul" required placeholder="Judul berita..." class="w-full bg-mgbk-dark/90 border border-purple-700/60 rounded-xl px-4 py-2.5 text-xs text-white focus:outline-none focus:border-mgbk-yellow" />
-            </div>
-            <div>
-              <label class="block text-xs font-semibold text-purple-200 mb-1">Kategori <span class="text-red-400">*</span></label>
-              <input type="text" id="artikel-kategori" required placeholder="Misal: WORKSHOP, AGENDA, INFO" class="w-full bg-mgbk-dark/90 border border-purple-700/60 rounded-xl px-4 py-2.5 text-xs text-white focus:outline-none focus:border-mgbk-yellow" />
-            </div>
-          </div>
-
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-              <label class="block text-xs font-semibold text-purple-200 mb-1">Tanggal <span class="text-red-400">*</span></label>
-              <input type="date" id="artikel-tanggal" required class="w-full bg-mgbk-dark/90 border border-purple-700/60 rounded-xl px-4 py-2.5 text-xs text-white focus:outline-none focus:border-mgbk-yellow" />
-            </div>
-            <div>
-              <label class="block text-xs font-semibold text-purple-200 mb-1">URL Banner / Gambar</label>
-              <input type="url" id="artikel-gambar" placeholder="https://..." class="w-full bg-mgbk-dark/90 border border-purple-700/60 rounded-xl px-4 py-2.5 text-xs text-white focus:outline-none focus:border-mgbk-yellow" />
-            </div>
-          </div>
-
-          <div>
-            <label class="block text-xs font-semibold text-purple-200 mb-1">Ringkasan / Isi Singkat <span class="text-red-400">*</span></label>
-            <textarea id="artikel-ringkasan" rows="3" required placeholder="Tuliskan isi ringkas artikel..." class="w-full bg-mgbk-dark/90 border border-purple-700/60 rounded-xl px-4 py-2.5 text-xs text-white focus:outline-none focus:border-mgbk-yellow"></textarea>
-          </div>
-
-          <div>
-            <label class="block text-xs font-semibold text-purple-200 mb-1">Link Baca Selengkapnya (Opsional)</label>
-            <input type="url" id="artikel-link" placeholder="https://..." class="w-full bg-mgbk-dark/90 border border-purple-700/60 rounded-xl px-4 py-2.5 text-xs text-white focus:outline-none focus:border-mgbk-yellow" />
-          </div>
-
-          <button type="submit" id="btn-save-artikel" class="w-full bg-mgbk-yellow hover:bg-yellow-400 text-mgbk-dark font-extrabold py-3 rounded-xl text-xs shadow-xl transition-all">
-            <i class="fa-solid fa-paper-plane mr-1"></i> Simpan Artikel
-          </button>
-        </form>
+    <section class="card-glass rounded-2xl p-6">
+      <div class="flex justify-between items-center mb-4">
+        <h3 class="text-md font-bold text-white flex items-center gap-2">
+          <i class="fas fa-list text-amber-500"></i> Daftar Artikel Dikirim
+        </h3>
+        <button onclick="loadDaftarArtikel()" class="text-xs text-amber-400 hover:underline">
+          <i class="fas fa-sync-alt mr-1"></i> Refresh
+        </button>
       </div>
 
-      <div class="bg-gradient-to-br from-purple-950/60 to-mgbk-blue/60 border border-purple-700/40 rounded-3xl p-6 shadow-2xl backdrop-blur-md overflow-hidden">
-        <h3 class="text-sm font-bold text-white mb-4"><i class="fa-solid fa-list text-mgbk-yellow mr-2"></i>Daftar Artikel Dikirim</h3>
-        <div class="overflow-x-auto">
-          <table class="w-full text-left text-xs text-slate-300">
-            <thead class="bg-purple-900/50 text-purple-200 uppercase text-[10px]">
-              <tr>
-                <th class="p-3">Judul</th>
-                <th class="p-3">Kategori</th>
-                <th class="p-3">Tanggal</th>
-                <th class="p-3 text-center">Aksi</th>
-              </tr>
-            </thead>
-            <tbody id="table-artikel-body" class="divide-y divide-purple-800/40">
-              <tr><td colspan="4" class="p-4 text-center text-slate-400">Memuat data artikel...</td></tr>
-            </tbody>
-          </table>
-        </div>
+      <div class="overflow-x-auto">
+        <table class="w-full text-left text-xs">
+          <thead class="bg-purple-950/60 text-gray-300 uppercase">
+            <tr>
+              <th class="p-3">Judul</th>
+              <th class="p-3">Kategori</th>
+              <th class="p-3">Tanggal</th>
+              <th class="p-3 text-center">Aksi</th>
+            </tr>
+          </thead>
+          <tbody id="tabel-artikel-body" class="divide-y divide-purple-900/30">
+            <tr>
+              <td colspan="4" class="text-center p-4 text-gray-400">Memuat data artikel...</td>
+            </tr>
+          </tbody>
+        </table>
       </div>
+    </section>
 
-    </div>
-
-    <div id="content-pesan" class="tab-content hidden">
-      <div class="bg-gradient-to-br from-purple-950/60 to-mgbk-blue/60 border border-purple-700/40 rounded-3xl p-6 md:p-8 shadow-2xl backdrop-blur-md">
-        <div class="border-b border-purple-800/60 pb-4 mb-6 flex justify-between items-center">
-          <div>
-            <h2 class="text-xl font-bold text-white flex items-center gap-2">
-              <i class="fa-solid fa-inbox text-mgbk-yellow"></i> Pesan Masuk / Kontak
-            </h2>
-            <p class="text-xs text-slate-400 mt-1">Daftar pertanyaan dan masukan dari pengunjung web.</p>
-          </div>
-          <button onclick="loadPesan()" class="text-xs bg-purple-800 hover:bg-purple-700 px-3 py-1.5 rounded-xl font-medium">
-            <i class="fa-solid fa-rotate mr-1"></i> Refresh
-          </button>
-        </div>
-
-        <div id="list-pesan" class="space-y-3">
-          <p class="text-xs text-center text-slate-400 py-4">Memuat pesan...</p>
-        </div>
-      </div>
-    </div>
-
-  </div>
-
-  <footer class="py-4 text-center text-slate-500 text-[11px]">
-    MGBK Media & IT Hub Admin Panel © 2026
-  </footer>
+  </main>
 
   <script>
-    const GAS_API_URL = "https://script.google.com/macros/s/AKfycbw5FO88o7tlkHfUQdLRLyWwTDUlYRnmNBpA-EC1TvIMvzY4Xg2G24xRufnm6p3Lk26A/exec";
-    let listDataArtikel = [];
+    // URL API APPS SCRIPT KAKAK
+    const GAS_API_URL = "https://script.google.com/macros/s/AKfycbwy4YqgUa8S-1jJ-M16mXpI0z2eTjYyVvP_/exec";
 
-    // Cek Sesi Login
-    if (sessionStorage.getItem('mgbk_admin_logged') === 'true') {
-      showDashboard();
-    }
+    // NOTIFIKASI TOAST CUSTOM
+    function showToast(message, isSuccess = true) {
+      const toast = document.getElementById('toast');
+      const icon = document.getElementById('toast-icon');
+      const title = document.getElementById('toast-title');
+      const msg = document.getElementById('toast-msg');
 
-    async function handleLogin(e) {
-      e.preventDefault();
-      const u = document.getElementById('login-user').value;
-      const p = document.getElementById('login-pass').value;
-      const btn = document.getElementById('login-btn');
-
-      btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Memeriksa...`;
-
-      try {
-        const res = await fetch(GAS_API_URL, {
-          method: 'POST',
-          body: JSON.stringify({ action: 'login', username: u, password: p })
-        });
-        const result = await res.json();
-
-        if (result.status === 'success') {
-          sessionStorage.setItem('mgbk_admin_logged', 'true');
-          showDashboard();
-        } else {
-          alert(result.message);
-        }
-      } catch (err) {
-        alert("Gagal terhubung ke server!");
-      } finally {
-        btn.innerHTML = `<span>Masuk Admin</span>`;
+      if (isSuccess) {
+        toast.className = "fixed top-5 right-5 z-50 transform translate-x-0 opacity-100 flex items-center gap-3 px-5 py-4 rounded-xl shadow-2xl card-glass border-l-4 border-emerald-500 text-emerald-400";
+        icon.className = "fas fa-check-circle text-emerald-400 text-xl";
+        title.innerText = "Berhasil!";
+      } else {
+        toast.className = "fixed top-5 right-5 z-50 transform translate-x-0 opacity-100 flex items-center gap-3 px-5 py-4 rounded-xl shadow-2xl card-glass border-l-4 border-rose-500 text-rose-400";
+        icon.className = "fas fa-exclamation-circle text-rose-400 text-xl";
+        title.innerText = "Gagal!";
       }
+
+      msg.innerText = message;
+
+      setTimeout(() => {
+        toast.classList.add('translate-x-full', 'opacity-0');
+      }, 4000);
     }
 
-    function showDashboard() {
-      document.getElementById('login-section').classList.add('hidden');
-      document.getElementById('dashboard-section').classList.remove('hidden');
-      document.getElementById('logout-btn').classList.remove('hidden');
-      loadArtikel();
-      loadPesan();
-    }
-
-    function logout() {
-      sessionStorage.removeItem('mgbk_admin_logged');
-      location.reload();
-    }
-
-    // Switch Tab Menu
-    function switchTab(tab) {
-      document.querySelectorAll('.tab-content').forEach(c => c.classList.add('hidden'));
-      document.querySelectorAll('.tab-btn').forEach(b => {
-        b.className = "tab-btn px-4 py-2 rounded-xl text-xs font-bold transition-all bg-purple-900/40 text-purple-200 hover:bg-purple-800/60";
-      });
-
-      document.getElementById(`content-${tab}`).classList.remove('hidden');
-      const activeBtn = document.getElementById(`tab-${tab}`);
-      activeBtn.className = "tab-btn px-4 py-2 rounded-xl text-xs font-bold transition-all bg-mgbk-yellow text-mgbk-dark shadow-lg";
-    }
-
-    // --- UPLOAD DOKUMENTASI ---
-    document.getElementById('upload-files').addEventListener('change', (e) => {
-      const count = e.target.files.length;
-      document.getElementById('file-count-info').innerText = count > 0 ? ` Terpilih ${count} file foto` : '';
-    });
-
-    const fileToBase64 = file => new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.readAsDataURL(file);
-      reader.onload = () => resolve({ name: file.name, type: file.type, base64: reader.result });
-      reader.onerror = error => reject(error);
-    });
-
-    async function handleUpload(e) {
+    // SIMPAN / UPDATE ARTIKEL
+    async function submitArtikel(e) {
       e.preventDefault();
-      const btn = document.getElementById('submit-upload-btn');
-      const status = document.getElementById('status-message');
-      const filesInput = document.getElementById('upload-files').files;
-
-      if (filesInput.length === 0) return;
+      const btn = document.getElementById('btn-submit-artikel');
+      const btnText = document.getElementById('btn-text');
+      
+      const id = document.getElementById('artikel-id').value;
+      const judul = document.getElementById('art-judul').value;
+      const kategori = document.getElementById('art-kategori').value;
+      const tanggal = document.getElementById('art-tanggal').value;
+      const ringkasan = document.getElementById('art-ringkasan').value;
+      const link = document.getElementById('art-link').value;
+      const fileInput = document.getElementById('art-gambar-file');
 
       btn.disabled = true;
-      btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Mengunggah ${filesInput.length} foto...`;
-      status.className = "mt-4 text-center text-xs font-semibold p-3 rounded-xl bg-purple-900/60 text-purple-200 block";
-      status.innerText = "Memproses dan mengunggah, mohon tunggu...";
+      btnText.innerText = "Memproses...";
 
       try {
-        const filePromises = Array.from(filesInput).map(file => fileToBase64(file));
-        const encodedFiles = await Promise.all(filePromises);
+        let gambarBase64 = null;
+        let gambarType = null;
+
+        if (fileInput.files.length > 0) {
+          const file = fileInput.files[0];
+          gambarType = file.type;
+          gambarBase64 = await convertFileToBase64(file);
+        }
 
         const payload = {
-          action: 'uploadFiles',
-          judul: document.getElementById('upload-judul').value,
-          tanggal: document.getElementById('upload-tanggal').value,
-          deskripsi: document.getElementById('upload-deskripsi').value,
-          videoUrl: document.getElementById('upload-video').value,
-          files: encodedFiles
+          action: id ? "updateArtikel" : "addArtikel",
+          id: id,
+          judul: judul,
+          kategori: kategori,
+          tanggal: tanggal,
+          ringkasan: ringkasan,
+          link: link,
+          gambarBase64: gambarBase64,
+          gambarType: gambarType
         };
 
-        const res = await fetch(GAS_API_URL, { method: 'POST', body: JSON.stringify(payload) });
+        const res = await fetch(GAS_API_URL, {
+          method: "POST",
+          body: JSON.stringify(payload)
+        });
+
         const result = await res.json();
 
-        if (result.status === 'success') {
-          status.className = "mt-4 text-center text-xs font-semibold p-3 rounded-xl bg-green-950 border border-green-700 text-green-300 block";
-          status.innerText = " " + result.message;
-          e.target.reset();
-          document.getElementById('file-count-info').innerText = '';
+        if (result.status === "success") {
+          showToast(result.message, true);
+          resetFormArtikel();
+          loadDaftarArtikel();
         } else {
-          throw new Error(result.message);
+          showToast(result.message || "Terjadi kesalahan!", false);
         }
       } catch (err) {
-        status.className = "mt-4 text-center text-xs font-semibold p-3 rounded-xl bg-red-950 border border-red-700 text-red-300 block";
-        status.innerText = " Gagal mengunggah: " + err.message;
+        showToast("Gagal terhubung ke server: " + err.message, false);
       } finally {
         btn.disabled = false;
-        btn.innerHTML = `<i class="fa-solid fa-upload"></i> Unggah Dokumentasi`;
+        btnText.innerText = id ? "Perbarui Artikel" : "Simpan Artikel";
       }
     }
 
-    // --- KELOLA ARTIKEL (TAMBAH, EDIT, HAPUS) ---
-    async function loadArtikel() {
+    // CONVERT FILE KE BASE64
+    function convertFileToBase64(file) {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = error => reject(error);
+      });
+    }
+
+    // RESET FORM
+    function resetFormArtikel() {
+      document.getElementById('form-artikel').reset();
+      document.getElementById('artikel-id').value = "";
+      document.getElementById('form-title').innerText = "Kelola Artikel / Berita";
+      document.getElementById('btn-text').innerText = "Simpan Artikel";
+      document.getElementById('btn-cancel-edit').classList.add('hidden');
+    }
+
+    // MEMUAT DAFTAR ARTIKEL
+    async function loadDaftarArtikel() {
+      const tbody = document.getElementById('tabel-artikel-body');
+      tbody.innerHTML = `<tr><td colspan="4" class="text-center p-4 text-gray-400"><i class="fas fa-spinner fa-spin mr-2"></i>Memuat data artikel...</td></tr>`;
+
       try {
         const res = await fetch(`${GAS_API_URL}?action=getArtikel`);
-        const data = await res.json();
-        listDataArtikel = data || [];
-        renderTableArtikel();
-      } catch (err) {
-        document.getElementById('table-artikel-body').innerHTML = `<tr><td colspan="4" class="p-4 text-center text-red-400">Gagal memuat artikel</td></tr>`;
-      }
-    }
+        const articles = await res.json();
 
-    function renderTableArtikel() {
-      const tbody = document.getElementById('table-artikel-body');
-      if (listDataArtikel.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="4" class="p-4 text-center text-slate-400">Belum ada artikel</td></tr>`;
-        return;
-      }
-      tbody.innerHTML = listDataArtikel.map((item, idx) => `
-        <tr class="hover:bg-purple-900/30">
-          <td class="p-3 font-semibold text-white">${item.judul}</td>
-          <td class="p-3"><span class="bg-purple-900/80 text-mgbk-yellow text-[10px] px-2 py-0.5 rounded-full">${item.kategori}</span></td>
-          <td class="p-3">${item.tanggal}</td>
-          <td class="p-3 text-center flex justify-center gap-2">
-            <button onclick="editArtikel(${idx})" class="bg-blue-600/80 hover:bg-blue-600 text-white p-1.5 rounded-lg text-[10px]"><i class="fa-solid fa-pen"></i> Edit</button>
-            <button onclick="deleteArtikel('${item.id}')" class="bg-red-600/80 hover:bg-red-600 text-white p-1.5 rounded-lg text-[10px]"><i class="fa-solid fa-trash"></i> Hapus</button>
-          </td>
-        </tr>
-      `).join('');
-    }
-
-    async function handleSaveArtikel(e) {
-      e.preventDefault();
-      const id = document.getElementById('artikel-id').value;
-      const btn = document.getElementById('btn-save-artikel');
-      btn.disabled = true;
-      btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Menyimpan...`;
-
-      const payload = {
-        action: id ? 'updateArtikel' : 'addArtikel',
-        id: id,
-        judul: document.getElementById('artikel-judul').value,
-        kategori: document.getElementById('artikel-kategori').value,
-        tanggal: document.getElementById('artikel-tanggal').value,
-        gambar: document.getElementById('artikel-gambar').value,
-        ringkasan: document.getElementById('artikel-ringkasan').value,
-        link: document.getElementById('artikel-link').value
-      };
-
-      try {
-        const res = await fetch(GAS_API_URL, { method: 'POST', body: JSON.stringify(payload) });
-        const resJson = await res.json();
-        if (resJson.status === 'success') {
-          alert('Berhasil menyimpan artikel!');
-          resetFormArtikel();
-          loadArtikel();
-        } else {
-          alert(resJson.message);
-        }
-      } catch (err) {
-        alert('Gagal menyimpan artikel!');
-      } finally {
-        btn.disabled = false;
-        btn.innerHTML = `<i class="fa-solid fa-paper-plane mr-1"></i> Simpan Artikel`;
-      }
-    }
-
-    function editArtikel(idx) {
-      const item = listDataArtikel[idx];
-      document.getElementById('artikel-id').value = item.id || '';
-      document.getElementById('artikel-judul').value = item.judul || '';
-      document.getElementById('artikel-kategori').value = item.kategori || '';
-      document.getElementById('artikel-tanggal').value = item.tanggal || '';
-      document.getElementById('artikel-gambar').value = item.gambar || '';
-      document.getElementById('artikel-ringkasan').value = item.ringkasan || '';
-      document.getElementById('artikel-link').value = item.link || '';
-
-      document.getElementById('form-artikel-title').innerHTML = `<i class="fa-solid fa-pen-to-square text-mgbk-yellow"></i> Edit Artikel / Berita`;
-      document.getElementById('cancel-edit-btn').classList.remove('hidden');
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
-
-    function resetFormArtikel() {
-      document.getElementById('artikel-id').value = '';
-      document.getElementById('artikel-judul').value = '';
-      document.getElementById('artikel-kategori').value = '';
-      document.getElementById('artikel-tanggal').value = '';
-      document.getElementById('artikel-gambar').value = '';
-      document.getElementById('artikel-ringkasan').value = '';
-      document.getElementById('artikel-link').value = '';
-
-      document.getElementById('form-artikel-title').innerHTML = `<i class="fa-solid fa-pen-to-square text-mgbk-yellow"></i> Tambah Artikel / Berita`;
-      document.getElementById('cancel-edit-btn').classList.add('hidden');
-    }
-
-    async function deleteArtikel(id) {
-      if (!confirm("Apakah Anda yakin ingin menghapus artikel ini?")) return;
-      try {
-        const res = await fetch(GAS_API_URL, {
-          method: 'POST',
-          body: JSON.stringify({ action: 'deleteArtikel', id: id })
-        });
-        const resJson = await res.json();
-        if (resJson.status === 'success') {
-          alert('Artikel berhasil dihapus!');
-          loadArtikel();
-        }
-      } catch (err) {
-        alert('Gagal menghapus artikel');
-      }
-    }
-
-    // --- PESAN MASUK ---
-    async function loadPesan() {
-      const container = document.getElementById('list-pesan');
-      try {
-        const res = await fetch(`${GAS_API_URL}?action=getPesan`);
-        const data = await res.json();
-
-        if (!data || data.length === 0) {
-          container.innerHTML = `<p class="text-xs text-center text-slate-400 py-4">Belum ada pesan masuk.</p>`;
+        if (!Array.isArray(articles) || articles.length === 0) {
+          tbody.innerHTML = `<tr><td colspan="4" class="text-center p-4 text-gray-400">Belum ada artikel.</td></tr>`;
           return;
         }
 
-        container.innerHTML = data.map(p => `
-          <div class="bg-mgbk-dark/80 border border-purple-800/50 p-4 rounded-2xl space-y-1">
-            <div class="flex justify-between items-center text-xs">
-              <span class="font-bold text-mgbk-yellow">${p.nama}</span>
-              <span class="text-[10px] text-slate-400">${p.tanggal || ''}</span>
-            </div>
-            <div class="text-[11px] text-purple-300">${p.emailHp}</div>
-            <p class="text-xs text-slate-200 mt-2 bg-purple-950/40 p-2.5 rounded-xl border border-purple-900/40">${p.pesan}</p>
-          </div>
+        tbody.innerHTML = articles.map(item => `
+          <tr class="hover:bg-purple-900/20 border-b border-purple-900/20">
+            <td class="p-3 font-semibold text-white">${item.judul}</td>
+            <td class="p-3"><span class="bg-purple-900/60 text-purple-300 px-2 py-1 rounded text-[10px]">${item.kategori}</span></td>
+            <td class="p-3 text-gray-400">${item.tanggal}</td>
+            <td class="p-3 text-center space-x-2">
+              <button onclick='prepareEdit(${JSON.stringify(item)})' class="bg-blue-600/80 hover:bg-blue-600 text-white px-2.5 py-1 rounded text-[10px]">
+                <i class="fas fa-edit"></i> Edit
+              </button>
+              <button onclick="deleteArtikel('${item.id}')" class="bg-rose-600/80 hover:bg-rose-600 text-white px-2.5 py-1 rounded text-[10px]">
+                <i class="fas fa-trash"></i> Hapus
+              </button>
+            </td>
+          </tr>
         `).join('');
+
       } catch (err) {
-        container.innerHTML = `<p class="text-xs text-center text-red-400 py-4">Gagal memuat pesan.</p>`;
+        tbody.innerHTML = `<tr><td colspan="4" class="text-center p-4 text-rose-400">Gagal memuat artikel!</td></tr>`;
       }
     }
+
+    // PREPARE EDIT
+    function prepareEdit(item) {
+      document.getElementById('artikel-id').value = item.id;
+      document.getElementById('art-judul').value = item.judul;
+      document.getElementById('art-kategori').value = item.kategori;
+      document.getElementById('art-ringkasan').value = item.ringkasan;
+      document.getElementById('art-link').value = item.link || item.linkBaca || "";
+      
+      document.getElementById('form-title').innerText = "Edit Artikel";
+      document.getElementById('btn-text').innerText = "Perbarui Artikel";
+      document.getElementById('btn-cancel-edit').classList.remove('hidden');
+
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    // HAPUS ARTIKEL
+    async function deleteArtikel(id) {
+      if (!confirm("Apakah Anda yakin ingin menghapus artikel ini?")) return;
+
+      try {
+        const res = await fetch(GAS_API_URL, {
+          method: "POST",
+          body: JSON.stringify({ action: "deleteArtikel", id: id })
+        });
+        const result = await res.json();
+        if (result.status === "success") {
+          showToast(result.message, true);
+          loadDaftarArtikel();
+        } else {
+          showToast(result.message, false);
+        }
+      } catch (err) {
+        showToast("Gagal menghapus: " + err.message, false);
+      }
+    }
+
+    // INIT INITIAL LOAD
+    document.addEventListener("DOMContentLoaded", () => {
+      loadDaftarArtikel();
+    });
   </script>
 </body>
 </html>
