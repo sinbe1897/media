@@ -114,6 +114,16 @@
     </div>
   </div>
 
+  <form id="formTambahArtikel" onsubmit="submitArtikel(event)">
+    <input type="text" id="artJudul" placeholder="Judul Artikel / Berita" required />
+    <input type="date" id="artTanggal" required />
+    <input type="text" id="artKategori" placeholder="Kategori (Misal: WORKSHOP / KEGIATAN)" />
+    <textarea id="artRingkasan" placeholder="Ringkasan atau Isi Artikel" required></textarea>
+    <input type="text" id="artGambarUrl" placeholder="URL Gambar / Banner (Opsional)" />
+    <input type="text" id="artLinkBaca" placeholder="Link Baca Selengkapnya (Opsional)" />
+    <button type="submit">Upload Artikel</button>
+  </form>
+
   <footer class="py-4 text-center text-slate-500 text-[11px]">
     MGBK Media & IT Hub Admin Panel &copy; 2026
   </footer>
@@ -227,6 +237,28 @@
         btn.disabled = false;
         btn.innerHTML = `<i class="fa-solid fa-upload"></i> Unggah Dokumentasi`;
       }
+    }
+
+    async function submitArtikel(e) {
+      e.preventDefault();
+      
+      const payload = {
+        action: "tambahArtikel",
+        judul: document.getElementById("artJudul").value,
+        tanggal: document.getElementById("artTanggal").value,
+        kategori: document.getElementById("artKategori").value,
+        ringkasan: document.getElementById("artRingkasan").value,
+        gambarUrl: document.getElementById("artGambarUrl").value,
+        linkBaca: document.getElementById("artLinkBaca").value
+      };
+    
+      const res = await fetch(GAS_API_URL, {
+        method: "POST",
+        body: JSON.stringify(payload)
+      });
+      const result = await res.json();
+      alert(result.message);
+      if (result.status === "success") e.target.reset();
     }
   </script>
 </body>
