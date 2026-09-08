@@ -515,31 +515,33 @@
     function openNewsModal(index) {
       const item = newsArticles[index];
       if (!item) return;
-  
+    
       let modal = document.getElementById("news-modal");
       if (!modal) {
         createNewsModalDOM();
         modal = document.getElementById("news-modal");
       }
-  
+    
       const rawImg = item.GambarUrl || item.gambarUrl || item.gambar || item.Image || item.image;
       const imgUrl = getSafeImageUrl(rawImg);
       const kat = item.Kategori || item.kategori || "ARTIKEL";
       const tgl = formatDateOnly(item.Tanggal || item.tanggal || item.date);
       const jdl = item.Judul || item.judul || item.title || "";
       const rkg = item.Ringkasan || item.ringkasan || item.summary || item.isi || item.content || "";
-  
+    
       document.getElementById("modal-news-img").src = imgUrl;
       document.getElementById("modal-news-date").innerText = `📅 ${tgl} | Kategori: ${kat}`;
       document.getElementById("modal-news-title").innerText = jdl;
       document.getElementById("modal-news-body").innerText = rkg;
-  
+    
       modal.classList.remove("hidden");
       modal.classList.add("flex");
+      
+      // Kunci scroll halaman saat modal buka
       document.body.style.overflow = "hidden";
     }
-  
-    // Membuat DOM Modal Artikel Secara Otomatis Jika Belum Ada
+    
+    // Buat Struktur Modal (Lengkap dengan handler klik luar & tombol close)
     function createNewsModalDOM() {
       const modalHTML = `
         <div id="news-modal" onclick="if(event.target === this) closeNewsModal()" class="fixed inset-0 z-[99999] bg-black/80 backdrop-blur-sm hidden items-center justify-center p-4">
@@ -555,16 +557,17 @@
       `;
       document.body.insertAdjacentHTML("beforeend", modalHTML);
     }
-  
-    // Tutup Modal Artikel & Aktifkan Scroll Kembali
+    
+    // Tutup Modal Artikel (Dipastikan selalu membuka kembali scroll)
     function closeNewsModal() {
       const modal = document.getElementById("news-modal");
       if (modal) {
         modal.classList.add("hidden");
         modal.classList.remove("flex");
       }
-      // Kunci perbaikan: Kembalikan scroll halaman
-      document.body.style.overflow = "auto"; 
+      // Buka kembali scroll halaman utama
+      document.body.style.overflow = "auto";
+      document.body.style.overflowY = "auto";
     }
   
   
