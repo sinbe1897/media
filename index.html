@@ -179,7 +179,7 @@
           </span>
           <h3 class="text-xl font-bold text-white">Lokasi Sekretariat MGBK</h3>
           <p class="text-slate-300 text-xs leading-relaxed">
-            Jl. Dago Barat No. 45A/15D, Dago, Kec. Coblong, Kota Bandung, Jawa Barat.
+            Jl. Belitung No.8, Merdeka, Kec. Sumur Bandung, Kota Bandung, Jawa Barat 40113.
           </p>
           <div class="space-y-2 text-xs text-slate-300 pt-1">
             <div class="flex items-center gap-2"><i class="fa-solid fa-envelope text-mgbk-yellow w-4"></i> mgbkindonesia@gmail.com</div>
@@ -194,7 +194,7 @@
 
         <div class="w-full md:w-1/2 aspect-video md:aspect-[4/3] rounded-2xl overflow-hidden border border-purple-700/50 shadow-lg">
           <iframe 
-            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3961.026725841443!2d107.6131!3d-6.887!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zNsKwNTMnMTMuMiJTIDEwN8KwMzYnNDcuMiJF!5e0!3m2!1sid!2sid!4v1620000000000" 
+            src="https://maps.app.goo.gl/NXbFXZqw4X65u7MF6" 
             class="w-full h-full border-0" 
             allowfullscreen="" 
             loading="lazy">
@@ -402,7 +402,7 @@
       }
     }
     
-    // 1. Helper Format Tanggal Rapi
+    // 1. Helper Format Tanggal Indonesia
     function formatDateOnly(dateString) {
       if (!dateString) return "Tanggal tidak tersedia";
       const cleanDateStr = dateString.toString().split('T')[0];
@@ -419,44 +419,45 @@
       });
     }
     
-    // 2. Render Section Artikel
+    // 2. Fungsi Render Artikel
     function renderNewsSection() {
       const container = document.getElementById("news-container");
       if (!container) return;
     
       container.innerHTML = "";
     
+      // Cek jika data kosong
       if (!newsArticles || newsArticles.length === 0) {
         container.innerHTML = `<p class="text-xs text-slate-400 py-4 text-center w-full">Belum ada artikel.</p>`;
         return;
       }
     
       newsArticles.forEach((item, index) => {
-        const img = (item.gambarUrl && item.gambarUrl.trim() !== "") 
-          ? item.gambarUrl 
-          : "https://via.placeholder.com/400x250?text=MGBK+Artikel";
+        // Ambil data dengan mendukung Huruf Besar maupun Kecil dari Sheets
+        const imgUrl = item.GambarUrl || item.gambarUrl || item.gambar || "https://via.placeholder.com/400x250?text=MGBK+Artikel";
+        const kat = item.Kategori || item.kategori || "ARTIKEL";
+        const linkExternal = item.LinkBaca || item.linkBaca || "";
+        const tgl = formatDateOnly(item.Tanggal || item.tanggal);
+        const jdl = item.Judul || item.judul || "Tanpa Judul";
+        const rkg = item.Ringkasan || item.ringkasan || "";
     
-        const formattedDate = formatDateOnly(item.tanggal);
-        const kategori = (item.kategori && item.kategori.trim() !== "") ? item.kategori : "Berita";
-    
-        // Kartu dibuat clickable seluruhnya menggunakan onclick="openNewsModal(${index})"
         const slideHtml = `
           <div class="swiper-slide h-auto">
-            <div onclick="openNewsModal(${index})" class="bg-mgbk-violet/40 border border-purple-800/50 rounded-2xl overflow-hidden flex flex-col h-full hover:border-mgbk-yellow transition-all shadow-lg cursor-pointer group">
-              <img src="${img}" alt="${item.judul}" class="w-full h-44 object-cover group-hover:scale-105 transition-transform duration-300" />
+            <div onclick="handleCardClick(${index})" class="bg-purple-950/40 border border-purple-800/50 rounded-2xl overflow-hidden flex flex-col h-full hover:border-yellow-400/80 transition-all shadow-lg cursor-pointer group">
+              <img src="${imgUrl}" alt="${jdl}" class="w-full h-44 object-cover group-hover:scale-105 transition-transform duration-300" />
               <div class="p-4 flex flex-col flex-grow justify-between gap-3">
                 <div>
                   <div class="flex items-center justify-between text-[11px] mb-1.5">
-                    <span class="text-mgbk-yellow font-medium">📅 ${formattedDate}</span>
-                    <span class="bg-purple-900/80 text-purple-200 border border-purple-600/40 px-2 py-0.5 rounded-md font-semibold text-[10px] uppercase">${kategori}</span>
+                    <span class="text-yellow-400 font-medium">📅 ${tgl}</span>
+                    <span class="bg-purple-900/80 text-purple-200 border border-purple-600/40 px-2 py-0.5 rounded-md font-semibold text-[10px] uppercase">${kat}</span>
                   </div>
-                  <h3 class="text-sm font-bold text-white line-clamp-2 leading-snug group-hover:text-mgbk-yellow transition-colors">${item.judul}</h3>
-                  <p class="text-xs text-slate-300 mt-2 line-clamp-3 leading-relaxed">${item.ringkasan}</p>
+                  <h3 class="text-sm font-bold text-white line-clamp-2 leading-snug group-hover:text-yellow-400 transition-colors">${jdl}</h3>
+                  <p class="text-xs text-slate-300 mt-2 line-clamp-3 leading-relaxed">${rkg}</p>
                 </div>
                 
-                <div class="text-xs font-bold text-mgbk-yellow group-hover:underline flex items-center gap-1.5 mt-auto pt-2">
+                <div class="text-xs font-bold text-yellow-400 group-hover:underline flex items-center gap-1.5 mt-auto pt-2">
                   <span>Baca Selengkapnya</span>
-                  <i class="fa-solid fa-arrow-right text-[10px]"></i>
+                  <span>→</span>
                 </div>
               </div>
             </div>
@@ -465,47 +466,94 @@
         container.innerHTML += slideHtml;
       });
     
-      // Re-Inisialisasi Swiper
-      if (newsSwiperInstance) newsSwiperInstance.destroy(true, true);
-      
-      newsSwiperInstance = new Swiper('.newsSwiper', {
-        slidesPerView: 1,
-        spaceBetween: 16,
-        simulateTouch: true,
-        touchStartPreventDefault: false,
-        pagination: {
-          el: '.swiper-pagination-news',
-          clickable: true,
-        },
-        breakpoints: {
-          640: { slidesPerView: 2, spaceBetween: 20 },
-          1024: { slidesPerView: 3, spaceBetween: 24 }
-        }
-      });
+      // Re-Inisialisasi Swiper Slider
+      if (typeof Swiper !== "undefined") {
+        if (newsSwiperInstance) newsSwiperInstance.destroy(true, true);
+        
+        newsSwiperInstance = new Swiper('.newsSwiper', {
+          slidesPerView: 1,
+          spaceBetween: 16,
+          pagination: {
+            el: '.swiper-pagination-news',
+            clickable: true,
+          },
+          breakpoints: {
+            640: { slidesPerView: 2, spaceBetween: 20 },
+            1024: { slidesPerView: 3, spaceBetween: 24 }
+          }
+        });
+      }
     }
     
-    // 3. Buka Modal Pop-up
+    // 3. Aksi saat Kartu Diklik (Buka Link External atau Pop-up Modal)
+    function handleCardClick(index) {
+      const item = newsArticles[index];
+      if (!item) return;
+    
+      const linkExternal = item.LinkBaca || item.linkBaca;
+    
+      // Jika ada LinkBaca (seperti link berita web/Google Drive), langsung buka link tersebut di tab baru
+      if (linkExternal && linkExternal.trim() !== "" && linkExternal !== "#") {
+        window.open(linkExternal, "_blank");
+      } else {
+        // Jika LinkBaca kosong, buka Pop-up Modal Detail
+        openNewsModal(index);
+      }
+    }
+    
+    // 4. Fungsi Buka Modal Pop-up
     function openNewsModal(index) {
       const item = newsArticles[index];
       if (!item) return;
     
-      const img = (item.gambarUrl && item.gambarUrl.trim() !== "") 
-        ? item.gambarUrl 
-        : "https://via.placeholder.com/400x250?text=MGBK+Artikel";
+      const modal = document.getElementById("news-modal");
+      
+      // Jika tag #news-modal belum terpasang di HTML, buatkan secara otomatis via JS!
+      if (!modal) {
+        createNewsModalDOM();
+      }
     
-      const formattedDate = formatDateOnly(item.tanggal);
-      const kategori = (item.kategori && item.kategori.trim() !== "") ? item.kategori : "Berita";
+      const imgUrl = item.GambarUrl || item.gambarUrl || "https://via.placeholder.com/400x250?text=MGBK+Artikel";
+      const kat = item.Kategori || item.kategori || "ARTIKEL";
+      const tgl = formatDateOnly(item.Tanggal || item.tanggal);
+      const jdl = item.Judul || item.judul || "";
+      const rkg = item.Ringkasan || item.ringkasan || "";
     
-      document.getElementById("modal-news-img").src = img;
-      document.getElementById("modal-news-date").innerText = `📅 ${formattedDate} | Kategori: ${kategori}`;
-      document.getElementById("modal-news-title").innerText = item.judul;
-      document.getElementById("modal-news-body").innerText = item.ringkasan;
+      document.getElementById("modal-news-img").src = imgUrl;
+      document.getElementById("modal-news-date").innerText = `📅 ${tgl} | Kategori: ${kat}`;
+      document.getElementById("modal-news-title").innerText = jdl;
+      document.getElementById("modal-news-body").innerText = rkg;
     
+      const targetModal = document.getElementById("news-modal");
+      targetModal.classList.remove("hidden");
+      targetModal.classList.add("flex");
+      document.body.style.overflow = "hidden";
+    }
+    
+    // 5. Fungsi Otomatis Membuat Modal jika di HTML belum ada
+    function createNewsModalDOM() {
+      const modalHTML = `
+        <div id="news-modal" class="fixed inset-0 z-[99999] bg-black/80 backdrop-blur-sm hidden items-center justify-center p-4">
+          <div class="relative w-full max-w-2xl bg-[#1e1333] border border-purple-700/60 rounded-2xl p-6 shadow-2xl max-h-[90vh] overflow-y-auto">
+            <button type="button" onclick="closeNewsModal()" class="absolute top-4 right-4 text-slate-400 hover:text-white bg-purple-900/50 hover:bg-purple-800 rounded-full w-8 h-8 flex items-center justify-center">✕</button>
+            <img id="modal-news-img" src="" class="w-full h-52 md:h-64 object-cover rounded-xl mb-4 border border-purple-800/50" />
+            <span id="modal-news-date" class="text-xs font-semibold text-yellow-400"></span>
+            <h3 id="modal-news-title" class="text-lg md:text-xl font-bold text-white my-2"></h3>
+            <hr class="border-purple-800/50 my-3" />
+            <div id="modal-news-body" class="text-xs md:text-sm text-slate-200 leading-relaxed whitespace-pre-line"></div>
+          </div>
+        </div>
+      `;
+      document.body.insertAdjacentHTML("beforeend", modalHTML);
+    }
+    
+    // 6. Fungsi Tutup Modal
+    function closeNewsModal() {
       const modal = document.getElementById("news-modal");
       if (modal) {
-        modal.classList.remove("hidden");
-        modal.classList.add("flex");
-        document.body.style.overflow = "hidden";
+        modal.classList.add("hidden");
+        modal.classList.remove("flex");
+        document.body.style.overflow = "auto";
       }
     }
     
