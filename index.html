@@ -194,7 +194,7 @@
 
         <div class="w-full md:w-1/2 aspect-video md:aspect-[4/3] rounded-2xl overflow-hidden border border-purple-700/50 shadow-lg">
           <iframe 
-            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3961.026725841443!2d107.6131!3d-6.887!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zNsKwNTMnMTMuMiJTIDEwN8KwMzYnNDcuMiJF!5e0!3m2!1sid!2sid!4v1620000000000" 
+            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d4270.257148545918!2d107.6124532108844!3d-6.91232569305832!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e68e76961f736bb%3A0xec1e28a948930064!" 
             class="w-full h-full border-0" 
             allowfullscreen="" 
             loading="lazy">
@@ -379,52 +379,76 @@
     let swiperVideoInstance = null;
     let currentDownloadUrl = "";
     let likesData = {};
-
-    // 1. Deklarasikan newsArticles sebagai array kosong
+  
+    // Variabel Berita & Artikel
     let newsArticles = [];
     let newsSwiperInstance = null;
-    
-    // 1. Fungsi untuk mengambil data dari Google Apps Script
-    async function loadPortalData() {
-      try {
-        const response = await fetch(GAS_API_URL);
-        const data = await response.json();
-        
-        if (data && data.artikel && data.artikel.length > 0) {
-          newsArticles = data.artikel;
-          renderNewsSection(); // Panggil fungsi render
-        } else {
-          console.log("Data artikel dari Spreadsheet kosong.");
-          renderNewsSection(); // Tetap panggil untuk menampilkan status kosong
-        }
-      } catch (error) {
-        console.error("Gagal mengambil data dari Google Sheets:", error);
+  
+    // ==========================================
+    // BAGIAN 1: SCRIPT BERITA & ARTIKEL (DIPERBAIKI)
+    // ==========================================
+  
+    // Helper Format Tanggal Indonesia
+    function formatDateOnly(dateString) {
+      if (!dateString) return "Tanggal tidak tersedia";
+      const cleanDateStr = dateString.toString().split('T')[0];
+      const dateObj = new Date(cleanDateStr);
+  
+      if (isNaN(dateObj.getTime())) {
+        return dateString.toString().replace(/T.*/, '');
       }
+  
+      return dateObj.toLocaleDateString('id-ID', {
+        day: 'numeric',
+        month: 'short',
+        year: 'numeric'
+      });
     }
-    
-    // 3. Render Artikel ke Container (Slider Swiper)
+  
+    // Helper URL Gambar Aman
+    function getSafeImageUrl(url) {
+      if (!url || typeof url !== 'string' || url.trim() === '') {
+        return "https://via.placeholder.com/400x250?text=MGBK+Artikel";
+      }
+      let cleanUrl = url.trim();
+      // Konversi link Google Drive view ke uc/preview jika ada
+      if (cleanUrl.includes("drive.google.com")) {
+        const match = cleanUrl.match(/\/d\/([^\/]+)/);
+        if (match && match[1]) {
+          return `https://lh3.googleusercontent.com/d/${match[1]}`;
+        }
+      }
+      return cleanUrl;
+    }
+  
+    // Fungsi Render Artikel Ke HTML
     function renderNewsSection() {
       const container = document.getElementById("news-container");
       if (!container) return;
-
+  
       container.innerHTML = "";
-
+  
+      // Cek jika data artikel kosong
       if (!newsArticles || newsArticles.length === 0) {
-        container.innerHTML = `<p class="text-xs text-slate-400 py-4 text-center w-full">Belum ada artikel.</p>`;
+        container.innerHTML = `<p class="text-xs text-slate-400 py-6 text-center w-full">Belum ada artikel terbaru dari MGBK.</p>`;
         return;
       }
-
+  
       newsArticles.forEach((item, index) => {
-        const imgUrl = item.GambarUrl || item.gambarUrl || item.gambar || "https://via.placeholder.com/400x250?text=MGBK+Artikel";
+        // Pembacaan properti fleksibel (Huruf Besar / Kecil)
+        const rawImg = item.GambarUrl || item.gambarUrl || item.gambar || item.Image || item.image;
+        const imgUrl = getSafeImageUrl(rawImg);
         const kat = item.Kategori || item.kategori || "ARTIKEL";
-        const tgl = formatDateOnly(item.Tanggal || item.tanggal);
-        const jdl = item.Judul || item.judul || "Tanpa Judul";
-        const rkg = item.Ringkasan || item.ringkasan || "";
-
+        const tgl = formatDateOnly(item.Tanggal || item.tanggal || item.date);
+        const jdl = item.Judul || item.judul || item.title || "Tanpa Judul";
+        const rkg = item.Ringkasan || item.ringkasan || item.summary || item.isi || "";
+  
         const slideHtml = `
           <div class="swiper-slide h-auto">
             <div onclick="handleCardClick(${index})" class="bg-purple-950/40 border border-purple-800/50 rounded-2xl overflow-hidden flex flex-col h-full hover:border-yellow-400/80 transition-all shadow-lg cursor-pointer group">
-              <img src="${imgUrl}" alt="${jdl}" class="w-full h-44 object-cover group-hover:scale-105 transition-transform duration-300" />
+              <div class="w-full h-44 overflow-hidden bg-black/40 relative">
+                <img src="${imgUrl}" alt="${jdl}" onerror="this.onerror=null; this.src='https://via.placeholder.com/400x250?text=MGBK+Artikel';" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
+              </div>
               <div class="p-4 flex flex-col flex-grow justify-between gap-3">
                 <div>
                   <div class="flex items-center justify-between text-[11px] mb-1.5">
@@ -445,74 +469,83 @@
         `;
         container.innerHTML += slideHtml;
       });
-
-      // Swiper Slider Artikel
-      if (typeof Swiper !== "undefined") {
-        if (newsSwiperInstance) newsSwiperInstance.destroy(true, true);
-        
-        newsSwiperInstance = new Swiper('.newsSwiper', {
-          slidesPerView: 1,
-          spaceBetween: 16,
-          pagination: {
-            el: '.swiper-pagination-news',
-            clickable: true,
-          },
-          breakpoints: {
-            640: { slidesPerView: 2, spaceBetween: 20 },
-            1024: { slidesPerView: 3, spaceBetween: 24 }
-          }
-        });
-      }
+  
+      // Re-Inisialisasi Swiper Slider Artikel
+      setTimeout(() => {
+        if (typeof Swiper !== "undefined") {
+          if (newsSwiperInstance) newsSwiperInstance.destroy(true, true);
+          
+          newsSwiperInstance = new Swiper('.newsSwiper', {
+            slidesPerView: 1,
+            spaceBetween: 16,
+            pagination: {
+              el: '.swiper-pagination-news',
+              clickable: true,
+            },
+            breakpoints: {
+              640: { slidesPerView: 2, spaceBetween: 20 },
+              1024: { slidesPerView: 3, spaceBetween: 24 }
+            }
+          });
+        }
+      }, 100);
     }
-
-    // 4. Aksi Klik Kartu
+  
+    // Aksi Klik Card Artikel
     function handleCardClick(index) {
       const item = newsArticles[index];
       if (!item) return;
-
-      const linkExternal = item.LinkBaca || item.linkBaca;
-
+  
+      const linkExternal = item.LinkBaca || item.linkBaca || item.link || item.url;
+  
+      // Jika ada Link External, buka di tab baru
       if (linkExternal && linkExternal.trim() !== "" && linkExternal !== "#") {
-        window.open(linkExternal, "_blank");
+        let finalUrl = linkExternal.trim();
+        if (!finalUrl.startsWith('http://') && !finalUrl.startsWith('https://')) {
+          finalUrl = 'https://' + finalUrl;
+        }
+        window.open(finalUrl, "_blank");
       } else {
+        // Jika tidak ada link, buka Modal Pop-up
         openNewsModal(index);
       }
     }
-
-    // 5. Membuka Modal Pop-up Artikel
+  
+    // Buka Pop-up Modal Artikel
     function openNewsModal(index) {
       const item = newsArticles[index];
       if (!item) return;
-
+  
       let modal = document.getElementById("news-modal");
       if (!modal) {
         createNewsModalDOM();
         modal = document.getElementById("news-modal");
       }
-
-      const imgUrl = item.GambarUrl || item.gambarUrl || "https://via.placeholder.com/400x250?text=MGBK+Artikel";
+  
+      const rawImg = item.GambarUrl || item.gambarUrl || item.gambar || item.Image || item.image;
+      const imgUrl = getSafeImageUrl(rawImg);
       const kat = item.Kategori || item.kategori || "ARTIKEL";
-      const tgl = formatDateOnly(item.Tanggal || item.tanggal);
-      const jdl = item.Judul || item.judul || "";
-      const rkg = item.Ringkasan || item.ringkasan || "";
-
+      const tgl = formatDateOnly(item.Tanggal || item.tanggal || item.date);
+      const jdl = item.Judul || item.judul || item.title || "";
+      const rkg = item.Ringkasan || item.ringkasan || item.summary || item.isi || item.content || "";
+  
       document.getElementById("modal-news-img").src = imgUrl;
       document.getElementById("modal-news-date").innerText = `📅 ${tgl} | Kategori: ${kat}`;
       document.getElementById("modal-news-title").innerText = jdl;
       document.getElementById("modal-news-body").innerText = rkg;
-
+  
       modal.classList.remove("hidden");
       modal.classList.add("flex");
       document.body.style.overflow = "hidden";
     }
-
-    // 6. Buat Modal Otomatis jika Belum Ada di HTML
+  
+    // Membuat DOM Modal Artikel Secara Otomatis Jika Belum Ada
     function createNewsModalDOM() {
       const modalHTML = `
         <div id="news-modal" class="fixed inset-0 z-[99999] bg-black/80 backdrop-blur-sm hidden items-center justify-center p-4">
           <div class="relative w-full max-w-2xl bg-[#1e1333] border border-purple-700/60 rounded-2xl p-6 shadow-2xl max-h-[90vh] overflow-y-auto">
             <button type="button" onclick="closeNewsModal()" class="absolute top-4 right-4 text-slate-400 hover:text-white bg-purple-900/50 hover:bg-purple-800 rounded-full w-8 h-8 flex items-center justify-center cursor-pointer">✕</button>
-            <img id="modal-news-img" src="" class="w-full h-52 md:h-64 object-cover rounded-xl mb-4 border border-purple-800/50" />
+            <img id="modal-news-img" src="" class="w-full h-52 md:h-64 object-cover rounded-xl mb-4 border border-purple-800/50" onerror="this.src='https://via.placeholder.com/400x250?text=MGBK+Artikel'" />
             <span id="modal-news-date" class="text-xs font-semibold text-yellow-400"></span>
             <h3 id="modal-news-title" class="text-lg md:text-xl font-bold text-white my-2"></h3>
             <hr class="border-purple-800/50 my-3" />
@@ -522,8 +555,8 @@
       `;
       document.body.insertAdjacentHTML("beforeend", modalHTML);
     }
-
-    // 7. Tutup Modal Artikel
+  
+    // Tutup Modal Artikel
     function closeNewsModal() {
       const modal = document.getElementById("news-modal");
       if (modal) {
@@ -532,25 +565,30 @@
         document.body.style.overflow = "auto";
       }
     }
-
+  
+  
+    // ==========================================
+    // BAGIAN 2: SCRIPT DOKUMENTASI & UTILITY LAINNYA
+    // ==========================================
+  
     function parseYouTubeEmbed(url) {
       if (!url) return "";
       const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
       const match = url.match(regExp);
       return (match && match[2].length === 11) ? `https://www.youtube.com/embed/${match[2]}` : url;
     }
-
+  
     function formatDate(rawDate) {
       if (!rawDate) return '';
       const date = new Date(rawDate);
       if (isNaN(date.getTime())) return rawDate;
       return date.toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' });
     }
-
+  
     function getEmbedUrl(url) {
       if (!url) return null;
       let cleanUrl = url.trim();
-
+  
       if (cleanUrl.includes('youtube.com') || cleanUrl.includes('youtu.be')) {
         return parseYouTubeEmbed(cleanUrl) + "?autoplay=1";
       }
@@ -563,55 +601,23 @@
       }
       return cleanUrl;
     }
-
-    // LOAD INITIAL DATA
-    window.addEventListener('DOMContentLoaded', () => {
-      document.getElementById('profile-youtube-iframe').src = parseYouTubeEmbed(YOUTUBE_PROFIL_URL);
-      renderNews();
-      loadData();
-    });
-
-    function renderNews() {
-      const newsContainer = document.getElementById('news-container');
-      newsContainer.innerHTML = newsArticles.map(news => `
-        <div class="bg-purple-950/40 border border-purple-800/40 hover:border-purple-500 rounded-2xl overflow-hidden shadow-xl flex flex-col justify-between transition-all duration-300">
-          <div>
-            <div class="h-40 overflow-hidden bg-black relative">
-              <img src="${news.image}" alt="${news.title}" class="w-full h-full object-cover hover:scale-105 transition-transform duration-300" />
-            </div>
-            <div class="p-4 space-y-2">
-              <span class="text-[10px] text-mgbk-yellow font-semibold flex items-center gap-1">
-                <i class="fa-regular fa-calendar"></i> ${news.date}
-              </span>
-              <h3 class="text-sm font-bold text-white line-clamp-2 leading-snug">${news.title}</h3>
-              <p class="text-xs text-slate-300 line-clamp-2">${news.summary}</p>
-            </div>
-          </div>
-          <div class="p-4 pt-0">
-            <button onclick="openNewsModal(${news.id})" class="text-xs font-bold text-mgbk-yellow hover:text-yellow-300 flex items-center gap-1">
-              Baca Selengkapnya <i class="fa-solid fa-arrow-right text-[10px]"></i>
-            </button>
-          </div>
-        </div>
-      `).join('');
-    }
-
-    function openNewsModal(id) {
-      const news = newsArticles.find(n => n.id === id);
-      if (!news) return;
-
-      document.getElementById('modal-news-img').src = news.image;
-      document.getElementById('modal-news-date').innerText = news.date;
-      document.getElementById('modal-news-title').innerText = news.title;
-      document.getElementById('modal-news-body').innerHTML = `<p>${news.content}</p>`;
-      document.getElementById('news-modal').classList.remove('hidden');
-    }
-
+  
+    // UTAMA: Ambil Data Lengkap (Portal & Dokumentasi) dari Gas
     async function loadData() {
       try {
         const response = await fetch(GAS_API_URL);
         const result = await response.json();
         
+        // 1. Ambil Artikel
+        if (result && result.artikel && Array.isArray(result.artikel)) {
+          newsArticles = result.artikel;
+          renderNewsSection();
+        } else {
+          newsArticles = [];
+          renderNewsSection();
+        }
+  
+        // 2. Ambil Dokumentasi (Foto/Video)
         if (Array.isArray(result)) {
           rawData = result;
         } else if (result.dokumentasi && Array.isArray(result.dokumentasi)) {
@@ -621,12 +627,13 @@
         }
         
         processGroupedData(rawData);
-
+  
       } catch (err) {
-        console.error("Error loading data:", err);
+        console.error("Error loading data from Google Sheets API:", err);
+        renderNewsSection(); // Tetap render penanganan error
       }
     }
-
+  
     function processGroupedData(dataArray) {
       groupedData = {};
       dataArray.forEach(item => {
@@ -635,7 +642,7 @@
         }
         groupedData[item.judul].push(item);
       });
-
+  
       renderFilterButtons();
       
       const firstCategory = Object.keys(groupedData)[0];
@@ -646,153 +653,160 @@
         if (photoContainer) photoContainer.innerHTML = '<p class="text-slate-400 text-center w-full py-8 text-xs">Belum ada foto kegiatan.</p>';
       }
     }
-
+  
     function renderFilterButtons() {
       const filterContainer = document.getElementById('category-filters');
+      if (!filterContainer) return;
       filterContainer.innerHTML = '';
-
+  
       Object.keys(groupedData).forEach((catName, index) => {
         const btn = document.createElement('button');
         const activeStyle = "bg-mgbk-yellow text-mgbk-dark font-extrabold shadow-lg shadow-yellow-500/20 scale-105";
         const inactiveStyle = "bg-purple-950/80 text-purple-200 border border-purple-800/60 hover:bg-purple-900 font-semibold";
-
+  
         btn.className = `cat-btn px-4 py-2 rounded-xl text-xs border transition-all duration-300 flex items-center gap-2 cursor-pointer ${index === 0 ? activeStyle : inactiveStyle}`;
         btn.innerHTML = `
           <i class="fa-solid fa-folder-open"></i>
           <span>${catName}</span>
           <span class="bg-black/20 px-2 py-0.5 rounded-full text-[10px]">${groupedData[catName].length}</span>
         `;
-
+  
         btn.onclick = () => {
           document.querySelectorAll('.cat-btn').forEach(b => b.className = `cat-btn px-4 py-2 rounded-xl text-xs border transition-all duration-300 flex items-center gap-2 cursor-pointer ${inactiveStyle}`);
           btn.className = `cat-btn px-4 py-2 rounded-xl text-xs border transition-all duration-300 flex items-center gap-2 cursor-pointer ${activeStyle}`;
           selectCategory(catName);
         };
-
+  
         filterContainer.appendChild(btn);
       });
     }
-
+  
     function selectCategory(categoryName) {
       const items = groupedData[categoryName] || [];
       renderGalleryItems(items);
     }
-
+  
     function renderGalleryItems(items) {
-      document.getElementById('current-activity-title').innerText = `${items.length} Item`;
-
+      const activityTitle = document.getElementById('current-activity-title');
+      if (activityTitle) activityTitle.innerText = `${items.length} Item`;
+  
       if (swiperFotoInstance) {
         swiperFotoInstance.destroy(true, true);
         swiperFotoInstance = null;
       }
-
+  
       const photoContainer = document.getElementById('photo-container');
       const photoItems = items.filter(i => i.gambarUrl);
-
-      if (photoItems.length === 0) {
-        photoContainer.innerHTML = '<p class="text-slate-400 text-center w-full py-8 text-xs">Tidak ada foto di kategori ini.</p>';
-      } else {
-        photoContainer.innerHTML = photoItems.map(item => {
-          const currentLikes = likesData[item.gambarUrl] || 0;
-          return `
-            <div class="swiper-slide h-auto">
-              <div class="bg-purple-950/40 border border-purple-800/40 rounded-2xl overflow-hidden shadow-xl flex flex-col h-full hover:border-mgbk-yellow/50 transition-colors">
-                <div class="relative group bg-black cursor-pointer aspect-[4/3] overflow-hidden" onclick="openModal('${item.gambarUrl}')">
-                  <img src="${item.gambarUrl}" alt="${item.judul}" loading="lazy" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
-                  <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center text-white text-xs font-semibold">
-                    <i class="fa-solid fa-expand text-base mr-1"></i> Lihat Foto
+  
+      if (photoContainer) {
+        if (photoItems.length === 0) {
+          photoContainer.innerHTML = '<p class="text-slate-400 text-center w-full py-8 text-xs">Tidak ada foto di kategori ini.</p>';
+        } else {
+          photoContainer.innerHTML = photoItems.map(item => {
+            const currentLikes = likesData[item.gambarUrl] || 0;
+            return `
+              <div class="swiper-slide h-auto">
+                <div class="bg-purple-950/40 border border-purple-800/40 rounded-2xl overflow-hidden shadow-xl flex flex-col h-full hover:border-mgbk-yellow/50 transition-colors">
+                  <div class="relative group bg-black cursor-pointer aspect-[4/3] overflow-hidden" onclick="openModal('${item.gambarUrl}')">
+                    <img src="${item.gambarUrl}" alt="${item.judul}" loading="lazy" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
+                    <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center text-white text-xs font-semibold">
+                      <i class="fa-solid fa-expand text-base mr-1"></i> Lihat Foto
+                    </div>
                   </div>
-                </div>
-                <div class="p-3.5 flex flex-col justify-between flex-grow">
-                  <p class="text-slate-200 text-xs line-clamp-2 mb-2 leading-relaxed">${item.deskripsi || item.judul}</p>
-                  <div class="flex items-center justify-between pt-1 border-t border-purple-900/40">
-                    <span class="text-[10px] text-mgbk-yellow font-semibold flex items-center gap-1">
-                      <i class="fa-regular fa-calendar-check"></i> ${formatDate(item.tanggal)}
-                    </span>
-                    <button onclick="toggleLike('${item.gambarUrl}', this)" class="text-[11px] text-slate-300 hover:text-red-400 flex items-center gap-1 transition-colors">
-                      <i class="fa-regular fa-heart text-red-500"></i> <span class="like-count">${currentLikes}</span>
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </div>
-          `;
-        }).join('');
-
-        swiperFotoInstance = new Swiper(".mySwiperFoto", {
-          slidesPerView: 1,
-          spaceBetween: 14,
-          breakpoints: {
-            640: { slidesPerView: 2, spaceBetween: 18 },
-            1024: { slidesPerView: 3, spaceBetween: 20 }
-          },
-          pagination: { 
-            el: ".swiper-pagination-foto", 
-            type: "fraction" 
-          },
-          navigation: {
-            nextEl: ".swiper-btn-foto-next",
-            prevEl: ".swiper-btn-foto-prev"
-          }
-        });
-      }
-
-      // VIDEO SECTION
-      const videoSection = document.getElementById('video-section');
-      const videoContainer = document.getElementById('video-container');
-      videoContainer.innerHTML = '';
-
-      if (swiperVideoInstance) {
-        swiperVideoInstance.destroy(true, true);
-        swiperVideoInstance = null;
-      }
-
-      const videoItems = items.filter(i => i.videoUrl && i.videoUrl.trim() !== '');
-
-      if (videoItems.length > 0) {
-        videoSection.classList.remove('hidden');
-        
-        videoContainer.innerHTML = videoItems.map(item => {
-          const embedVideo = getEmbedUrl(item.videoUrl);
-          return `
-            <div class="swiper-slide h-auto">
-              <div class="bg-purple-950/40 border border-purple-800/40 rounded-2xl overflow-hidden shadow-xl p-3 flex flex-col h-full hover:border-red-500/50 transition-colors">
-                <div class="relative aspect-video w-full rounded-xl overflow-hidden bg-black cursor-pointer group mb-3" onclick="openVideoModal('${embedVideo}')">
-                  <img src="${item.gambarUrl || 'https://via.placeholder.com/600x400'}" loading="lazy" class="w-full h-full object-cover opacity-60 group-hover:scale-105 transition-transform duration-300" />
-                  <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent flex items-center justify-center">
-                    <div class="w-12 h-12 rounded-full bg-red-600 text-white flex items-center justify-center group-hover:scale-110 transition-all shadow-xl">
-                      <i class="fa-solid fa-play ml-1"></i>
+                  <div class="p-3.5 flex flex-col justify-between flex-grow">
+                    <p class="text-slate-200 text-xs line-clamp-2 mb-2 leading-relaxed">${item.deskripsi || item.judul}</p>
+                    <div class="flex items-center justify-between pt-1 border-t border-purple-900/40">
+                      <span class="text-[10px] text-mgbk-yellow font-semibold flex items-center gap-1">
+                        <i class="fa-regular fa-calendar-check"></i> ${formatDate(item.tanggal)}
+                      </span>
+                      <button onclick="toggleLike('${item.gambarUrl}', this)" class="text-[11px] text-slate-300 hover:text-red-400 flex items-center gap-1 transition-colors">
+                        <i class="fa-regular fa-heart text-red-500"></i> <span class="like-count">${currentLikes}</span>
+                      </button>
                     </div>
                   </div>
                 </div>
-                <p class="text-slate-200 text-xs line-clamp-2 font-medium">${item.deskripsi || item.judul}</p>
               </div>
-            </div>
-          `;
-        }).join('');
-
-        swiperVideoInstance = new Swiper(".mySwiperVideo", {
-          slidesPerView: 1,
-          spaceBetween: 14,
-          breakpoints: {
-            640: { slidesPerView: 2, spaceBetween: 18 },
-            1024: { slidesPerView: 3, spaceBetween: 20 }
-          },
-          pagination: { 
-            el: ".swiper-pagination-video", 
-            type: "fraction" 
-          },
-          navigation: {
-            nextEl: ".swiper-btn-video-next",
-            prevEl: ".swiper-btn-video-prev"
-          }
-        });
-
-      } else {
-        videoSection.classList.add('hidden');
+            `;
+          }).join('');
+  
+          swiperFotoInstance = new Swiper(".mySwiperFoto", {
+            slidesPerView: 1,
+            spaceBetween: 14,
+            breakpoints: {
+              640: { slidesPerView: 2, spaceBetween: 18 },
+              1024: { slidesPerView: 3, spaceBetween: 20 }
+            },
+            pagination: { 
+              el: ".swiper-pagination-foto", 
+              type: "fraction" 
+            },
+            navigation: {
+              nextEl: ".swiper-btn-foto-next",
+              prevEl: ".swiper-btn-foto-prev"
+            }
+          });
+        }
+      }
+  
+      // VIDEO SECTION
+      const videoSection = document.getElementById('video-section');
+      const videoContainer = document.getElementById('video-container');
+      
+      if (videoContainer) {
+        videoContainer.innerHTML = '';
+  
+        if (swiperVideoInstance) {
+          swiperVideoInstance.destroy(true, true);
+          swiperVideoInstance = null;
+        }
+  
+        const videoItems = items.filter(i => i.videoUrl && i.videoUrl.trim() !== '');
+  
+        if (videoItems.length > 0) {
+          if (videoSection) videoSection.classList.remove('hidden');
+          
+          videoContainer.innerHTML = videoItems.map(item => {
+            const embedVideo = getEmbedUrl(item.videoUrl);
+            return `
+              <div class="swiper-slide h-auto">
+                <div class="bg-purple-950/40 border border-purple-800/40 rounded-2xl overflow-hidden shadow-xl p-3 flex flex-col h-full hover:border-red-500/50 transition-colors">
+                  <div class="relative aspect-video w-full rounded-xl overflow-hidden bg-black cursor-pointer group mb-3" onclick="openVideoModal('${embedVideo}')">
+                    <img src="${item.gambarUrl || 'https://via.placeholder.com/600x400'}" loading="lazy" class="w-full h-full object-cover opacity-60 group-hover:scale-105 transition-transform duration-300" />
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent flex items-center justify-center">
+                      <div class="w-12 h-12 rounded-full bg-red-600 text-white flex items-center justify-center group-hover:scale-110 transition-all shadow-xl">
+                        <i class="fa-solid fa-play ml-1"></i>
+                      </div>
+                    </div>
+                  </div>
+                  <p class="text-slate-200 text-xs line-clamp-2 font-medium">${item.deskripsi || item.judul}</p>
+                </div>
+              </div>
+            `;
+          }).join('');
+  
+          swiperVideoInstance = new Swiper(".mySwiperVideo", {
+            slidesPerView: 1,
+            spaceBetween: 14,
+            breakpoints: {
+              640: { slidesPerView: 2, spaceBetween: 18 },
+              1024: { slidesPerView: 3, spaceBetween: 20 }
+            },
+            pagination: { 
+              el: ".swiper-pagination-video", 
+              type: "fraction" 
+            },
+            navigation: {
+              nextEl: ".swiper-btn-video-next",
+              prevEl: ".swiper-btn-video-prev"
+            }
+          });
+  
+        } else {
+          if (videoSection) videoSection.classList.add('hidden');
+        }
       }
     }
-
+  
     function toggleLike(url, btn) {
       if (!likesData[url]) likesData[url] = 0;
       likesData[url]++;
@@ -804,7 +818,7 @@
         icon.classList.add('fa-solid');
       }
     }
-
+  
     function filterBySearch() {
       const keyword = document.getElementById('search-input').value.toLowerCase().trim();
       
@@ -812,36 +826,36 @@
         processGroupedData(rawData);
         return;
       }
-
+  
       const filtered = rawData.filter(item => {
         const matchJudul = item.judul && item.judul.toLowerCase().includes(keyword);
         const matchDeskripsi = item.deskripsi && item.deskripsi.toLowerCase().includes(keyword);
         return matchJudul || matchDeskripsi;
       });
-
+  
       processGroupedData(filtered);
     }
-
+  
     function openVideoModal(videoEmbedUrl) {
       document.getElementById('modal-video-iframe').src = videoEmbedUrl;
       document.getElementById('video-modal').classList.remove('hidden');
     }
-
+  
     function closeVideoModal() {
       document.getElementById('modal-video-iframe').src = '';
       document.getElementById('video-modal').classList.add('hidden');
     }
-
+  
     function openModal(imgUrl) {
       currentDownloadUrl = imgUrl;
       document.getElementById('modal-img').src = imgUrl;
       document.getElementById('image-modal').classList.remove('hidden');
     }
-
+  
     function closeModal(modalId) {
       document.getElementById(modalId).classList.add('hidden');
     }
-
+  
     async function directDownload() {
       if (!currentDownloadUrl) return;
       try {
@@ -859,13 +873,13 @@
         a.click();
         document.body.removeChild(a);
         URL.revokeObjectURL(blobUrl);
-
+  
         btn.innerHTML = `<i class="fa-solid fa-download"></i> Download Foto`;
       } catch (err) {
         window.open(currentDownloadUrl, '_blank');
       }
     }
-
+  
     async function handleContact(e) {
       e.preventDefault();
       const btn = document.getElementById('btn-submit-contact');
@@ -877,7 +891,7 @@
         kontak: document.getElementById('contact-email').value,
         pesan: document.getElementById('contact-message').value
       };
-
+  
       try {
         const res = await fetch(GAS_API_URL, {
           method: "POST",
@@ -892,7 +906,7 @@
         btn.innerHTML = `<i class="fa-solid fa-paper-plane"></i> Kirim Pesan`;
       }
     }
-
+  
     function sharePortal() {
       if (navigator.share) {
         navigator.share({
@@ -904,6 +918,15 @@
         alert('Link portal berhasil disalin ke clipboard!');
       }
     }
+  
+    // INI PANGGILAN TUNGGAL SAAT HALAMAN SELESAI DIMUAT
+    window.addEventListener('DOMContentLoaded', () => {
+      const ytIframe = document.getElementById('profile-youtube-iframe');
+      if (ytIframe) ytIframe.src = parseYouTubeEmbed(YOUTUBE_PROFIL_URL);
+      
+      // Panggil pemuat data utama
+      loadData();
+    });
   </script>
 </body>
 </html>
