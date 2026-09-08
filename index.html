@@ -203,6 +203,7 @@
       </div>
     </section>
 
+    <!-- SECTION BERITA (DISUATUKAN DENGAN SWIPER SLIDER) -->
     <section>
       <div class="flex flex-col md:flex-row md:items-end justify-between mb-6 gap-2">
         <div>
@@ -214,8 +215,18 @@
         <p class="text-slate-400 text-xs">Informasi edukatif dan kegiatan seputar Bimbingan Konseling</p>
       </div>
 
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-5" id="news-container">
+      <!-- Container Swiper Artikel -->
+      <div class="relative px-1">
+        <div class="swiper newsSwiper overflow-hidden rounded-2xl pb-10">
+          <div class="swiper-wrapper" id="news-container">
+            <div class="text-center w-full py-12 text-slate-400">
+              <i class="fa-solid fa-spinner fa-spin text-2xl mb-2 text-mgbk-yellow"></i>
+              <p class="text-xs">Memuat artikel...</p>
+            </div>
+          </div>
+          <div class="swiper-pagination swiper-pagination-news"></div>
         </div>
+      </div>
     </section>
 
     <section id="kegiatan-section" class="pt-4">
@@ -300,18 +311,20 @@
 
   </main>
 
+  <!-- MODAL ARTIKEL -->
   <div id="news-modal" class="fixed inset-0 z-50 bg-black/90 hidden backdrop-blur-md flex items-center justify-center p-4">
     <div class="relative max-w-2xl w-full bg-mgbk-dark border border-purple-700 rounded-2xl p-5 md:p-6 shadow-2xl max-h-[85vh] overflow-y-auto">
-      <button onclick="closeModal('news-modal')" class="absolute top-4 right-4 text-slate-400 hover:text-white text-base">
+      <button onclick="closeModal('news-modal')" class="absolute top-4 right-4 text-slate-400 hover:text-white text-base z-10">
         <i class="fa-solid fa-xmark"></i>
       </button>
       <img id="modal-news-img" src="" class="w-full h-48 md:h-60 object-cover rounded-xl mb-4 border border-purple-800" />
       <span id="modal-news-date" class="text-[10px] text-mgbk-yellow font-semibold"></span>
       <h3 id="modal-news-title" class="text-lg md:text-xl font-bold text-white mt-1 mb-3"></h3>
-      <div id="modal-news-body" class="text-xs md:text-sm text-slate-300 leading-relaxed space-y-3"></div>
+      <div id="modal-news-body" class="text-xs md:text-sm text-slate-300 leading-relaxed space-y-3 whitespace-pre-line"></div>
     </div>
   </div>
 
+  <!-- MODAL GAMBAR -->
   <div id="image-modal" class="fixed inset-0 z-50 bg-black/90 hidden backdrop-blur-md flex items-center justify-center p-4">
     <div class="relative max-w-4xl w-full flex flex-col items-center">
       <button onclick="closeModal('image-modal')" class="absolute -top-10 right-0 text-white hover:text-red-400 text-base font-bold">
@@ -326,6 +339,7 @@
     </div>
   </div>
 
+  <!-- MODAL VIDEO -->
   <div id="video-modal" class="fixed inset-0 z-50 bg-black/95 hidden backdrop-blur-md flex items-center justify-center p-4">
     <div class="relative max-w-3xl w-full flex flex-col items-center">
       <button onclick="closeVideoModal()" class="absolute -top-10 right-0 text-white hover:text-red-400 text-base font-bold">
@@ -351,6 +365,8 @@
     </div>
   </footer>
 
+</body>
+
   <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
 
   <script>
@@ -366,62 +382,112 @@
 
     // 1. Deklarasikan newsArticles sebagai array kosong
     let newsArticles = [];
+    let newsSwiperInstance = null;
     
-    // 2. Fungsi untuk mengambil data dari Apps Script
+    // 1. Fungsi untuk mengambil data dari Google Apps Script
     async function loadPortalData() {
       try {
         const response = await fetch(GAS_API_URL);
         const data = await response.json();
         
-        // Cek apakah data artikel ada dari respons Apps Script
         if (data && data.artikel && data.artikel.length > 0) {
-          newsArticles = data.artikel; // Menyimpan data dari Sheet ke variabel
-          renderNewsSection();         // Tampilkan ke halaman
+          newsArticles = data.artikel;
+          renderNewsSection(); // Panggil fungsi render
         } else {
           console.log("Data artikel dari Spreadsheet kosong.");
+          renderNewsSection(); // Tetap panggil untuk menampilkan status kosong
         }
       } catch (error) {
         console.error("Gagal mengambil data dari Google Sheets:", error);
       }
     }
     
-    // 3. Fungsi untuk merender/menampilkan artikel ke DOM/HTML
+    // 2. Fungsi BARU untuk merender artikel sebagai Slider & tombol Pop-up Modal
     function renderNewsSection() {
-      const container = document.getElementById("news-container"); // Sesuaikan ID container Anda
+      const container = document.getElementById("news-container");
       if (!container) return;
     
       container.innerHTML = "";
     
-      newsArticles.forEach(item => {
-        // 1. Gambar Default jika kosong
+      if (!newsArticles || newsArticles.length === 0) {
+        container.innerHTML = `<p class="text-xs text-slate-400 py-4 text-center w-full">Belum ada artikel.</p>`;
+        return;
+      }
+    
+      newsArticles.forEach((item, index) => {
         const img = (item.gambarUrl && item.gambarUrl.trim() !== "") 
           ? item.gambarUrl 
           : "https://via.placeholder.com/400x250?text=MGBK+Artikel";
     
-        // 2. Tentukan Link Baca (Jika di Sheets kosong, arahkan ke '#' atau pemicu modal)
-        const link = (item.linkBaca && item.linkBaca.trim() !== "") 
-          ? item.linkBaca 
-          : "#";
-    
-        const cardHtml = `
-          <div class="news-card">
-            <img src="${img}" alt="${item.judul}" class="news-image" />
-            <div class="news-content">
-              <span class="news-date">📅 ${item.tanggal}</span>
-              <h3 class="news-title">${item.judul}</h3>
-              <p class="news-summary">${item.ringkasan}</p>
-              <a href="${link}" target="${link !== '#' ? '_blank' : '_self'}" class="news-link">
-                Baca Selengkapnya →
-              </a>
+        const slideHtml = `
+          <div class="swiper-slide h-auto">
+            <div class="bg-mgbk-violet/40 border border-purple-800/50 rounded-2xl overflow-hidden flex flex-col h-full hover:border-mgbk-yellow/50 transition-all">
+              <img src="${img}" alt="${item.judul}" class="w-full h-44 object-cover" />
+              <div class="p-4 flex flex-col flex-grow justify-between gap-3">
+                <div>
+                  <span class="text-[11px] text-mgbk-yellow font-medium">📅 ${item.tanggal}</span>
+                  <h3 class="text-sm font-bold text-white mt-1 line-clamp-2">${item.judul}</h3>
+                  <p class="text-xs text-slate-300 mt-2 line-clamp-3">${item.ringkasan}</p>
+                </div>
+                <button onclick="openNewsModal(${index})" class="text-xs font-bold text-mgbk-yellow hover:underline self-start flex items-center gap-1 mt-auto cursor-pointer">
+                  Baca Selengkapnya <i class="fa-solid fa-arrow-right text-[10px]"></i>
+                </button>
+              </div>
             </div>
           </div>
         `;
-        
-        container.innerHTML += cardHtml;
+        container.innerHTML += slideHtml;
+      });
+    
+      // Inisialisasi Ulang Swiper Slider Artikel
+      if (newsSwiperInstance) newsSwiperInstance.destroy(true, true);
+      
+      newsSwiperInstance = new Swiper('.newsSwiper', {
+        slidesPerView: 1,
+        spaceBetween: 16,
+        pagination: {
+          el: '.swiper-pagination-news',
+          clickable: true,
+        },
+        breakpoints: {
+          640: { slidesPerView: 2, spaceBetween: 20 },
+          1024: { slidesPerView: 3, spaceBetween: 24 }
+        }
       });
     }
     
-    // 4. Panggil saat halaman selesai di-load
+    // 3. Fungsi Buka Modal Detail Artikel (Pop-up)
+    function openNewsModal(index) {
+      const item = newsArticles[index];
+      if (!item) return;
+    
+      const img = (item.gambarUrl && item.gambarUrl.trim() !== "") 
+        ? item.gambarUrl 
+        : "https://via.placeholder.com/400x250?text=MGBK+Artikel";
+    
+      document.getElementById("modal-news-img").src = img;
+      document.getElementById("modal-news-date").innerText = `📅 ${item.tanggal}`;
+      document.getElementById("modal-news-title").innerText = item.judul;
+      // Menampilkan ringkasan/isi lengkap di pop-up modal
+      document.getElementById("modal-news-body").innerText = item.ringkasan;
+    
+      const modal = document.getElementById("news-modal");
+      modal.classList.remove("hidden");
+      modal.classList.add("flex");
+      document.body.style.overflow = "hidden"; // Kunci scroll halaman utama
+    }
+    
+    // 4. Fungsi Tutup Modal
+    function closeModal(modalId) {
+      const modal = document.getElementById(modalId);
+      if (modal) {
+        modal.classList.add("hidden");
+        modal.classList.remove("flex");
+        document.body.style.overflow = "auto";
+      }
+    }
+    
+    // 5. Panggil saat halaman selesai di-load
     document.addEventListener("DOMContentLoaded", () => {
       loadPortalData();
     });
