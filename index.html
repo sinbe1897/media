@@ -194,7 +194,7 @@
 
         <div class="w-full md:w-1/2 aspect-video md:aspect-[4/3] rounded-2xl overflow-hidden border border-purple-700/50 shadow-lg">
           <iframe 
-            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d4270.257148545918!2d107.6124532108844!3d-6.91232569305832!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e68e76961f736bb%3A0xec1e28a948930064!" 
+            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d4270.257148545918!2d107.6124532108844!3d-6.91232569305832!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e68e76961f736bb%3A0xec1e28a948930064!2sSMA%20Negeri%203%20Bandung!5e1!3m2!1sid!2sid!4v1788853545920!5m2!1sid!2sid" 
             class="w-full h-full border-0" 
             allowfullscreen="" 
             loading="lazy">
@@ -542,9 +542,9 @@
     // Membuat DOM Modal Artikel Secara Otomatis Jika Belum Ada
     function createNewsModalDOM() {
       const modalHTML = `
-        <div id="news-modal" class="fixed inset-0 z-[99999] bg-black/80 backdrop-blur-sm hidden items-center justify-center p-4">
+        <div id="news-modal" onclick="if(event.target === this) closeNewsModal()" class="fixed inset-0 z-[99999] bg-black/80 backdrop-blur-sm hidden items-center justify-center p-4">
           <div class="relative w-full max-w-2xl bg-[#1e1333] border border-purple-700/60 rounded-2xl p-6 shadow-2xl max-h-[90vh] overflow-y-auto">
-            <button type="button" onclick="closeNewsModal()" class="absolute top-4 right-4 text-slate-400 hover:text-white bg-purple-900/50 hover:bg-purple-800 rounded-full w-8 h-8 flex items-center justify-center cursor-pointer">✕</button>
+            <button type="button" onclick="closeNewsModal()" class="absolute top-4 right-4 text-slate-400 hover:text-white bg-purple-900/50 hover:bg-purple-800 rounded-full w-8 h-8 flex items-center justify-center cursor-pointer z-10">✕</button>
             <img id="modal-news-img" src="" class="w-full h-52 md:h-64 object-cover rounded-xl mb-4 border border-purple-800/50" onerror="this.src='https://via.placeholder.com/400x250?text=MGBK+Artikel'" />
             <span id="modal-news-date" class="text-xs font-semibold text-yellow-400"></span>
             <h3 id="modal-news-title" class="text-lg md:text-xl font-bold text-white my-2"></h3>
@@ -556,14 +556,15 @@
       document.body.insertAdjacentHTML("beforeend", modalHTML);
     }
   
-    // Tutup Modal Artikel
+    // Tutup Modal Artikel & Aktifkan Scroll Kembali
     function closeNewsModal() {
       const modal = document.getElementById("news-modal");
       if (modal) {
         modal.classList.add("hidden");
         modal.classList.remove("flex");
-        document.body.style.overflow = "auto";
       }
+      // Kunci perbaikan: Kembalikan scroll halaman
+      document.body.style.overflow = "auto"; 
     }
   
   
