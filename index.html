@@ -72,6 +72,13 @@
     .news-link:hover {
       text-decoration: underline;
     }
+    /* Memastikan scrollbar kembali aktif penuh ketika modal tutup */
+    body {
+      overflow-y: auto !important;
+    }
+    body.modal-open {
+      overflow: hidden !important;
+    }
   </style>
 </head>
 <body class="bg-mgbk-dark text-slate-100 font-sans antialiased min-h-screen flex flex-col justify-between overflow-x-hidden">
