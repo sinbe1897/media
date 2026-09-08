@@ -398,23 +398,6 @@
       });
     }
 
-    // 1. Helper Format Tanggal Rapi
-    function formatDateOnly(dateString) {
-      if (!dateString) return "Tanggal tidak tersedia";
-      const cleanDateStr = dateString.toString().split('T')[0];
-      const dateObj = new Date(cleanDateStr);
-
-      if (isNaN(dateObj.getTime())) {
-        return dateString.toString().replace(/T.*/, '');
-      }
-
-      return dateObj.toLocaleDateString('id-ID', {
-        day: 'numeric',
-        month: 'short',
-        year: 'numeric'
-      });
-    }
-
     // 2. Load Data Artikel & Portal dari Google Apps Script
     async function loadPortalData() {
       try {
