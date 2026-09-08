@@ -403,6 +403,27 @@
     }
     
     // 2. Fungsi BARU untuk merender artikel sebagai Slider & tombol Pop-up Modal
+    function formatDateOnly(dateString) {
+      if (!dateString) return "Tanggal tidak tersedia";
+      
+      // Jika input berupa ISO string seperti "2025-12-17T17:15:00.000Z" atau "2025-12-17"
+      const cleanDateStr = dateString.toString().split('T')[0]; // Ambil bagianYYYY-MM-DD saja
+      const dateObj = new Date(cleanDateStr);
+    
+      if (isNaN(dateObj.getTime())) {
+        // Jika gagal parse tanggal, bersihkan karakter T dan sisanya
+        return dateString.toString().replace(/T.*/, '');
+      }
+    
+      // Format menjadi Tanggal Indonesia (Contoh: 17 Des 2025)
+      return dateObj.toLocaleDateString('id-ID', {
+        day: 'numeric',
+        month: 'short',
+        year: 'numeric'
+      });
+    }
+    
+    // 2. Fungsi Render Artikel / Berita
     function renderNewsSection() {
       const container = document.getElementById("news-container");
       if (!container) return;
@@ -419,18 +440,32 @@
           ? item.gambarUrl 
           : "https://via.placeholder.com/400x250?text=MGBK+Artikel";
     
+        // Format Tanggal dan Kategori
+        const formattedDate = formatDateOnly(item.tanggal);
+        const kategori = item.kategori && item.kategori.trim() !== "" ? item.kategori : "Berita";
+    
         const slideHtml = `
           <div class="swiper-slide h-auto">
-            <div class="bg-mgbk-violet/40 border border-purple-800/50 rounded-2xl overflow-hidden flex flex-col h-full hover:border-mgbk-yellow/50 transition-all">
+            <div class="bg-mgbk-violet/40 border border-purple-800/50 rounded-2xl overflow-hidden flex flex-col h-full hover:border-mgbk-yellow/50 transition-all shadow-lg">
               <img src="${img}" alt="${item.judul}" class="w-full h-44 object-cover" />
               <div class="p-4 flex flex-col flex-grow justify-between gap-3">
                 <div>
-                  <span class="text-[11px] text-mgbk-yellow font-medium">📅 ${item.tanggal}</span>
-                  <h3 class="text-sm font-bold text-white mt-1 line-clamp-2">${item.judul}</h3>
-                  <p class="text-xs text-slate-300 mt-2 line-clamp-3">${item.ringkasan}</p>
+                  <!-- TAMPILAN TANGGAL DAN KATEGORI -->
+                  <div class="flex items-center justify-between text-[11px] mb-1.5">
+                    <span class="text-mgbk-yellow font-medium">📅 ${formattedDate}</span>
+                    <span class="bg-purple-900/80 text-purple-200 border border-purple-600/40 px-2 py-0.5 rounded-md font-semibold text-[10px] uppercase">${kategori}</span>
+                  </div>
+                  <h3 class="text-sm font-bold text-white line-clamp-2 leading-snug">${item.judul}</h3>
+                  <p class="text-xs text-slate-300 mt-2 line-clamp-3 leading-relaxed">${item.ringkasan}</p>
                 </div>
-                <button onclick="openNewsModal(${index})" class="text-xs font-bold text-mgbk-yellow hover:underline self-start flex items-center gap-1 mt-auto cursor-pointer">
-                  Baca Selengkapnya <i class="fa-solid fa-arrow-right text-[10px]"></i>
+                
+                <!-- TOMBOL BACA SELENGKAPNYA DENGAN POINTER-EVENTS & CLICK HANDLER -->
+                <button 
+                  type="button" 
+                  onclick="openNewsModal(${index})" 
+                  class="relative z-20 pointer-events-auto text-xs font-bold text-mgbk-yellow hover:text-yellow-300 hover:underline self-start flex items-center gap-1.5 mt-auto pt-2 cursor-pointer">
+                  <span>Baca Selengkapnya</span>
+                  <i class="fa-solid fa-arrow-right text-[10px]"></i>
                 </button>
               </div>
             </div>
@@ -439,12 +474,14 @@
         container.innerHTML += slideHtml;
       });
     
-      // Inisialisasi Ulang Swiper Slider Artikel
+      // Re-Inisialisasi Swiper Slider Artikel
       if (newsSwiperInstance) newsSwiperInstance.destroy(true, true);
       
       newsSwiperInstance = new Swiper('.newsSwiper', {
         slidesPerView: 1,
         spaceBetween: 16,
+        preventClicks: false,
+        preventClicksPropagation: false,
         pagination: {
           el: '.swiper-pagination-news',
           clickable: true,
@@ -456,7 +493,7 @@
       });
     }
     
-    // 3. Fungsi Buka Modal Detail Artikel (Pop-up)
+    // 3. Fungsi Buka Modal Detail Artikel
     function openNewsModal(index) {
       const item = newsArticles[index];
       if (!item) return;
@@ -465,25 +502,24 @@
         ? item.gambarUrl 
         : "https://via.placeholder.com/400x250?text=MGBK+Artikel";
     
-      document.getElementById("modal-news-img").src = img;
-      document.getElementById("modal-news-date").innerText = `📅 ${item.tanggal}`;
-      document.getElementById("modal-news-title").innerText = item.judul;
-      // Menampilkan ringkasan/isi lengkap di pop-up modal
-      document.getElementById("modal-news-body").innerText = item.ringkasan;
+      const formattedDate = formatDateOnly(item.tanggal);
+      const kategori = item.kategori && item.kategori.trim() !== "" ? item.kategori : "Berita";
+    
+      const modalImg = document.getElementById("modal-news-img");
+      const modalDate = document.getElementById("modal-news-date");
+      const modalTitle = document.getElementById("modal-news-title");
+      const modalBody = document.getElementById("modal-news-body");
+    
+      if (modalImg) modalImg.src = img;
+      if (modalDate) modalDate.innerText = `📅 ${formattedDate} | Kategori: ${kategori}`;
+      if (modalTitle) modalTitle.innerText = item.judul;
+      if (modalBody) modalBody.innerText = item.ringkasan;
     
       const modal = document.getElementById("news-modal");
-      modal.classList.remove("hidden");
-      modal.classList.add("flex");
-      document.body.style.overflow = "hidden"; // Kunci scroll halaman utama
-    }
-    
-    // 4. Fungsi Tutup Modal
-    function closeModal(modalId) {
-      const modal = document.getElementById(modalId);
       if (modal) {
-        modal.classList.add("hidden");
-        modal.classList.remove("flex");
-        document.body.style.overflow = "auto";
+        modal.classList.remove("hidden");
+        modal.classList.add("flex");
+        document.body.style.overflow = "hidden"; // Kunci scroll background
       }
     }
     
