@@ -402,7 +402,7 @@
       }
     }
     
-    // 1. Helper Format Tanggal Indonesia Rapi
+    // 1. Helper Format Tanggal Rapi
     function formatDateOnly(dateString) {
       if (!dateString) return "Tanggal tidak tersedia";
       const cleanDateStr = dateString.toString().split('T')[0];
@@ -419,7 +419,7 @@
       });
     }
     
-    // 2. Fungsi Render Artikel ke DOM
+    // 2. Render Section Artikel
     function renderNewsSection() {
       const container = document.getElementById("news-container");
       if (!container) return;
@@ -437,25 +437,26 @@
           : "https://via.placeholder.com/400x250?text=MGBK+Artikel";
     
         const formattedDate = formatDateOnly(item.tanggal);
-        const kategori = (item.kategori && item.kategori.trim() !== "") ? item.kategori : "ARTIKEL";
+        const kategori = (item.kategori && item.kategori.trim() !== "") ? item.kategori : "Berita";
     
+        // Kartu dibuat clickable seluruhnya menggunakan onclick="openNewsModal(${index})"
         const slideHtml = `
           <div class="swiper-slide h-auto">
-            <div onclick="openNewsModal(${index})" class="bg-purple-950/40 border border-purple-800/50 rounded-2xl overflow-hidden flex flex-col h-full hover:border-yellow-400/80 transition-all shadow-lg cursor-pointer group">
+            <div onclick="openNewsModal(${index})" class="bg-mgbk-violet/40 border border-purple-800/50 rounded-2xl overflow-hidden flex flex-col h-full hover:border-mgbk-yellow transition-all shadow-lg cursor-pointer group">
               <img src="${img}" alt="${item.judul}" class="w-full h-44 object-cover group-hover:scale-105 transition-transform duration-300" />
               <div class="p-4 flex flex-col flex-grow justify-between gap-3">
                 <div>
                   <div class="flex items-center justify-between text-[11px] mb-1.5">
-                    <span class="text-yellow-400 font-medium">📅 ${formattedDate}</span>
+                    <span class="text-mgbk-yellow font-medium">📅 ${formattedDate}</span>
                     <span class="bg-purple-900/80 text-purple-200 border border-purple-600/40 px-2 py-0.5 rounded-md font-semibold text-[10px] uppercase">${kategori}</span>
                   </div>
-                  <h3 class="text-sm font-bold text-white line-clamp-2 leading-snug group-hover:text-yellow-400 transition-colors">${item.judul}</h3>
+                  <h3 class="text-sm font-bold text-white line-clamp-2 leading-snug group-hover:text-mgbk-yellow transition-colors">${item.judul}</h3>
                   <p class="text-xs text-slate-300 mt-2 line-clamp-3 leading-relaxed">${item.ringkasan}</p>
                 </div>
                 
-                <div class="text-xs font-bold text-yellow-400 group-hover:underline flex items-center gap-1.5 mt-auto pt-2">
+                <div class="text-xs font-bold text-mgbk-yellow group-hover:underline flex items-center gap-1.5 mt-auto pt-2">
                   <span>Baca Selengkapnya</span>
-                  <span>→</span>
+                  <i class="fa-solid fa-arrow-right text-[10px]"></i>
                 </div>
               </div>
             </div>
@@ -464,61 +465,47 @@
         container.innerHTML += slideHtml;
       });
     
-      // Re-Inisialisasi Swiper Slider
-      if (typeof Swiper !== "undefined") {
-        if (newsSwiperInstance) newsSwiperInstance.destroy(true, true);
-        
-        newsSwiperInstance = new Swiper('.newsSwiper', {
-          slidesPerView: 1,
-          spaceBetween: 16,
-          pagination: {
-            el: '.swiper-pagination-news',
-            clickable: true,
-          },
-          breakpoints: {
-            640: { slidesPerView: 2, spaceBetween: 20 },
-            1024: { slidesPerView: 3, spaceBetween: 24 }
-          }
-        });
-      }
+      // Re-Inisialisasi Swiper
+      if (newsSwiperInstance) newsSwiperInstance.destroy(true, true);
+      
+      newsSwiperInstance = new Swiper('.newsSwiper', {
+        slidesPerView: 1,
+        spaceBetween: 16,
+        simulateTouch: true,
+        touchStartPreventDefault: false,
+        pagination: {
+          el: '.swiper-pagination-news',
+          clickable: true,
+        },
+        breakpoints: {
+          640: { slidesPerView: 2, spaceBetween: 20 },
+          1024: { slidesPerView: 3, spaceBetween: 24 }
+        }
+      });
     }
     
-    // 3. Fungsi Membuka Modal Pop-up Detail Artikel
+    // 3. Buka Modal Pop-up
     function openNewsModal(index) {
       const item = newsArticles[index];
       if (!item) return;
-    
-      const modal = document.getElementById("news-modal");
-      if (!modal) {
-        alert("Elemen #news-modal belum ditambahkan di HTML!");
-        return;
-      }
     
       const img = (item.gambarUrl && item.gambarUrl.trim() !== "") 
         ? item.gambarUrl 
         : "https://via.placeholder.com/400x250?text=MGBK+Artikel";
     
       const formattedDate = formatDateOnly(item.tanggal);
-      const kategori = (item.kategori && item.kategori.trim() !== "") ? item.kategori : "ARTIKEL";
+      const kategori = (item.kategori && item.kategori.trim() !== "") ? item.kategori : "Berita";
     
       document.getElementById("modal-news-img").src = img;
       document.getElementById("modal-news-date").innerText = `📅 ${formattedDate} | Kategori: ${kategori}`;
       document.getElementById("modal-news-title").innerText = item.judul;
-      document.getElementById("modal-news-body").innerText = item.ringkasan || "Tidak ada rincian artikel.";
+      document.getElementById("modal-news-body").innerText = item.ringkasan;
     
-      // Tampilkan Modal (Ubah class 'hidden' jadi 'flex')
-      modal.classList.remove("hidden");
-      modal.classList.add("flex");
-      document.body.style.overflow = "hidden"; // Hindari scroll halaman di belakang modal
-    }
-    
-    // 4. Fungsi Menutup Modal Pop-up
-    function closeNewsModal() {
       const modal = document.getElementById("news-modal");
       if (modal) {
-        modal.classList.add("hidden");
-        modal.classList.remove("flex");
-        document.body.style.overflow = "auto"; // Kembalikan scroll halaman
+        modal.classList.remove("hidden");
+        modal.classList.add("flex");
+        document.body.style.overflow = "hidden";
       }
     }
 
