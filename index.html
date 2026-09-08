@@ -341,32 +341,65 @@
     let currentDownloadUrl = "";
     let likesData = {};
 
-    const newsArticles = [
-      {
-        id: 1,
-        title: "Peningkatan Kompetensi Guru BK melalui Workshop Digital",
-        date: "20 Februari 2026",
-        image: "https://lh3.googleusercontent.com/d/19kg7niFuLOmPk1HxzoDdW_NBc1KDSUXh",
-        summary: "MGBK Indonesia mengadakan workshop nasional pemanfaatan teknologi AI untuk layanan konseling...",
-        content: "MGBK Indonesia terus berupaya meningkatkan kualifikasi dan kompetensi para guru Bimbingan Konseling se-Indonesia. Melalui pelatihan terintegrasi ini, guru diajarkan mengolah media konseling berbasis digital, aplikasi asesmen, hingga pemanfaatan portal informasi terpadu."
-      },
-      {
-        id: 2,
-        title: "Peran Penting Konselor Sekolah dalam Era Gen-Z",
-        date: "14 Februari 2026",
-        image: "https://lh3.googleusercontent.com/d/19kg7niFuLOmPk1HxzoDdW_NBc1KDSUXh",
-        summary: "Pendekatan empati dan responsif menjadi kunci utama pelayanan guru BK di sekolah modern...",
-        content: "Tantangan kesehatan mental siswa masa kini semakin beragam. Guru Bimbingan dan Konseling dituntut hadir tidak hanya sebagai pembimbing akademis, melainkan sahabat dan tempat aman bagi peserta didik di lingkungan sekolah."
-      },
-      {
-        id: 3,
-        title: "Agenda Musyawarah Kerja Nasional (Mukernas) MGBK",
-        date: "05 Januari 2026",
-        image: "https://lh3.googleusercontent.com/d/19kg7niFuLOmPk1HxzoDdW_NBc1KDSUXh",
-        summary: "Persiapan pelaksanaan Mukernas MGBK Indonesia yang berfokus pada standarisasi layanan...",
-        content: "Segenap pengurus MGBK Indonesia menyepakati draf kurikulum pendampingan karir terbaru yang akan diimplementasikan secara bertahap di seluruh propinsi dan kabupaten/kota."
+    // 1. Deklarasikan newsArticles sebagai array kosong
+    let newsArticles = [];
+    
+    // 2. Fungsi untuk mengambil data dari Apps Script
+    async function loadPortalData() {
+      try {
+        const response = await fetch(GAS_API_URL);
+        const data = await response.json();
+        
+        // Cek apakah data artikel ada dari respons Apps Script
+        if (data && data.artikel && data.artikel.length > 0) {
+          newsArticles = data.artikel; // Menyimpan data dari Sheet ke variabel
+          renderNewsSection();         // Tampilkan ke halaman
+        } else {
+          console.log("Data artikel dari Spreadsheet kosong.");
+        }
+      } catch (error) {
+        console.error("Gagal mengambil data dari Google Sheets:", error);
       }
-    ];
+    }
+    
+    // 3. Fungsi untuk merender/menampilkan artikel ke DOM/HTML
+    function renderNewsSection() {
+      // Ganti 'news-container' sesuai dengan ID elemen tempat artikel Kakak ditampilkan
+      const container = document.getElementById("news-container"); 
+      if (!container) return;
+    
+      container.innerHTML = ""; // Bersihkan dummy/skrip lama
+    
+      newsArticles.forEach(item => {
+        // Gunakan gambarUrl, jika kosong pakai gambar placeholder
+        const img = (item.gambarUrl && item.gambarUrl.trim() !== "") 
+          ? item.gambarUrl 
+          : "https://via.placeholder.com/400x250?text=No+Image";
+    
+        // Format tanggal jika dalam bentuk ISO / String
+        const tgl = item.tanggal ? new Date(item.tanggal).toLocaleDateString("id-ID", {
+          day: "numeric", month: "long", year: "numeric"
+        }) : "";
+    
+        const cardHtml = `
+          <div class="news-card">
+            <img src="${img}" alt="${item.judul}" class="news-img" />
+            <div class="news-body">
+              <span class="news-date">${tgl}</span>
+              <h3 class="news-title">${item.judul}</h3>
+              <p class="news-summary">${item.ringkasan}</p>
+              ${item.linkBaca ? `<a href="${item.linkBaca}" target="_blank" class="btn-read">Baca Selengkapnya →</a>` : ''}
+            </div>
+          </div>
+        `;
+        container.innerHTML += cardHtml;
+      });
+    }
+    
+    // 4. Panggil saat halaman selesai di-load
+    document.addEventListener("DOMContentLoaded", () => {
+      loadPortalData();
+    });
 
     function parseYouTubeEmbed(url) {
       if (!url) return "";
