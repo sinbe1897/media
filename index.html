@@ -508,6 +508,11 @@
         document.body.style.overflow = "hidden";
       }
     }
+    
+    // 5. Panggil saat halaman selesai di-load
+    document.addEventListener("DOMContentLoaded", () => {
+      loadPortalData();
+    });
 
     function parseYouTubeEmbed(url) {
       if (!url) return "";
