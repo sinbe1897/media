@@ -367,8 +367,6 @@
 
 </body>
 
-  <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
-
   <script>
     const GAS_API_URL = "https://script.google.com/macros/s/AKfycbw5FO88o7tlkHfUQdLRLyWwTDUlYRnmNBpA-EC1TvIMvzY4Xg2G24xRufnm6p3Lk26A/exec";
     const YOUTUBE_PROFIL_URL = "https://youtu.be/5K3Xt6ODsDY?si=WrzZYc4ipEL2dcpb"; 
@@ -380,11 +378,27 @@
     let currentDownloadUrl = "";
     let likesData = {};
 
-    // 1. Deklarasikan newsArticles sebagai array kosong
     let newsArticles = [];
     let newsSwiperInstance = null;
     
-    // 1. Fungsi untuk mengambil data dari Google Apps Script
+    // 1. Helper Format Tanggal Rapi
+    function formatDateOnly(dateString) {
+      if (!dateString) return "Tanggal tidak tersedia";
+      const cleanDateStr = dateString.toString().split('T')[0];
+      const dateObj = new Date(cleanDateStr);
+
+      if (isNaN(dateObj.getTime())) {
+        return dateString.toString().replace(/T.*/, '');
+      }
+
+      return dateObj.toLocaleDateString('id-ID', {
+        day: 'numeric',
+        month: 'short',
+        year: 'numeric'
+      });
+    }
+
+    // 2. Load Data Artikel & Portal dari Google Apps Script
     async function loadPortalData() {
       try {
         const response = await fetch(GAS_API_URL);
@@ -392,55 +406,47 @@
         
         if (data && data.artikel && data.artikel.length > 0) {
           newsArticles = data.artikel;
-          renderNewsSection(); // Panggil fungsi render
+        } else if (Array.isArray(data)) {
+          newsArticles = data;
         } else {
           console.log("Data artikel dari Spreadsheet kosong.");
-          renderNewsSection(); // Tetap panggil untuk menampilkan status kosong
         }
+        
+        // Render Artikel
+        renderNewsSection();
+
+        // Load Data Dokumentasi Foto & Video
+        if (data.dokumentasi && Array.isArray(data.dokumentasi)) {
+          rawData = data.dokumentasi;
+        } else if (Array.isArray(data)) {
+          rawData = data;
+        }
+        processGroupedData(rawData);
+
       } catch (error) {
         console.error("Gagal mengambil data dari Google Sheets:", error);
       }
     }
-    
-    // 1. Helper Format Tanggal Indonesia
-    function formatDateOnly(dateString) {
-      if (!dateString) return "Tanggal tidak tersedia";
-      const cleanDateStr = dateString.toString().split('T')[0];
-      const dateObj = new Date(cleanDateStr);
-    
-      if (isNaN(dateObj.getTime())) {
-        return dateString.toString().replace(/T.*/, '');
-      }
-    
-      return dateObj.toLocaleDateString('id-ID', {
-        day: 'numeric',
-        month: 'short',
-        year: 'numeric'
-      });
-    }
-    
-    // 2. Fungsi Render Artikel
+
+    // 3. Render Artikel ke Container (Slider Swiper)
     function renderNewsSection() {
       const container = document.getElementById("news-container");
       if (!container) return;
-    
+
       container.innerHTML = "";
-    
-      // Cek jika data kosong
+
       if (!newsArticles || newsArticles.length === 0) {
         container.innerHTML = `<p class="text-xs text-slate-400 py-4 text-center w-full">Belum ada artikel.</p>`;
         return;
       }
-    
+
       newsArticles.forEach((item, index) => {
-        // Ambil data dengan mendukung Huruf Besar maupun Kecil dari Sheets
         const imgUrl = item.GambarUrl || item.gambarUrl || item.gambar || "https://via.placeholder.com/400x250?text=MGBK+Artikel";
         const kat = item.Kategori || item.kategori || "ARTIKEL";
-        const linkExternal = item.LinkBaca || item.linkBaca || "";
         const tgl = formatDateOnly(item.Tanggal || item.tanggal);
         const jdl = item.Judul || item.judul || "Tanpa Judul";
         const rkg = item.Ringkasan || item.ringkasan || "";
-    
+
         const slideHtml = `
           <div class="swiper-slide h-auto">
             <div onclick="handleCardClick(${index})" class="bg-purple-950/40 border border-purple-800/50 rounded-2xl overflow-hidden flex flex-col h-full hover:border-yellow-400/80 transition-all shadow-lg cursor-pointer group">
@@ -465,8 +471,8 @@
         `;
         container.innerHTML += slideHtml;
       });
-    
-      // Re-Inisialisasi Swiper Slider
+
+      // Swiper Slider Artikel
       if (typeof Swiper !== "undefined") {
         if (newsSwiperInstance) newsSwiperInstance.destroy(true, true);
         
@@ -484,58 +490,54 @@
         });
       }
     }
-    
-    // 3. Aksi saat Kartu Diklik (Buka Link External atau Pop-up Modal)
+
+    // 4. Aksi Klik Kartu
     function handleCardClick(index) {
       const item = newsArticles[index];
       if (!item) return;
-    
+
       const linkExternal = item.LinkBaca || item.linkBaca;
-    
-      // Jika ada LinkBaca (seperti link berita web/Google Drive), langsung buka link tersebut di tab baru
+
       if (linkExternal && linkExternal.trim() !== "" && linkExternal !== "#") {
         window.open(linkExternal, "_blank");
       } else {
-        // Jika LinkBaca kosong, buka Pop-up Modal Detail
         openNewsModal(index);
       }
     }
-    
-    // 4. Fungsi Buka Modal Pop-up
+
+    // 5. Membuka Modal Pop-up Artikel
     function openNewsModal(index) {
       const item = newsArticles[index];
       if (!item) return;
-    
-      const modal = document.getElementById("news-modal");
-      
-      // Jika tag #news-modal belum terpasang di HTML, buatkan secara otomatis via JS!
+
+      let modal = document.getElementById("news-modal");
       if (!modal) {
         createNewsModalDOM();
+        modal = document.getElementById("news-modal");
       }
-    
+
       const imgUrl = item.GambarUrl || item.gambarUrl || "https://via.placeholder.com/400x250?text=MGBK+Artikel";
       const kat = item.Kategori || item.kategori || "ARTIKEL";
       const tgl = formatDateOnly(item.Tanggal || item.tanggal);
       const jdl = item.Judul || item.judul || "";
       const rkg = item.Ringkasan || item.ringkasan || "";
-    
+
       document.getElementById("modal-news-img").src = imgUrl;
       document.getElementById("modal-news-date").innerText = `📅 ${tgl} | Kategori: ${kat}`;
       document.getElementById("modal-news-title").innerText = jdl;
       document.getElementById("modal-news-body").innerText = rkg;
-    
-      const targetModal = document.getElementById("news-modal");
-      targetModal.classList.remove("hidden");
-      targetModal.classList.add("flex");
+
+      modal.classList.remove("hidden");
+      modal.classList.add("flex");
       document.body.style.overflow = "hidden";
     }
-    
-    // 5. Fungsi Otomatis Membuat Modal jika di HTML belum ada
+
+    // 6. Buat Modal Otomatis jika Belum Ada di HTML
     function createNewsModalDOM() {
       const modalHTML = `
         <div id="news-modal" class="fixed inset-0 z-[99999] bg-black/80 backdrop-blur-sm hidden items-center justify-center p-4">
           <div class="relative w-full max-w-2xl bg-[#1e1333] border border-purple-700/60 rounded-2xl p-6 shadow-2xl max-h-[90vh] overflow-y-auto">
-            <button type="button" onclick="closeNewsModal()" class="absolute top-4 right-4 text-slate-400 hover:text-white bg-purple-900/50 hover:bg-purple-800 rounded-full w-8 h-8 flex items-center justify-center">✕</button>
+            <button type="button" onclick="closeNewsModal()" class="absolute top-4 right-4 text-slate-400 hover:text-white bg-purple-900/50 hover:bg-purple-800 rounded-full w-8 h-8 flex items-center justify-center cursor-pointer">✕</button>
             <img id="modal-news-img" src="" class="w-full h-52 md:h-64 object-cover rounded-xl mb-4 border border-purple-800/50" />
             <span id="modal-news-date" class="text-xs font-semibold text-yellow-400"></span>
             <h3 id="modal-news-title" class="text-lg md:text-xl font-bold text-white my-2"></h3>
@@ -546,8 +548,8 @@
       `;
       document.body.insertAdjacentHTML("beforeend", modalHTML);
     }
-    
-    // 6. Fungsi Tutup Modal
+
+    // 7. Tutup Modal Artikel
     function closeNewsModal() {
       const modal = document.getElementById("news-modal");
       if (modal) {
@@ -556,12 +558,8 @@
         document.body.style.overflow = "auto";
       }
     }
-    
-    // 5. Panggil saat halaman selesai di-load
-    document.addEventListener("DOMContentLoaded", () => {
-      loadPortalData();
-    });
 
+    // 8. Helper Youtube & Media
     function parseYouTubeEmbed(url) {
       if (!url) return "";
       const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
@@ -593,76 +591,24 @@
       return cleanUrl;
     }
 
-    // LOAD INITIAL DATA
-    window.addEventListener('DOMContentLoaded', () => {
-      document.getElementById('profile-youtube-iframe').src = parseYouTubeEmbed(YOUTUBE_PROFIL_URL);
-      renderNews();
-      loadData();
+    // 9. EVENT LOAD UTAMA
+    document.addEventListener('DOMContentLoaded', () => {
+      const ytElem = document.getElementById('profile-youtube-iframe');
+      if (ytElem) ytElem.src = parseYouTubeEmbed(YOUTUBE_PROFIL_URL);
+      
+      loadPortalData();
     });
 
-    function renderNews() {
-      const newsContainer = document.getElementById('news-container');
-      newsContainer.innerHTML = newsArticles.map(news => `
-        <div class="bg-purple-950/40 border border-purple-800/40 hover:border-purple-500 rounded-2xl overflow-hidden shadow-xl flex flex-col justify-between transition-all duration-300">
-          <div>
-            <div class="h-40 overflow-hidden bg-black relative">
-              <img src="${news.image}" alt="${news.title}" class="w-full h-full object-cover hover:scale-105 transition-transform duration-300" />
-            </div>
-            <div class="p-4 space-y-2">
-              <span class="text-[10px] text-mgbk-yellow font-semibold flex items-center gap-1">
-                <i class="fa-regular fa-calendar"></i> ${news.date}
-              </span>
-              <h3 class="text-sm font-bold text-white line-clamp-2 leading-snug">${news.title}</h3>
-              <p class="text-xs text-slate-300 line-clamp-2">${news.summary}</p>
-            </div>
-          </div>
-          <div class="p-4 pt-0">
-            <button onclick="openNewsModal(${news.id})" class="text-xs font-bold text-mgbk-yellow hover:text-yellow-300 flex items-center gap-1">
-              Baca Selengkapnya <i class="fa-solid fa-arrow-right text-[10px]"></i>
-            </button>
-          </div>
-        </div>
-      `).join('');
-    }
-
-    function openNewsModal(id) {
-      const news = newsArticles.find(n => n.id === id);
-      if (!news) return;
-
-      document.getElementById('modal-news-img').src = news.image;
-      document.getElementById('modal-news-date').innerText = news.date;
-      document.getElementById('modal-news-title').innerText = news.title;
-      document.getElementById('modal-news-body').innerHTML = `<p>${news.content}</p>`;
-      document.getElementById('news-modal').classList.remove('hidden');
-    }
-
-    async function loadData() {
-      try {
-        const response = await fetch(GAS_API_URL);
-        const result = await response.json();
-        
-        if (Array.isArray(result)) {
-          rawData = result;
-        } else if (result.dokumentasi && Array.isArray(result.dokumentasi)) {
-          rawData = result.dokumentasi;
-        } else {
-          rawData = [];
-        }
-        
-        processGroupedData(rawData);
-
-      } catch (err) {
-        console.error("Error loading data:", err);
-      }
-    }
-
+    // 10. Dokumentasi Foto & Video Handlers
     function processGroupedData(dataArray) {
       groupedData = {};
+      if (!Array.isArray(dataArray)) return;
+
       dataArray.forEach(item => {
-        if (!groupedData[item.judul]) {
-          groupedData[item.judul] = [];
+        if (item.judul) {
+          if (!groupedData[item.judul]) groupedData[item.judul] = [];
+          groupedData[item.judul].push(item);
         }
-        groupedData[item.judul].push(item);
       });
 
       renderFilterButtons();
@@ -678,6 +624,7 @@
 
     function renderFilterButtons() {
       const filterContainer = document.getElementById('category-filters');
+      if (!filterContainer) return;
       filterContainer.innerHTML = '';
 
       Object.keys(groupedData).forEach((catName, index) => {
@@ -708,7 +655,8 @@
     }
 
     function renderGalleryItems(items) {
-      document.getElementById('current-activity-title').innerText = `${items.length} Item`;
+      const titleElem = document.getElementById('current-activity-title');
+      if (titleElem) titleElem.innerText = `${items.length} Item`;
 
       if (swiperFotoInstance) {
         swiperFotoInstance.destroy(true, true);
@@ -718,107 +666,112 @@
       const photoContainer = document.getElementById('photo-container');
       const photoItems = items.filter(i => i.gambarUrl);
 
-      if (photoItems.length === 0) {
-        photoContainer.innerHTML = '<p class="text-slate-400 text-center w-full py-8 text-xs">Tidak ada foto di kategori ini.</p>';
-      } else {
-        photoContainer.innerHTML = photoItems.map(item => {
-          const currentLikes = likesData[item.gambarUrl] || 0;
-          return `
-            <div class="swiper-slide h-auto">
-              <div class="bg-purple-950/40 border border-purple-800/40 rounded-2xl overflow-hidden shadow-xl flex flex-col h-full hover:border-mgbk-yellow/50 transition-colors">
-                <div class="relative group bg-black cursor-pointer aspect-[4/3] overflow-hidden" onclick="openModal('${item.gambarUrl}')">
-                  <img src="${item.gambarUrl}" alt="${item.judul}" loading="lazy" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
-                  <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center text-white text-xs font-semibold">
-                    <i class="fa-solid fa-expand text-base mr-1"></i> Lihat Foto
+      if (photoContainer) {
+        if (photoItems.length === 0) {
+          photoContainer.innerHTML = '<p class="text-slate-400 text-center w-full py-8 text-xs">Tidak ada foto di kategori ini.</p>';
+        } else {
+          photoContainer.innerHTML = photoItems.map(item => {
+            const currentLikes = likesData[item.gambarUrl] || 0;
+            return `
+              <div class="swiper-slide h-auto">
+                <div class="bg-purple-950/40 border border-purple-800/40 rounded-2xl overflow-hidden shadow-xl flex flex-col h-full hover:border-mgbk-yellow/50 transition-colors">
+                  <div class="relative group bg-black cursor-pointer aspect-[4/3] overflow-hidden" onclick="openModal('${item.gambarUrl}')">
+                    <img src="${item.gambarUrl}" alt="${item.judul}" loading="lazy" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
+                    <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center text-white text-xs font-semibold">
+                      <i class="fa-solid fa-expand text-base mr-1"></i> Lihat Foto
+                    </div>
                   </div>
-                </div>
-                <div class="p-3.5 flex flex-col justify-between flex-grow">
-                  <p class="text-slate-200 text-xs line-clamp-2 mb-2 leading-relaxed">${item.deskripsi || item.judul}</p>
-                  <div class="flex items-center justify-between pt-1 border-t border-purple-900/40">
-                    <span class="text-[10px] text-mgbk-yellow font-semibold flex items-center gap-1">
-                      <i class="fa-regular fa-calendar-check"></i> ${formatDate(item.tanggal)}
-                    </span>
-                    <button onclick="toggleLike('${item.gambarUrl}', this)" class="text-[11px] text-slate-300 hover:text-red-400 flex items-center gap-1 transition-colors">
-                      <i class="fa-regular fa-heart text-red-500"></i> <span class="like-count">${currentLikes}</span>
-                    </button>
+                  <div class="p-3.5 flex flex-col justify-between flex-grow">
+                    <p class="text-slate-200 text-xs line-clamp-2 mb-2 leading-relaxed">${item.deskripsi || item.judul}</p>
+                    <div class="flex items-center justify-between pt-1 border-t border-purple-900/40">
+                      <span class="text-[10px] text-mgbk-yellow font-semibold flex items-center gap-1">
+                        <i class="fa-regular fa-calendar-check"></i> ${formatDate(item.tanggal)}
+                      </span>
+                      <button onclick="toggleLike('${item.gambarUrl}', this)" class="text-[11px] text-slate-300 hover:text-red-400 flex items-center gap-1 transition-colors cursor-pointer">
+                        <i class="fa-regular fa-heart text-red-500"></i> <span class="like-count">${currentLikes}</span>
+                      </button>
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
-          `;
-        }).join('');
+            `;
+          }).join('');
 
-        swiperFotoInstance = new Swiper(".mySwiperFoto", {
-          slidesPerView: 1,
-          spaceBetween: 14,
-          breakpoints: {
-            640: { slidesPerView: 2, spaceBetween: 18 },
-            1024: { slidesPerView: 3, spaceBetween: 20 }
-          },
-          pagination: { 
-            el: ".swiper-pagination-foto", 
-            type: "fraction" 
-          },
-          navigation: {
-            nextEl: ".swiper-btn-foto-next",
-            prevEl: ".swiper-btn-foto-prev"
-          }
-        });
+          swiperFotoInstance = new Swiper(".mySwiperFoto", {
+            slidesPerView: 1,
+            spaceBetween: 14,
+            breakpoints: {
+              640: { slidesPerView: 2, spaceBetween: 18 },
+              1024: { slidesPerView: 3, spaceBetween: 20 }
+            },
+            pagination: { 
+              el: ".swiper-pagination-foto", 
+              type: "fraction" 
+            },
+            navigation: {
+              nextEl: ".swiper-btn-foto-next",
+              prevEl: ".swiper-btn-foto-prev"
+            }
+          });
+        }
       }
 
       // VIDEO SECTION
       const videoSection = document.getElementById('video-section');
       const videoContainer = document.getElementById('video-container');
-      videoContainer.innerHTML = '';
 
-      if (swiperVideoInstance) {
-        swiperVideoInstance.destroy(true, true);
-        swiperVideoInstance = null;
-      }
+      if (videoContainer) {
+        videoContainer.innerHTML = '';
 
-      const videoItems = items.filter(i => i.videoUrl && i.videoUrl.trim() !== '');
+        if (swiperVideoInstance) {
+          swiperVideoInstance.destroy(true, true);
+          swiperVideoInstance = null;
+        }
 
-      if (videoItems.length > 0) {
-        videoSection.classList.remove('hidden');
-        
-        videoContainer.innerHTML = videoItems.map(item => {
-          const embedVideo = getEmbedUrl(item.videoUrl);
-          return `
-            <div class="swiper-slide h-auto">
-              <div class="bg-purple-950/40 border border-purple-800/40 rounded-2xl overflow-hidden shadow-xl p-3 flex flex-col h-full hover:border-red-500/50 transition-colors">
-                <div class="relative aspect-video w-full rounded-xl overflow-hidden bg-black cursor-pointer group mb-3" onclick="openVideoModal('${embedVideo}')">
-                  <img src="${item.gambarUrl || 'https://via.placeholder.com/600x400'}" loading="lazy" class="w-full h-full object-cover opacity-60 group-hover:scale-105 transition-transform duration-300" />
-                  <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent flex items-center justify-center">
-                    <div class="w-12 h-12 rounded-full bg-red-600 text-white flex items-center justify-center group-hover:scale-110 transition-all shadow-xl">
-                      <i class="fa-solid fa-play ml-1"></i>
+        const videoItems = items.filter(i => i.videoUrl && i.videoUrl.trim() !== '');
+
+        if (videoItems.length > 0 && videoSection) {
+          videoSection.classList.remove('hidden');
+          
+          videoContainer.innerHTML = videoItems.map(item => {
+            const embedVideo = getEmbedUrl(item.videoUrl);
+            return `
+              <div class="swiper-slide h-auto">
+                <div class="bg-purple-950/40 border border-purple-800/40 rounded-2xl overflow-hidden shadow-xl p-3 flex flex-col h-full hover:border-red-500/50 transition-colors">
+                  <div class="relative aspect-video w-full rounded-xl overflow-hidden bg-black cursor-pointer group mb-3" onclick="openVideoModal('${embedVideo}')">
+                    <img src="${item.gambarUrl || 'https://via.placeholder.com/600x400'}" loading="lazy" class="w-full h-full object-cover opacity-60 group-hover:scale-105 transition-transform duration-300" />
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent flex items-center justify-center">
+                      <div class="w-12 h-12 rounded-full bg-red-600 text-white flex items-center justify-center group-hover:scale-110 transition-all shadow-xl">
+                        <i class="fa-solid fa-play ml-1"></i>
+                      </div>
                     </div>
                   </div>
+                  <p class="text-slate-200 text-xs line-clamp-2 font-medium">${item.deskripsi || item.judul}</p>
                 </div>
-                <p class="text-slate-200 text-xs line-clamp-2 font-medium">${item.deskripsi || item.judul}</p>
               </div>
-            </div>
-          `;
-        }).join('');
+            `;
+          }).join('');
 
-        swiperVideoInstance = new Swiper(".mySwiperVideo", {
-          slidesPerView: 1,
-          spaceBetween: 14,
-          breakpoints: {
-            640: { slidesPerView: 2, spaceBetween: 18 },
-            1024: { slidesPerView: 3, spaceBetween: 20 }
-          },
-          pagination: { 
-            el: ".swiper-pagination-video", 
-            type: "fraction" 
-          },
-          navigation: {
-            nextEl: ".swiper-btn-video-next",
-            prevEl: ".swiper-btn-video-prev"
-          }
-        });
+          swiperVideoInstance = new Swiper(".mySwiperVideo", {
+            slidesPerView: 1,
+            spaceBetween: 14,
+            breakpoints: {
+              640: { slidesPerView: 2, spaceBetween: 18 },
+              1024: { slidesPerView: 3, spaceBetween: 20 }
+            },
+            pagination: { 
+              el: ".swiper-pagination-video", 
+              type: "fraction" 
+            },
+            navigation: {
+              nextEl: ".swiper-btn-video-next",
+              prevEl: ".swiper-btn-video-prev"
+            }
+          });
 
-      } else {
-        videoSection.classList.add('hidden');
+        } else if (videoSection) {
+          videoSection.classList.add('hidden');
+        }
       }
     }
 
@@ -868,7 +821,8 @@
     }
 
     function closeModal(modalId) {
-      document.getElementById(modalId).classList.add('hidden');
+      const el = document.getElementById(modalId);
+      if (el) el.classList.add('hidden');
     }
 
     async function directDownload() {
@@ -933,6 +887,6 @@
         alert('Link portal berhasil disalin ke clipboard!');
       }
     }
-  </script>
+</script>
 </body>
 </html>
