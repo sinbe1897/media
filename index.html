@@ -424,6 +424,24 @@
     }
     
     // 2. Fungsi Render Artikel / Berita
+    // 1. Helper Format Tanggal Rapi
+    function formatDateOnly(dateString) {
+      if (!dateString) return "Tanggal tidak tersedia";
+      const cleanDateStr = dateString.toString().split('T')[0];
+      const dateObj = new Date(cleanDateStr);
+    
+      if (isNaN(dateObj.getTime())) {
+        return dateString.toString().replace(/T.*/, '');
+      }
+    
+      return dateObj.toLocaleDateString('id-ID', {
+        day: 'numeric',
+        month: 'short',
+        year: 'numeric'
+      });
+    }
+    
+    // 2. Render Section Artikel
     function renderNewsSection() {
       const container = document.getElementById("news-container");
       if (!container) return;
@@ -440,33 +458,28 @@
           ? item.gambarUrl 
           : "https://via.placeholder.com/400x250?text=MGBK+Artikel";
     
-        // Format Tanggal dan Kategori
         const formattedDate = formatDateOnly(item.tanggal);
-        const kategori = item.kategori && item.kategori.trim() !== "" ? item.kategori : "Berita";
+        const kategori = (item.kategori && item.kategori.trim() !== "") ? item.kategori : "Berita";
     
+        // Kartu dibuat clickable seluruhnya menggunakan onclick="openNewsModal(${index})"
         const slideHtml = `
           <div class="swiper-slide h-auto">
-            <div class="bg-mgbk-violet/40 border border-purple-800/50 rounded-2xl overflow-hidden flex flex-col h-full hover:border-mgbk-yellow/50 transition-all shadow-lg">
-              <img src="${img}" alt="${item.judul}" class="w-full h-44 object-cover" />
+            <div onclick="openNewsModal(${index})" class="bg-mgbk-violet/40 border border-purple-800/50 rounded-2xl overflow-hidden flex flex-col h-full hover:border-mgbk-yellow transition-all shadow-lg cursor-pointer group">
+              <img src="${img}" alt="${item.judul}" class="w-full h-44 object-cover group-hover:scale-105 transition-transform duration-300" />
               <div class="p-4 flex flex-col flex-grow justify-between gap-3">
                 <div>
-                  <!-- TAMPILAN TANGGAL DAN KATEGORI -->
                   <div class="flex items-center justify-between text-[11px] mb-1.5">
                     <span class="text-mgbk-yellow font-medium">📅 ${formattedDate}</span>
                     <span class="bg-purple-900/80 text-purple-200 border border-purple-600/40 px-2 py-0.5 rounded-md font-semibold text-[10px] uppercase">${kategori}</span>
                   </div>
-                  <h3 class="text-sm font-bold text-white line-clamp-2 leading-snug">${item.judul}</h3>
+                  <h3 class="text-sm font-bold text-white line-clamp-2 leading-snug group-hover:text-mgbk-yellow transition-colors">${item.judul}</h3>
                   <p class="text-xs text-slate-300 mt-2 line-clamp-3 leading-relaxed">${item.ringkasan}</p>
                 </div>
                 
-                <!-- TOMBOL BACA SELENGKAPNYA DENGAN POINTER-EVENTS & CLICK HANDLER -->
-                <button 
-                  type="button" 
-                  onclick="openNewsModal(${index})" 
-                  class="relative z-20 pointer-events-auto text-xs font-bold text-mgbk-yellow hover:text-yellow-300 hover:underline self-start flex items-center gap-1.5 mt-auto pt-2 cursor-pointer">
+                <div class="text-xs font-bold text-mgbk-yellow group-hover:underline flex items-center gap-1.5 mt-auto pt-2">
                   <span>Baca Selengkapnya</span>
                   <i class="fa-solid fa-arrow-right text-[10px]"></i>
-                </button>
+                </div>
               </div>
             </div>
           </div>
@@ -474,14 +487,14 @@
         container.innerHTML += slideHtml;
       });
     
-      // Re-Inisialisasi Swiper Slider Artikel
+      // Re-Inisialisasi Swiper
       if (newsSwiperInstance) newsSwiperInstance.destroy(true, true);
       
       newsSwiperInstance = new Swiper('.newsSwiper', {
         slidesPerView: 1,
         spaceBetween: 16,
-        preventClicks: false,
-        preventClicksPropagation: false,
+        simulateTouch: true,
+        touchStartPreventDefault: false,
         pagination: {
           el: '.swiper-pagination-news',
           clickable: true,
@@ -493,7 +506,7 @@
       });
     }
     
-    // 3. Fungsi Buka Modal Detail Artikel
+    // 3. Buka Modal Pop-up
     function openNewsModal(index) {
       const item = newsArticles[index];
       if (!item) return;
@@ -503,23 +516,18 @@
         : "https://via.placeholder.com/400x250?text=MGBK+Artikel";
     
       const formattedDate = formatDateOnly(item.tanggal);
-      const kategori = item.kategori && item.kategori.trim() !== "" ? item.kategori : "Berita";
+      const kategori = (item.kategori && item.kategori.trim() !== "") ? item.kategori : "Berita";
     
-      const modalImg = document.getElementById("modal-news-img");
-      const modalDate = document.getElementById("modal-news-date");
-      const modalTitle = document.getElementById("modal-news-title");
-      const modalBody = document.getElementById("modal-news-body");
-    
-      if (modalImg) modalImg.src = img;
-      if (modalDate) modalDate.innerText = `📅 ${formattedDate} | Kategori: ${kategori}`;
-      if (modalTitle) modalTitle.innerText = item.judul;
-      if (modalBody) modalBody.innerText = item.ringkasan;
+      document.getElementById("modal-news-img").src = img;
+      document.getElementById("modal-news-date").innerText = `📅 ${formattedDate} | Kategori: ${kategori}`;
+      document.getElementById("modal-news-title").innerText = item.judul;
+      document.getElementById("modal-news-body").innerText = item.ringkasan;
     
       const modal = document.getElementById("news-modal");
       if (modal) {
         modal.classList.remove("hidden");
         modal.classList.add("flex");
-        document.body.style.overflow = "hidden"; // Kunci scroll background
+        document.body.style.overflow = "hidden";
       }
     }
     
