@@ -49,6 +49,29 @@
       position: relative;
       margin-top: 10px;
     }
+    /* Mencegah teks ringkasan membuat kartu jadi terlalu tinggi */
+    .news-summary {
+      display: -webkit-box;
+      -webkit-line-clamp: 3; /* Maksimal 3 baris */
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      margin-bottom: 15px;
+      color: #ccc; /* sesuaikan warna teks */
+    }
+    
+    /* Mengatur style tombol Baca Selengkapnya */
+    .news-link {
+      display: inline-block;
+      color: #ffcc00; /* warna kuning/emas sesuai tema */
+      font-weight: bold;
+      text-decoration: none;
+      margin-top: auto; /* Posisi tombol selalu di paling bawah kartu */
+    }
+    
+    .news-link:hover {
+      text-decoration: underline;
+    }
   </style>
 </head>
 <body class="bg-mgbk-dark text-slate-100 font-sans antialiased min-h-screen flex flex-col justify-between overflow-x-hidden">
@@ -364,34 +387,36 @@
     
     // 3. Fungsi untuk merender/menampilkan artikel ke DOM/HTML
     function renderNewsSection() {
-      // Ganti 'news-container' sesuai dengan ID elemen tempat artikel Kakak ditampilkan
-      const container = document.getElementById("news-container"); 
+      const container = document.getElementById("news-container"); // Sesuaikan ID container Anda
       if (!container) return;
     
-      container.innerHTML = ""; // Bersihkan dummy/skrip lama
+      container.innerHTML = "";
     
       newsArticles.forEach(item => {
-        // Gunakan gambarUrl, jika kosong pakai gambar placeholder
+        // 1. Gambar Default jika kosong
         const img = (item.gambarUrl && item.gambarUrl.trim() !== "") 
           ? item.gambarUrl 
-          : "https://via.placeholder.com/400x250?text=No+Image";
+          : "https://via.placeholder.com/400x250?text=MGBK+Artikel";
     
-        // Format tanggal jika dalam bentuk ISO / String
-        const tgl = item.tanggal ? new Date(item.tanggal).toLocaleDateString("id-ID", {
-          day: "numeric", month: "long", year: "numeric"
-        }) : "";
+        // 2. Tentukan Link Baca (Jika di Sheets kosong, arahkan ke '#' atau pemicu modal)
+        const link = (item.linkBaca && item.linkBaca.trim() !== "") 
+          ? item.linkBaca 
+          : "#";
     
         const cardHtml = `
           <div class="news-card">
-            <img src="${img}" alt="${item.judul}" class="news-img" />
-            <div class="news-body">
-              <span class="news-date">${tgl}</span>
+            <img src="${img}" alt="${item.judul}" class="news-image" />
+            <div class="news-content">
+              <span class="news-date">📅 ${item.tanggal}</span>
               <h3 class="news-title">${item.judul}</h3>
               <p class="news-summary">${item.ringkasan}</p>
-              ${item.linkBaca ? `<a href="${item.linkBaca}" target="_blank" class="btn-read">Baca Selengkapnya →</a>` : ''}
+              <a href="${link}" target="${link !== '#' ? '_blank' : '_self'}" class="news-link">
+                Baca Selengkapnya →
+              </a>
             </div>
           </div>
         `;
+        
         container.innerHTML += cardHtml;
       });
     }
